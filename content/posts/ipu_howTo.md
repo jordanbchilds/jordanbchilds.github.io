@@ -3,7 +3,7 @@ title: "A Beginners Guide to Executing C++ Scripts on an IPU"
 date: 2023-02-24T14:30:00Z
 
 mathjax: true
-tags: ["IPU", "Guide"]
+tags: ["IPU", "Guide", "C++"]
 ---
 
 # Introduction

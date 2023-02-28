@@ -1,21 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Home</title>
-    <link>https://jordanbchilds.github.io/</link>
-    <description>Recent content on Home</description>
+    <title>C&#43;&#43; on Home</title>
+    <link>https://jordanbchilds.github.io/tags/c&#43;&#43;/</link>
+    <description>Recent content in C&#43;&#43; on Home</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Fri, 24 Feb 2023 15:00:00 +0000</lastBuildDate><atom:link href="https://jordanbchilds.github.io/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>About Me</title>
-      <link>https://jordanbchilds.github.io/aboutme/</link>
-      <pubDate>Tue, 28 Feb 2023 17:24:37 +0000</pubDate>
-      
-      <guid>https://jordanbchilds.github.io/aboutme/</guid>
-      <description>I&amp;rsquo;m currently a statistics PhD student at Newcastle University, where I also completed an integrated masters in Mathematics and statistics and postgraduate diploma in Cloud Computing for Big Data. My project is focused on Bayesian data analysis and stochastic modelling, applied to mitochondrial disease. In general I am interested in anything in these areas; Bayesian statistics, stochastic modelling and reducing their computational cost.</description>
-    </item>
-    
+    <lastBuildDate>Fri, 24 Feb 2023 15:00:00 +0000</lastBuildDate><atom:link href="https://jordanbchilds.github.io/tags/c++/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Hardware Accelerated Stochastic Simulation Using an Intelligence Processing Unit</title>
       <link>https://jordanbchilds.github.io/posts/ipu_timetrial/</link>

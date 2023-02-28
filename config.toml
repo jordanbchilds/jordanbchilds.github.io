@@ -1,28 +1,39 @@
 baseURL = 'https://jordanbchilds.github.io/'
 languageCode = 'en-gb'
-title = 'Home'
 theme = "PaperMod"
+title = "Home"
 paginate = 2
 publishDir = "docs"
 
 [params]
-description = "I'm a real boy."
-authorlocation = "Newcastle Upon Tyne, United Kingdom"
-## save the image you want to use as background picture in directory "./static/images"author = "author name"(delete this line when editing)
-## save the image you want to use as website logo in directory "./static/images"(delete this line when editing)
-githubName = "jordanbchilds"
-linkedinName = "Jordan Childs"
-email = "jordanbchilds@gmail.com"
-instagramName = "jordanbchjilds"
-hideHUGOSupport = false
+env = "production"
+description = ""
+author = "Jordan Childs"
+defaultTheme = "auto"
 
+ShowReadingTime = true
+displayFullLangName = true
+ShowPostNavLinks = true
+ShowCodeCopyButtons = true
 
-[[menu.main]]
-name = "Contact"
-weight = 100
-identifier = "contact" # this button will refer to a markdown file named "contact" in the content folder
-pre = "<br />"
-url = "/contact"
+[params.homeInfoParams]
+Title = "What to expect"
+Content = """
+In this blog I will (sporadically) post about topics related to statistics and data science.
+They will likely focus on the implementation of Bayesian data analysis or stochastic simulation.
+As these topics are of interest to me I'm hoping they will also be of interest to others.
+Given the subject area it is expected that blogs posted will include some code, mostly I use R, C++ or Julia.
+However, I am interested in moving into functional programming so this may be expected in the future.
+"""
+
+[[params.socialIcons]]
+name = "GitHub"
+url = "https://github.com/jordanbchilds/"
+
+[[params.socialIcons]]
+name = "e-mail"
+url = "mailto:jordanbchilds@gmail.com"
+
 [[menu.main]]
 name = "Blogs"
 identifier = "blog" # this page will refer to a markdown file named "blog" in the content folder
@@ -35,7 +46,12 @@ identifier = "aboutme" # this page will refer to a markdown file named "aboutme"
 pre = "<br />"
 url = "/aboutme"
 weight = 20
-
+[[menu.main]]
+name = "Tags"
+identifier = "tags" # this page will refer to a markdown file named "aboutme" in the content folder
+pre = "<br />"
+url = "/tags"
+weight = 30
 
 [sitemap]
 ChangeFreq = ""

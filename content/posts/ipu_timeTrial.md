@@ -7,7 +7,7 @@ author: "Jordan Childs"
 
 mathjax: true
 
-tags: ["IPU", "Stochastic Modelling", "Gillespie Algorithm"]
+tags: ["IPU", "Stochastic Modelling", "Interest", "Gillespie Algorithm", "C++"]
 ---
 
 # Introduction

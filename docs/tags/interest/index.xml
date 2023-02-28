@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Interest on Home</title>
+    <link>https://jordanbchilds.github.io/tags/interest/</link>
+    <description>Recent content in Interest on Home</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <lastBuildDate>Fri, 24 Feb 2023 15:00:00 +0000</lastBuildDate><atom:link href="https://jordanbchilds.github.io/tags/interest/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hardware Accelerated Stochastic Simulation Using an Intelligence Processing Unit</title>
+      <link>https://jordanbchilds.github.io/posts/ipu_timetrial/</link>
+      <pubDate>Fri, 24 Feb 2023 15:00:00 +0000</pubDate>
+      
+      <guid>https://jordanbchilds.github.io/posts/ipu_timetrial/</guid>
+      <description>Introduction Graphcore, a company based in Bristol, UK, have developed a new kind of processor with the aim of being able to massively parallelise computation. The chip is called an Intelligence Processing Unit (IPU) and is now on its second generation, the Colossus MK2 IPU processor - the GC200. Originally designed to dramatically increase performance in machine learning applications, the IPUs architecture can also be used to provide big performance increases in many other areas.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
 <title>A Beginners Guide to Executing C&#43;&#43; Scripts on an IPU | Home</title>
-<meta name="keywords" content="IPU, Guide">
+<meta name="keywords" content="IPU, Guide, C&#43;&#43;">
 <meta name="description" content="Introduction In this article we will discuss how execute a large number of independent programs in parallel, using a new computer chip capable of executing thousands of independent calculations at once. This may be particularly useful in areas of stochastic modelling and Monte Carlo simulation, where repeated and independent simulations are required to learn about uncertainty in model predictions. The chip in question is called the Intelligence Processing Unit (IPU) and is developed by Graphcore, a UK-based company headquartered in Bristol.">
-<meta name="author" content="">
+<meta name="author" content="Jordan Childs">
 <link rel="canonical" href="https://jordanbchilds.github.io/posts/ipu_howto/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.6a98292fb8fa8cf0f3ba4042d4b75515c04267550f3ad49ff6271b5af9562443.css" integrity="sha256-apgpL7j6jPDzukBC1LdVFcBCZ1UPOtSf9icbWvlWJEM=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
@@ -96,13 +96,17 @@
   "name": "A Beginners Guide to Executing C\u002b\u002b Scripts on an IPU",
   "description": "Introduction In this article we will discuss how execute a large number of independent programs in parallel, using a new computer chip capable of executing thousands of independent calculations at once. This may be particularly useful in areas of stochastic modelling and Monte Carlo simulation, where repeated and independent simulations are required to learn about uncertainty in model predictions. The chip in question is called the Intelligence Processing Unit (IPU) and is developed by Graphcore, a UK-based company headquartered in Bristol.",
   "keywords": [
-    "IPU", "Guide"
+    "IPU", "Guide", "C++"
   ],
   "articleBody": "Introduction In this article we will discuss how execute a large number of independent programs in parallel, using a new computer chip capable of executing thousands of independent calculations at once. This may be particularly useful in areas of stochastic modelling and Monte Carlo simulation, where repeated and independent simulations are required to learn about uncertainty in model predictions. The chip in question is called the Intelligence Processing Unit (IPU) and is developed by Graphcore, a UK-based company headquartered in Bristol. The IPU is now (as of February 2023) is on its second generation, the Colossus MK2 IPU processor, also known as the GC200.\nAlthough the IPU has many possible applications where its scalability can reduce computational expense we will use the example of a population dynamics simulation model: a discrete time, discrete state space stochastic process - a pure death process. This is a simple model but one that highlights some key aspects of running programs on the IPU and is an area of modelling that can benefit greatly from the IPU’s design. This model assumes that within a given time period there is a probability, $p$, that one individual in the population dies, otherwise the population remains unchanged. No individuals can be born or migrate into the population.\nBefore moving on, it is import to note that in this article some familiarity with C++ is assumed, as this is the only language which IPU applications can be written in. However, it is by no means necessary to be an expert in C++ and the most complex topic used here is pointer arithmetic. The article is focused on being able to execute programs on the IPU, as such an understanding of the death process is not necessary but may be advantageous to have a fuller understanding of the code presented however a brief description of model is given.\nA Brief Introduction to the IPU The GC200 is made of 1,472 independent IPU-Tiles each containing one IPU-Core , possessing 900MB of in-processor memory and capable of executing six independent tasks at once. That is, one GC200 chip can run 8,832 tasks independently without loss of performance. A single chip can be very powerful but the chips were developed with a focus on scalability and offer near seamless performance when used together. This is thanks to the ultra-low latency IPU-Fabric connecting all processors, which is responsible for the transfer of data between IPU-Cores . The processors are available to rent or buy within PODs, starting with four GC200 and increase to have up to 256. The PODs are also designed for scalability and the same ultra-low latency IPU-Fabric which connects chips within the POD is also used to connect to other PODs. One POD consists of both the GC200 processors and one CPU, referred to as the host. The host defines a sequence of instructions to be executed on the GC200 processors, the instructions are written using the Poplar C++ library which was explicitly developed by Graphcore for IPU applications.\nWhen executing a task on an IPU it is best to think of this as a directed graph. Where variables are connected to vertices via edges, the vertices being compute tasks to be executed in parallel and variables being the data used within those tasks. Each vertex is executed on a single thread on an IPU-Core . To gain the best performance from an IPU we wish to have as many compute tasks to execute at once in parallel. A set of compute tasks is referred to as a compute set, both throughout this article and within the poplar programming model. When a compute set is executed the program can not move onto the next task until all tasks in the compute set are completed. As such it best to have tasks of a similar duration otherwise the IPU-Tiles are stood idle awaiting a single task to finish.\nThe IPUs already provide a lot of functionality within artificial intelligence and machine learning, and can be used by popular ML packages such as TensorFlow and PyTorch. These, however, will not discussed here and instead we will focus on writing and executing bespoke C++ programs for the IPU. Running applications on the IPU requires two parts, both need to be written in C++. The first part is the codelet, this is the compute task associated with a vertex. We will show how to execute one codelet repeatedly, however it is not a difficult extension to use different codelets for different vertices. The second part is the main.cpp script which is read and executed by the host, this is where the graph is defined which maps variables to vertices. Graph creation and execution is done using the Poplar library and is done entirely by the host, while the codelet is written in a slightly restricted version of C++.\nThe Codelet C++ Restrictions on the codelet An IPU-Core can compile and read code written in C++, however it does not provide the full functionality of the language. The major difference is that the IPU-Core has no Heap, this means that dynamic memory allocation is not possible. Although this may seem restricting to experienced C++ programmers, if you are new to C++ it makes the learning curve a less steep one.\nThere are some other important limitations that need to considered when writing C++ code for an IPU-Core . The libraries available are a small subset of those available on a CPU. However, Graphcore have created several libraries which can be used as well. These provide functionality such as random number generation and linear algebra as well as much more, full documentation for using libraries can be found in the Poplar documentation. It is often the case that problems can be overcome by ‘creative’ programming. For example, there are a limited number of distributions which can be sampled from on an IPU-Core (normal and uniform). The host, however, has full access to all C++ libraries and so samples can be made from any desired distribution using a C++ library and then passed to the IPU-Core.\nAnother important consideration when writing the codelet is that the compiler must know the size of any array defined at compile time. This may require writing functions to be less general by explicitly stating a dimension that an array is known to be, rather than inferring this from another variable. If the size of an array is not known in advance, defining the array to be ’large enough’ such that it is practically impossible that it would be required to be any larger and dealing with this in a post-hoc manner is an easy solution, albeit expensive in terms of memory requirement.\ncodelet.cpp The codelet is the script that is executed on a single thread on an IPU-Core . It needs access to all relevant functions, objects, structures etc used within its execution. Variables can be passed to the vertex from the host so that each thread does not have to run with the same parameters, this will be discussed in the main.cpp chapter. For now, we will assume we wish to run every thread with the same parameters and so they can be defined within the codelet.\nHere, we are going to use the example of a simple death process. This is only to illustrate the methods required for executing repeated computations on an IPU. The model simulates the scenario where for a time step of size $\\Delta t$ there is a probability, $p$, that one\nmember of a population will die otherwise the population remains unchanged. To forward simulate this model we first simulate whether a death occurs within $[0,\\Delta)$ and then update the population accordingly. Then simulate whether a death occurs within $[d, 2\\Delta)$ and update the population accordingly. This is repeated until the population reached zero and thus no more reactions can occur.\nFor the IPU to be able to run the codelet we must define a new class which derived from the Poplar class poplar::Vertex, let’s call the class myVertex. Inside the definition of myVertex is where all relevant objects related to the simulation are defined and nothing should be defined outside of this. Importantly, myVertex must contain a function called compute which returns a true value. This is akin to the main function in standard C++ programming. A codelet example can be seen in Listing [lst:myCodelet]{reference-type=“ref” reference=“lst:myCodelet”}, where a simple death process is simulated from with an initial population of 100 and a probability of death within $[t, t+\\Delta t)$ is 0.1.\n#include class myVertex : public poplar::Vertex { public: float prob_death = 0.05; unsigned int initial_pop = 100; float rand_unif01() { /* Returns a random number on the interval [0,1] of type float. */ return float(__builtin_ipu_urand32()) / float(4294967295) ; } void sim_death_process(prob_death, init_pop, output_ptr) { /* This function simulates a discrete time death process. output_ptr: is a pointer to the output array. prob_death: defines the probability of a death in the chosen time step. init_pop: is the initial population of the system. */ unsigned int current_pop = init_pop ; *(output_ptr) = current_pop ; unsigned int t = 1; while( current_pop \u003e 0 ) { if( rand_unif01() \u003c prob_death ) { current_pop-- ; } *(output_ptr+t) = current_pop ; t++ ; } } bool compute() { const unsigned int MAX_LENGTH = 5000 ; // large number unsigned int output[MAX_LENGTH] = {0} ; unsigned int* output_ptr = \u0026output[0]; sim_death_process( prob_death, initial_pop, output_ptr, MAX_LENGTH ); return true; } }; The first thing defined within the myVertex class are the parameters of the model; the probability of death within the time step and the initial population. We then define one function to generate a random number from a Uniform(0,1) distribution. This also shows an example of using a function from a Poplar library, the inclusion of the library can be seen at the top of the script using the #include macro. The popLibs libraries do provide functionality to simulate from a uniform distribution but here we define the uniform in this way as another example of function definition. The function, rand_unif01, is defined to draw a random unsigned int and standardise this by dividing by the maximum value of an unsigned integer, outputting a float in the range $[0,1]$. After this we use the function to simulate the model of interest, sim_death_process.\nLastly we have the compute function which defines the output array and the runs the simulation. Also defined here is the MAX_LENGTH variable, as previously mentioned, the IPU must know the exact amount of memory to allocate at compile time. The MAX_LENGTH variable defines the size of the output array and is defined such that we would never expect our simulation output to be larger than MAX_LENGTH. Its value can be chosen by running a few simulations off the IPU and seeing what can be expected from the output.\nmain.cpp Unlike the codelet, since the main script is executed on the host, which is a CPU, it has the full functionality of C++, including dynamic memory allocation and all libraries. It is in this script we build and execute the graph: we define and map variables to vertices, attach codelets to those vertices and retrieve output from the IPU.\nCreating a Graph Firstly, a graph object must be created and attached to an IPU. Listing [lst:attachIPU]{reference-type=“ref” reference=“lst:attachIPU”} shows some boiler plate code to create a device and attach to numberOfProcs GC200 processor(s) to this device. A device is poplar terminology for the IPU system the graph will be executed on. First a device manager is created, this searches for IPU devices which can be attached to. The final two lines attach the main.cpp script to the device created and create an empty graph on that device. An empty graph is one without any variables or vertices, these will have to added. The code snippet presented here also has several print statements which inform the user if there has been a problem when trying to attach to an IPU device.\n// Create the DeviceManager which is used to discover devices (IPUs) auto manager = DeviceManager::createDeviceManager(); // Attempt to attach to a numberOfProcs IPU(s): auto devices = manager.getDevices(poplar::TargetType::IPU, numberOfProcs); std::cout \u003c\u003c \"Trying to attach to IPU\\n\"; auto it = std::find_if(devices.begin(), devices.end(), [](Device \u0026device) { return device.attach(); }); if (it == devices.end()) { std::cerr \u003c\u003c \"Error attaching to device\\n\"; return -1; } auto device = std::move(*it); std::cout \u003c\u003c \"Attached to IPU \" \u003c\u003c device.getId() \u003c\u003c std::endl; // Target device so that any graph will be associated with device Target target = device.getTarget(); // Create the Graph object Graph graph(target); Before being able to execute or pass parameters to codelets, we need to add the codelet to the graph using the poplar::Graph::addCodelets function. Adding a codelet allows it to then be associated with a vertex and later executed. This can be seen in Listing [lst:addCodelet]{reference-type=“ref” reference=“lst:addCodelet”}. Also seen in this snippet is the definition of a poplar::program::Sequence object. This is a series of control programs to be executed in order to do things such as map variables to vertices and execute compute sets. These can be defined to be as complex as needed for the task, here we will show an example of a simple one, executing only one compute set. The last line of Listing [lst:addCodelet]{reference-type=“ref” reference=“lst:addCodelet”} creates a compute set object and labels this \"computeSet\". In the next section we will see how to add vertices to this compute set and to the graph itself.\n// Add codelets to the graph graph.addCodelets(\"myCodelet.cpp\"); // Create a control program that is a sequence of steps poplar::program::Sequence prog; // Define the compute set to add vertices to later poplar::ComputeSet computeSet = graph.addComputeSet(\"computeSet\"); Mapping Vertices to Tiles To be able to execute a compute set it is necessary to first map vertices to specific tiles on which they will be executed. This is done explicitly by connecting a vertex on the graph to a tile index. A single GC200 processor has 1,472 tiles each with a unique index, in the range [0, 1,471]. It should not matter which tile a vertex is mapped to as the they are identical and can share information with ease. Suppose we wish to map a vertex, myVertex, to all tiles on a GC200. Adding the vertex to a compute set informs poplar what vertices can be executed in parallel. The function also creates a vertex reference which is used to map the vertex to a tile. Using the vertex reference, it is then mapped to a specific tile using the poplar::Graph::setTileMapping function, with the reference as its first parameter and the tile index as its second. By doing this repeatedly a vertex can be mapped to every tile on the chip, as as seen in Listing [lst:mapTiles]{reference-type=“ref” reference=“lst:mapTiles”}.\nconst unsigned int numberOfTiles = 1472; // maximum is 1472 for( std::size_t i=0; i",
   "wordCount" : "5332",
   "inLanguage": "en",
   "datePublished": "2023-02-24T14:30:00Z",
   "dateModified": "2023-02-24T14:30:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Jordan Childs"
+  },
   "mainEntityOfPage": {
     "@type": "WebPage",
     "@id": "https://jordanbchilds.github.io/posts/ipu_howto/"
@@ -170,8 +174,8 @@
                 </a>
             </li>
             <li>
-                <a href="https://jordanbchilds.github.io/contact" title="Contact">
-                    <span><br />Contact</span>
+                <a href="https://jordanbchilds.github.io/tags" title="Tags">
+                    <span><br />Tags</span>
                 </a>
             </li>
         </ul>
@@ -185,7 +189,7 @@
     <h1 class="post-title">
       A Beginners Guide to Executing C&#43;&#43; Scripts on an IPU
     </h1>
-    <div class="post-meta"><span title='2023-02-24 14:30:00 +0000 UTC'>February 24, 2023</span>
+    <div class="post-meta"><span title='2023-02-24 14:30:00 +0000 UTC'>February 24, 2023</span>&nbsp;·&nbsp;26 min&nbsp;·&nbsp;Jordan Childs
 
 </div>
   </header> 
@@ -915,7 +919,16 @@ documentation of the Poplar libraries see
     <ul class="post-tags">
       <li><a href="https://jordanbchilds.github.io/tags/ipu/">IPU</a></li>
       <li><a href="https://jordanbchilds.github.io/tags/guide/">Guide</a></li>
+      <li><a href="https://jordanbchilds.github.io/tags/c&#43;&#43;/">C&#43;&#43;</a></li>
     </ul>
+<nav class="paginav">
+  <a class="prev" href="https://jordanbchilds.github.io/posts/ipu_timetrial/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>Hardware Accelerated Stochastic Simulation Using an Intelligence Processing Unit</span>
+  </a>
+</nav>
+
   </footer>
 </article>
     </main>
@@ -987,6 +1000,53 @@ documentation of the Poplar libraries see
         }
     })
 
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
 </script>
 </body>
 
