@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Hardware Accelerated Stochastic Simulation Using an Intelligence Processing Unit | Home</title>
+<meta name="keywords" content="IPU, Stochastic Modelling, Gillespie Algorithm">
+<meta name="description" content="Introduction Graphcore, a company based in Bristol, UK, have developed a new kind of processor with the aim of being able to massively parallelise computation. The chip is called an Intelligence Processing Unit (IPU) and is now on its second generation, the Colossus MK2 IPU processor - the GC200. Originally designed to dramatically increase performance in machine learning applications, the IPUs architecture can also be used to provide big performance increases in many other areas.">
+<meta name="author" content="Jordan Childs">
+<link rel="canonical" href="https://jordanbchilds.github.io/posts/ipu_timetrial/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.6a98292fb8fa8cf0f3ba4042d4b75515c04267550f3ad49ff6271b5af9562443.css" integrity="sha256-apgpL7j6jPDzukBC1LdVFcBCZ1UPOtSf9icbWvlWJEM=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://jordanbchilds.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://jordanbchilds.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://jordanbchilds.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://jordanbchilds.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://jordanbchilds.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Hardware Accelerated Stochastic Simulation Using an Intelligence Processing Unit" />
+<meta property="og:description" content="Introduction Graphcore, a company based in Bristol, UK, have developed a new kind of processor with the aim of being able to massively parallelise computation. The chip is called an Intelligence Processing Unit (IPU) and is now on its second generation, the Colossus MK2 IPU processor - the GC200. Originally designed to dramatically increase performance in machine learning applications, the IPUs architecture can also be used to provide big performance increases in many other areas." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://jordanbchilds.github.io/posts/ipu_timetrial/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-02-24T15:00:00+00:00" />
+<meta property="article:modified_time" content="2023-02-24T15:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Hardware Accelerated Stochastic Simulation Using an Intelligence Processing Unit"/>
+<meta name="twitter:description" content="Introduction Graphcore, a company based in Bristol, UK, have developed a new kind of processor with the aim of being able to massively parallelise computation. The chip is called an Intelligence Processing Unit (IPU) and is now on its second generation, the Colossus MK2 IPU processor - the GC200. Originally designed to dramatically increase performance in machine learning applications, the IPUs architecture can also be used to provide big performance increases in many other areas."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://jordanbchilds.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Hardware Accelerated Stochastic Simulation Using an Intelligence Processing Unit",
+      "item": "https://jordanbchilds.github.io/posts/ipu_timetrial/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Hardware Accelerated Stochastic Simulation Using an Intelligence Processing Unit",
+  "name": "Hardware Accelerated Stochastic Simulation Using an Intelligence Processing Unit",
+  "description": "Introduction Graphcore, a company based in Bristol, UK, have developed a new kind of processor with the aim of being able to massively parallelise computation. The chip is called an Intelligence Processing Unit (IPU) and is now on its second generation, the Colossus MK2 IPU processor - the GC200. Originally designed to dramatically increase performance in machine learning applications, the IPUs architecture can also be used to provide big performance increases in many other areas.",
+  "keywords": [
+    "IPU", "Stochastic Modelling", "Gillespie Algorithm"
+  ],
+  "articleBody": "Introduction Graphcore, a company based in Bristol, UK, have developed a new kind of processor with the aim of being able to massively parallelise computation. The chip is called an Intelligence Processing Unit (IPU) and is now on its second generation, the Colossus MK2 IPU processor - the GC200. Originally designed to dramatically increase performance in machine learning applications, the IPUs architecture can also be used to provide big performance increases in many other areas. Here, we will show that the IPUs ability for massive parallelisation can be used to decrease the computational time for repeated simulation of dynamic, stochastic models. This family of models are used in a wide variety of applications including biology, where they can be used to perform in silico experiments, and finance, where they can be used to forecast asset prices.\nSimulating from such stochastic kinetic models can be achieved relatively easily, An introduction to stochastic chemical kinetics and simulations methods can be found here. A harder task is to learn the parameters values governing the model. The stochasticity of the models mean they are also intractable and so traditional statistical inference cannot be take place. Instead, we must use likelihood-free inference schemes, unfortunately these are usually computationally expensive requiring hundreds of thousands or millions of simulations to make meaningful inference on the model parameters. Simulations themselves are often hard to parallelise as the state of the system at time $t+\\Delta t$ is dependent of the state at time $t$. However, we can take advantage of modern computer chips which have more than one core, capable of executing multiple tasks independently. We will show that the IPUs ability for massive parallelisation can be used to decrease the computational time for the kind of large-scale simulations often required for likelihood-free inference.\nOne GC200 contains 1,472 IPU-Tiles, one IPU-Tile contains one IPU-Core which is capable of executing six independent threads in parallel, that is one GC200 can execute 8,832 tasks in parallel. For example, if we were to run a single simulation, which is known to take 30 seconds on an IPU-Core, it would still take 30 seconds to run 8,832 simulations by utilising every thread on the processor.\nMethod To show that the IPU can offer considerable time savings we will compare the time taken to simulate a discrete state space and continuous time stochastic kinetic model by the Gillespie algorithm. The individual IPU-Cores are not very powerful when compared to a CPU but by using all available IPU-Tiles we can utilise the full power of the processor. As such, it would not be appropriate to only consider the time taken for the GC200 processor to complete one simulation, as this effectively using 1/8,832 of the the processors power. Instead we will consider ‘batches’ of simulations. We can compare the time taken for the GC200 to simulate 8,832 simulations with the time it takes a CPU to execute the same number of simulations. The CPU we are going to use is the Intel Xeon Gold 6246R Processor. This has an all-core-turbo frequency of 4.0GHz and eight cores. It is of the same family, but a newer model, of CPU used as a base line comparison by Kulkarni et al.. Kulkarni et al. showed that using the IPU can reduce computation time for approximate Bayesian Inference, for an SIR model, they however used PyTorch to implement there model. Here we are wish to show that a significant speed up is still available when writing the code yourself, allowing for a wider range of more bespoke inference schemes and models. An introduction to executing C++ scripts on the IPU can be found [here][https://jordanbchilds.github.io/ipu_howto]. A single GC200 chip, however, cannot be purchased and they can only be purchased within an IPU-POD, which are made with a range of four to 256 processors. For our timings we will use an IPU-POD4, which has four GC200s. To show the scalability of the IPU we will also show the time taken for the IPU-POD4 to execute 35,328 simulations, utilizing every thread available within the IPU-POD4.\nLastly, we will compare the processors computing power relative to the cost associated with them. There are several companies through which time can be rented on an IPU-POD, here we have used Gcore and will use this price to compare. We have also used Gcore to rent time on the Intel Xeon as Gcore allows the rental of baremetal processors, which will give more stable performance for comparison sake’s.\nThe Model The stochastic kinetic model we will use to compare IPUs and CPUs will simulate the clonal expansion of mitochondrial DNA in post-mitotic cells. The biological reasoning and meaning behind the model is not of particular relevance here, however the interested reader is referred to this article for further details. Importantly, the system has two species and four reactions. Either species can replicate, one molecule becomes to two daughter molecules, or degrade, a molecule dies. The replication and degradation reaction rates of the both species are assumed to be equal i.e. there is no replicative or degradative advantage. We also impose a population control mechanism. Such that the total population, $P(t)$, at a time $t$ cannot vary far from a target population, $P_0$. Mechanisms which stop the total population exploding or diminishing, are often implemented as this behaviour is seen in many observed datasets. The mechanism implemented here increases or decreases the probability of the next reaction being a replication if the current population below or above $P_0$ respectively. This is done equally to both species by updating the reaction rates of the replication reactions. Let $X_1$ and $X_2$ denote the two species, the pseudo-chemical equations for the model are described in Equation 1.\n$$ \\begin{split} X_1 \u0026\\rightarrow 2X_1 \\\\ X_1 \u0026\\rightarrow \\phi \\\\ X_2 \u0026\\rightarrow 2X_2 \\\\ X_2 \u0026\\rightarrow \\phi \\end{split} $$ Equation 1: Psuedo chemical equations describing the four reactions which can occur in the model We chose constant reaction rates for the two degradation reactions. While the replication reaction rates change due the population control mechanism, the initial reaction rates, and if $P(t) = P_0$, are equal to the degradation reaction rates. The simulation is continued until $t$ reaches some desired time $T_{max}$.\nThe Gillespie algorithm is an exact simulation algorithm of a discrete stochastic biochemical network, this means for the same model, with the same parameters and initial conditions we can get different output. Each unique (and random) path through the simulation will take a different amount of computing time to complete. Therefore we will be comparing distributions of time simulation times from multiple executions of the algorithm.\nResults As this is a stochastic process the time taken for the simulation to reach our chosen $T_{max}$ is itself a random variable. We therefor run the simulation a large number of times to gain an understanding of the distribution of time taken. We omit the results of running a single simulation but to demonstrate the relative power of a single IPU-Core with the Intel Xeon Processor, the mean time of 1,000 simulation can be seen in Table 1.\nIntel Xeon IPU-POD4 Time (ms) 32.149 2822.955 Table 1: Mean computing time to execute a single Gillespie simulation.\nIt is clear that a one IPU-Core is much less powerful than a one core in the Intel Xeon. However, the massive number of IPU-Cores within a single processor combined with their ability to run up to six independent tasks without loss of performance results in a powerful processor as seen in Figures Mango and Raspberry. Which shows the distribution of 1,000 executions of simulation batches of size 8,832, for the system described in Equation 1.\nFigure Mango: Simulation times for one batch (8,832 simulations) using the Intel Xeon Figure Raspberry: Simulation times for one batch using the GC200 These simulations were done in parallel. Each IPU-Core executed six simulations and so the GC200 executed all 8,832 simulations independently. The time to complete these simulations is essentially the time taken for the longest of the 8,832 simulations to finish as the GC200 thread allocation and data streaming adds negligible time. The parallelisation for Intel Xeon processor was achieved by a Bash script executing $N_{core}$ (the number of available cores) C++ scripts each sequentially executing $M$ Gillespie simulations, such that $M\\times N_{core}=8,832$. It was done this way as using the C++ standard library std::thread and the parallelisation software OpenMP added considerable computational overhead due to thread creation and task allocation. Resulting in the parallel simulations taking much longer than if they were executed on a single thread. Although not ideal the essentially static scheduling used was not a massive disadvantage. The population control mechanism ensures the simulations stay approximately the size and so the time to execute does not have a large variance. This confirmed by trials with std::thread and OpenMP, where both static and dynamic scheduling schemes were used and the difference between them was negligible.\nWe see in Figure 1 that when compared to a single simulation the time taken for the Intel Xeon to execute the batches has increased considerably. This is as we would expect when comparing single runs to a much larger number. However the GC200 has only increased slightly, from $\\approx 2800$ms to $\\approx2930$ms. This is due to the massive number of independent processes that can be executed on GC200. This gives a speed-up factor of approximately 14.5 when comparing the two chips, as seen in Figure 3.\nFigure 3: The speed-up factor when comparing the time taken execute one simulation batch on the Intel Xeon vs. the GC200. Discussion We have demonstrated that when a large number of independent stochastic processes the GC200 can offer a considerable time saving, when compared to the Intel Xeon. This, however, does not take into account the cost of the processors. Unfortunately, it is not possible to buy/rent a single GC200 as they come in PODs with sizes ranging from four to 256 processors. Due to the design of the GC200 and the PODs it is extremely easy to scale the simulations to use more processors, adding negligible computational overhead. When executing 35,328 Gillespie simulations on a IPU-POD4 the mean simulation time was 2937.766 ms, this is approximately the same as when we were simulating 8,832 simulations on a single GC200.\nTo compare the relative computing power per cost we will assume there is seamless parallelisation between one CPU and four and that if we had four times the processors we could execute four times the simulations in the same amount of time. For easy comparison we will take the median of the distributions as the expected simulation time and divide by the cost of renting the appropriate processors from Gcore for that amount of time. The results can be seen in Table 2.\nIntel Xeon IPU-POD4 Cost per hour 3€2.5032 * €6.12 median sim. time 42.5455s ** 2.9428s. expected sim. cost €0.024. €0.005. Table 2: The expected cost to run one batch or 35,328 simulations using an Intel Xeon Processor and an IPU-POD4.\n(*) The cost per hour for a single Intel Xeon Gold 6246R Processor is €0.5133. (**) This is the expected simulation time assuming that increasing using more than one Intel Xeon processor incurs not computational overhead.\nDespite the assumptions made about the seamless scalability of the CPUs, the IPUs still offer a significant reduction in cost for one simulation batch by a factor of almost five. Reducing the computation time of large batches of simulations can result in massive time savings when using likelihood-free simulation based inference methods, such as approximate Bayesian computation. Simulation often being the largest computational cost of the notoriously expensive algorithm, which can require millions of simulations of a system to be able to infer the model parameters. However it is usually not required to do batch simulations of such large numbers during inference, the IPU allows us to run each simulation with different parameters with little effort. This can also be done on a CPU however it may require some thought and consideration due to the bash script method of parallelisation.\nDespite the clear time, advantage of the IPUs there is a steep learning curve to be able to use them even if the user is already familiar with C++. From personal experience taking over week to go from nothing to executing a Gillespie simulation. The CPU parallelisation method used here was however not without its faults. The Bash script method of parallelisation would require any desired output to be saved to a text file and then aggregated when all simulations are done. This would also add development time and a small amount of computational time as well. The timings presented should not be taken as the end of the story. A more experienced programmer would be able to implement more efficient code which could better utilise either hardware. But should hopefully give the reader an indication of the power of the GC200 and the IPU-PODs they come in.\n",
+  "wordCount" : "2152",
+  "inLanguage": "en",
+  "datePublished": "2023-02-24T15:00:00Z",
+  "dateModified": "2023-02-24T15:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Jordan Childs"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://jordanbchilds.github.io/posts/ipu_timetrial/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Home",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://jordanbchilds.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://jordanbchilds.github.io/" accesskey="h" title="Home (Alt + H)">Home</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://jordanbchilds.github.io/posts" title="Blogs">
+                    <span><br />Blogs</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://jordanbchilds.github.io/aboutme" title="About Me">
+                    <span><br />About Me</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://jordanbchilds.github.io/contact" title="Contact">
+                    <span><br />Contact</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      Hardware Accelerated Stochastic Simulation Using an Intelligence Processing Unit
+    </h1>
+    <div class="post-meta"><span title='2023-02-24 15:00:00 +0000 UTC'>February 24, 2023</span>&nbsp;·&nbsp;Jordan Childs
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="introduction">Introduction<a hidden class="anchor" aria-hidden="true" href="#introduction">#</a></h1>
+<p>Graphcore, a company based in Bristol, UK, have developed a new kind of
+processor with the aim of being able to massively parallelise
+computation. The chip is called an Intelligence Processing Unit (IPU)
+and is now on its second generation, the Colossus MK2 IPU processor -
+the GC200. Originally designed to dramatically increase performance in
+machine learning applications, the IPUs architecture can also be used to
+provide big performance increases in many other areas. Here, we will
+show that the IPUs ability for massive parallelisation can be used to
+decrease the computational time for repeated simulation of dynamic,
+stochastic models. This family of models are used in a wide variety of
+applications including biology, where they can be used to perform <em>in
+silico</em> experiments, and finance, where they can be used to forecast
+asset prices.</p>
+<p>Simulating from such stochastic kinetic models can be achieved
+relatively easily, An introduction to stochastic chemical kinetics and
+simulations methods can be found <a href="https://pubmed.ncbi.nlm.nih.gov/23715985/">here</a>. A harder task
+is to learn the parameters values governing the model. The stochasticity
+of the models mean they are also intractable and so traditional
+statistical inference cannot be take place. Instead, we must use
+likelihood-free inference schemes, unfortunately these are usually
+computationally expensive requiring hundreds of thousands or millions of
+simulations to make meaningful inference on the model parameters.
+Simulations themselves are often hard to parallelise as the state of the
+system at time $t+\Delta t$ is dependent of the state at time $t$.
+However, we can take advantage of modern computer chips which have more
+than one core, capable of executing multiple tasks independently. We
+will show that the IPUs ability for massive parallelisation can be used
+to decrease the computational time for the kind of large-scale
+simulations often required for likelihood-free inference.</p>
+<p>One GC200 contains 1,472 IPU-Tiles, one IPU-Tile contains one IPU-Core
+which is capable of executing six independent threads in parallel, that
+is one GC200 can execute 8,832 tasks in parallel. For example, if we
+were to run a single simulation, which is known to take 30 seconds on an
+IPU-Core, it would still take 30 seconds to run 8,832 simulations by
+utilising every thread on the processor.</p>
+<h1 id="method">Method<a hidden class="anchor" aria-hidden="true" href="#method">#</a></h1>
+<p>To show that the IPU can offer considerable time savings we will compare
+the time taken to simulate a discrete state space and continuous time
+stochastic kinetic model by the <a href="https://pubs.acs.org/doi/pdf/10.1021/j100540a008">Gillespie algorithm</a>.
+The individual IPU-Cores are not very powerful when compared to a CPU
+but by using all available IPU-Tiles we can utilise the full power of
+the processor. As such, it would not be appropriate to only consider the
+time taken for the GC200 processor to complete one simulation, as this
+effectively using 1/8,832 of the the processors power. Instead we will
+consider &lsquo;batches&rsquo; of simulations. We can compare the time taken for the
+GC200 to simulate 8,832 simulations with the time it takes a CPU to
+execute the same number of simulations. The CPU we are going to use is
+the Intel Xeon Gold 6246R Processor. This has an all-core-turbo
+frequency of 4.0GHz and eight cores. It is of the same family, but a
+newer model, of CPU used as a base line comparison by <a href="https://arxiv.org/abs/2012.14332">Kulkarni <em>et al.</em></a>. Kulkarni <em>et al.</em> showed that using the IPU can reduce computation time for approximate Bayesian Inference, for an SIR model, they however used PyTorch to implement there model. Here we are wish to show that a significant speed up is still available when writing the code yourself, allowing for a wider range of more bespoke inference schemes and models. An introduction to executing C++ scripts on the IPU can be found [here][https://jordanbchilds.github.io/ipu_howto]. A single GC200 chip, however, cannot be purchased and they can only be
+purchased within an IPU-POD, which are made with a range of four to 256
+processors. For our timings we will use an IPU-POD4, which has four
+GC200s. To show the scalability of the IPU we will also show the time
+taken for the IPU-POD4 to execute 35,328 simulations, utilizing every
+thread available within the IPU-POD4.</p>
+<p>Lastly, we will compare the processors computing power relative to the
+cost associated with them. There are several companies through which
+time can be rented on an IPU-POD, here we have used Gcore and will use
+this price to compare. We have also used Gcore to rent time on the Intel
+Xeon as Gcore allows the rental of baremetal processors, which will give
+more stable performance for comparison sake&rsquo;s.</p>
+<h1 id="the-model">The Model<a hidden class="anchor" aria-hidden="true" href="#the-model">#</a></h1>
+<p>The stochastic kinetic model we will use to compare IPUs and CPUs will
+simulate the clonal expansion of mitochondrial DNA in post-mitotic
+cells. The biological reasoning and meaning behind the model is not of
+particular relevance here, however the interested reader is referred to <a href="https://royalsocietypublishing.org/doi/10.1098/rsob.200061">this article</a> for further details. Importantly, the system has two
+species and four reactions. Either species can replicate, one molecule
+becomes to two daughter molecules, or degrade, a molecule dies. The
+replication and degradation reaction rates of the both species are
+assumed to be equal i.e. there is no replicative or degradative
+advantage. We also impose a population control mechanism. Such that the
+total population, $P(t)$, at a time $t$ cannot vary far from a target
+population, $P_0$. Mechanisms which stop the total population exploding
+or diminishing, are often implemented as this behaviour is seen in many
+observed datasets. The mechanism implemented here increases or decreases
+the probability of the next reaction being a replication if the current
+population below or above $P_0$ respectively. This is done equally to
+both species by updating the reaction rates of the replication
+reactions. Let $X_1$ and $X_2$ denote the two species, the
+pseudo-chemical equations for the model are described in Equation 1.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">$$ \begin{split} X_1 &amp;\rightarrow 2X_1 \\ X_1 &amp;\rightarrow \phi \\ X_2 &amp;\rightarrow 2X_2 \\ X_2 &amp;\rightarrow \phi \end{split} $$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Equation 1: Psuedo chemical equations describing the four reactions which can occur in the model</td>
+</tr>
+</tbody>
+</table>
+<p>We chose constant reaction rates for the two degradation reactions.
+While the replication reaction rates change due the population control
+mechanism, the initial reaction rates, and if $P(t) = P_0$, are equal to
+the degradation reaction rates. The simulation is continued until $t$
+reaches some desired time $T_{max}$.</p>
+<p>The Gillespie algorithm is an exact simulation algorithm of a discrete
+stochastic biochemical network, this means for the same model, with the
+same parameters and initial conditions we can get different output. Each
+unique (and random) path through the simulation will take a different
+amount of computing time to complete. Therefore we will be comparing
+distributions of time simulation times from multiple executions of the
+algorithm.</p>
+<h1 id="results">Results<a hidden class="anchor" aria-hidden="true" href="#results">#</a></h1>
+<p>As this is a stochastic process the time taken for the simulation to
+reach our chosen $T_{max}$ is itself a random variable. We therefor run
+the simulation a large number of times to gain an understanding of the
+distribution of time taken. We omit the results of running a single
+simulation but to demonstrate the relative power of a single IPU-Core
+with the Intel Xeon Processor, the mean time of 1,000 simulation can be
+seen in Table 1.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"></th>
+<th style="text-align:center">Intel Xeon</th>
+<th style="text-align:center">IPU-POD4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Time (ms)</td>
+<td style="text-align:center">32.149</td>
+<td style="text-align:center">2822.955</td>
+</tr>
+</tbody>
+</table>
+<p>Table 1: Mean computing time to execute a single Gillespie simulation.</p>
+<p>It is clear that a one IPU-Core is much less powerful than a one core in
+the Intel Xeon. However, the massive number of IPU-Cores within a single
+processor combined with their ability to run up to six independent tasks
+without loss of performance results in a powerful processor as seen in
+Figures Mango and Raspberry. Which shows the distribution of 1,000
+executions of simulation batches of size 8,832, for the system described
+in Equation 1.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"><img loading="lazy" src="/ipu_timeTrial/cpu_batchSim.png" alt="cpu_batchSim"  title="CPU Batch Simulation"  />
+</th>
+<th style="text-align:center"><img loading="lazy" src="/ipu_timeTrial/ipu_batchSim.png" alt="ipu_batchSim"  title="CPU Batch Simulation"  />
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Figure Mango: Simulation times for one batch (8,832 simulations) using the Intel Xeon</td>
+<td style="text-align:center">Figure Raspberry: Simulation times for one batch using the GC200</td>
+</tr>
+</tbody>
+</table>
+<p>These simulations were done in parallel. Each IPU-Core executed six
+simulations and so the GC200 executed all 8,832 simulations
+independently. The time to complete these simulations is essentially the
+time taken for the longest of the 8,832 simulations to finish as the
+GC200 thread allocation and data streaming adds negligible time.
+The parallelisation for Intel Xeon processor was achieved by a Bash
+script executing $N_{core}$ (the number of available cores) C++ scripts
+each sequentially executing $M$ Gillespie simulations, such that
+$M\times N_{core}=8,832$. It was done this way as using the C++ standard
+library <code>std::thread</code> and the parallelisation software OpenMP added
+considerable computational overhead due to thread creation and task
+allocation. Resulting in the parallel simulations taking much longer
+than if they were executed on a single thread. Although not ideal the
+essentially static scheduling used was not a massive disadvantage. The
+population control mechanism ensures the simulations stay approximately
+the size and so the time to execute does not have a large variance. This
+confirmed by trials with <code>std::thread</code> and OpenMP, where both static and
+dynamic scheduling schemes were used and the difference between them was
+negligible.</p>
+<p>We see in Figure 1 that when compared to a single simulation
+the time taken for the Intel Xeon to execute the batches has increased
+considerably. This is as we would expect when comparing single runs to a much
+larger number. However the GC200 has only increased slightly, from
+$\approx 2800$ms to $\approx2930$ms. This is due to the massive number
+of independent processes that can be executed on GC200. This gives a
+speed-up factor of approximately 14.5 when comparing the two chips, as
+seen in Figure 3.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"><img loading="lazy" src="/ipu_timeTrial/cpuIPU_ratio.png" alt="cpu_batchSim"  title="CPU Batch Simulation"  />
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Figure 3: The speed-up factor when comparing the time taken execute one simulation batch on the Intel Xeon vs. the GC200.</td>
+</tr>
+</tbody>
+</table>
+<h1 id="discussion">Discussion<a hidden class="anchor" aria-hidden="true" href="#discussion">#</a></h1>
+<p>We have demonstrated that when a large number of independent stochastic
+processes the GC200 can offer a considerable time saving, when compared
+to the Intel Xeon. This, however, does not take into account the cost of
+the processors. Unfortunately, it is not possible to buy/rent a single
+GC200 as they come in PODs with sizes ranging from four to 256
+processors. Due to the design of the GC200 and the PODs it is extremely
+easy to scale the simulations to use more processors, adding negligible
+computational overhead. When executing 35,328 Gillespie simulations on a
+IPU-POD4 the mean simulation time was 2937.766 ms, this is approximately
+the same as when we were simulating 8,832 simulations on a single
+GC200.</p>
+<p>To compare the relative computing power per cost we will assume there is
+seamless parallelisation between one CPU and four and that if we had
+four times the processors we could execute four times the simulations in
+the same amount of time. For easy comparison we will take the median of
+the distributions as the expected simulation time and divide by the cost
+of renting the appropriate processors from Gcore for that amount of
+time. The results can be seen in Table 2.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"></th>
+<th style="text-align:center">Intel Xeon</th>
+<th style="text-align:center">IPU-POD4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Cost per hour</td>
+<td style="text-align:center">3€2.5032 *</td>
+<td style="text-align:center">€6.12</td>
+</tr>
+<tr>
+<td style="text-align:left">median sim. time</td>
+<td style="text-align:center">42.5455s **</td>
+<td style="text-align:center">2.9428s.</td>
+</tr>
+<tr>
+<td style="text-align:left">expected sim. cost</td>
+<td style="text-align:center">€0.024.</td>
+<td style="text-align:center">€0.005.</td>
+</tr>
+</tbody>
+</table>
+<p>Table 2: The expected cost to run one batch or 35,328 simulations using an
+Intel Xeon Processor and an IPU-POD4.</p>
+<p>(*) The cost per hour for a single Intel Xeon Gold 6246R Processor is
+€0.5133.
+(**) This is the expected simulation time assuming that increasing
+using more than one Intel Xeon processor incurs not computational
+overhead.</p>
+<p>Despite the assumptions made about the seamless scalability of the CPUs,
+the IPUs still offer a significant reduction in cost for one simulation
+batch by a factor of almost five. Reducing the computation time of large
+batches of simulations can result in massive time savings when using
+likelihood-free simulation based inference methods, such as approximate
+Bayesian computation. Simulation often being the largest computational
+cost of the notoriously expensive algorithm, which can require millions
+of simulations of a system to be able to infer the model parameters.
+However it is usually not required to do batch simulations of such large
+numbers during inference, the IPU allows us to run each simulation with
+different parameters with little effort. This can also be done on a CPU
+however it may require some thought and consideration due to the bash
+script method of parallelisation.</p>
+<p>Despite the clear time, advantage of the IPUs there is a steep learning
+curve to be able to use them even if the user is already familiar with
+C++. From personal experience taking over week to go from nothing to
+executing a Gillespie simulation. The CPU parallelisation method used
+here was however not without its faults. The Bash script method of
+parallelisation would require any desired output to be saved to a text
+file and then aggregated when all simulations are done. This would also
+add development time and a small amount of computational time as well.
+The timings presented should not be taken as the end of the story. A
+more experienced programmer would be able to implement more efficient
+code which could better utilise either hardware. But should hopefully
+give the reader an indication of the power of the GC200 and the IPU-PODs
+they come in.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://jordanbchilds.github.io/tags/ipu/">IPU</a></li>
+      <li><a href="https://jordanbchilds.github.io/tags/stochastic-modelling/">Stochastic Modelling</a></li>
+      <li><a href="https://jordanbchilds.github.io/tags/gillespie-algorithm/">Gillespie Algorithm</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://jordanbchilds.github.io/">Home</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

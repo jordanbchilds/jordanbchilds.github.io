@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>IPU on Home</title>
+    <link>https://jordanbchilds.github.io/tags/ipu/</link>
+    <description>Recent content in IPU on Home</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <lastBuildDate>Fri, 24 Feb 2023 15:00:00 +0000</lastBuildDate><atom:link href="https://jordanbchilds.github.io/tags/ipu/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hardware Accelerated Stochastic Simulation Using an Intelligence Processing Unit</title>
+      <link>https://jordanbchilds.github.io/posts/ipu_timetrial/</link>
+      <pubDate>Fri, 24 Feb 2023 15:00:00 +0000</pubDate>
+      
+      <guid>https://jordanbchilds.github.io/posts/ipu_timetrial/</guid>
+      <description>Introduction Graphcore, a company based in Bristol, UK, have developed a new kind of processor with the aim of being able to massively parallelise computation. The chip is called an Intelligence Processing Unit (IPU) and is now on its second generation, the Colossus MK2 IPU processor - the GC200. Originally designed to dramatically increase performance in machine learning applications, the IPUs architecture can also be used to provide big performance increases in many other areas.</description>
+    </item>
+    
+    <item>
+      <title>A Beginners Guide to Executing C&#43;&#43; Scripts on an IPU</title>
+      <link>https://jordanbchilds.github.io/posts/ipu_howto/</link>
+      <pubDate>Fri, 24 Feb 2023 14:30:00 +0000</pubDate>
+      
+      <guid>https://jordanbchilds.github.io/posts/ipu_howto/</guid>
+      <description>Introduction In this article we will discuss how execute a large number of independent programs in parallel, using a new computer chip capable of executing thousands of independent calculations at once. This may be particularly useful in areas of stochastic modelling and Monte Carlo simulation, where repeated and independent simulations are required to learn about uncertainty in model predictions. The chip in question is called the Intelligence Processing Unit (IPU) and is developed by Graphcore, a UK-based company headquartered in Bristol.</description>
+    </item>
+    
+  </channel>
+</rss>

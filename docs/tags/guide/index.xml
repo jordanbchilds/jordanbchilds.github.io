@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Guide on Home</title>
+    <link>https://jordanbchilds.github.io/tags/guide/</link>
+    <description>Recent content in Guide on Home</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <lastBuildDate>Fri, 24 Feb 2023 14:30:00 +0000</lastBuildDate><atom:link href="https://jordanbchilds.github.io/tags/guide/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A Beginners Guide to Executing C&#43;&#43; Scripts on an IPU</title>
+      <link>https://jordanbchilds.github.io/posts/ipu_howto/</link>
+      <pubDate>Fri, 24 Feb 2023 14:30:00 +0000</pubDate>
+      
+      <guid>https://jordanbchilds.github.io/posts/ipu_howto/</guid>
+      <description>Introduction In this article we will discuss how execute a large number of independent programs in parallel, using a new computer chip capable of executing thousands of independent calculations at once. This may be particularly useful in areas of stochastic modelling and Monte Carlo simulation, where repeated and independent simulations are required to learn about uncertainty in model predictions. The chip in question is called the Intelligence Processing Unit (IPU) and is developed by Graphcore, a UK-based company headquartered in Bristol.</description>
+    </item>
+    
+  </channel>
+</rss>

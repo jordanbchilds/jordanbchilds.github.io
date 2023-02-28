@@ -1,0 +1,43 @@
+baseURL = 'https://jordanbchilds.github.io/'
+languageCode = 'en-gb'
+title = 'Home'
+theme = "PaperMod"
+paginate = 2
+publishDir = "docs"
+
+[params]
+description = "I'm a real boy."
+authorlocation = "Newcastle Upon Tyne, United Kingdom"
+## save the image you want to use as background picture in directory "./static/images"author = "author name"(delete this line when editing)
+## save the image you want to use as website logo in directory "./static/images"(delete this line when editing)
+githubName = "jordanbchilds"
+linkedinName = "Jordan Childs"
+email = "jordanbchilds@gmail.com"
+instagramName = "jordanbchjilds"
+hideHUGOSupport = false
+
+
+[[menu.main]]
+name = "Contact"
+weight = 100
+identifier = "contact" # this button will refer to a markdown file named "contact" in the content folder
+pre = "<br />"
+url = "/contact"
+[[menu.main]]
+name = "Blogs"
+identifier = "blog" # this page will refer to a markdown file named "blog" in the content folder
+pre = "<br />"
+url = "/posts"
+weight = 10
+[[menu.main]]
+name = "About Me"
+identifier = "aboutme" # this page will refer to a markdown file named "aboutme" in the content folder
+pre = "<br />"
+url = "/aboutme"
+weight = 20
+
+
+[sitemap]
+ChangeFreq = ""
+Filename = "sitemap.xml"
+Priority = "-1"
