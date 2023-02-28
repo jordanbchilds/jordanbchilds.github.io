@@ -152,11 +152,9 @@ relevant objects related to the simulation are defined and nothing
 should be defined outside of this. Importantly, `myVertex` must contain
 a function called `compute` which returns a `true` value. This is akin
 to the `main` function in standard C++ programming. A codelet example
-can be seen in Listing
-[\[lst:myCodelet\]](#lst:myCodelet){reference-type="ref"
-reference="lst:myCodelet"}, where a simple death process is simulated
+can be seen in Listing 1, where a simple death process is simulated
 from with an initial population of 100 and a probability of death within
-$[t, t+\Delta t)$ is 0.1.
+$[t, t+\Delta t)$  is 0.1.
 
 ```{c++ title-one}
 #include <ipu_builtins.h>
@@ -211,6 +209,7 @@ class myVertex : public poplar::Vertex
     }
 };
 ```
+Listing 1: An codelet.cpp script.
 
 The first thing defined within the `myVertex` class are the parameters
 of the model; the probability of death within the time step and the
@@ -246,8 +245,7 @@ those vertices and retrieve output from the IPU.
 ## Creating a Graph
 
 Firstly, a graph object must be created and attached to an IPU. Listing
-[\[lst:attachIPU\]](#lst:attachIPU){reference-type="ref"
-reference="lst:attachIPU"} shows some boiler plate code to create a
+2 shows some boiler plate code to create a
 device and attach to `numberOfProcs` GC200 processor(s) to this device.
 A device is poplar terminology for the IPU system the graph will be
 executed on. First a device manager is created, this searches for IPU
@@ -279,21 +277,18 @@ Target target = device.getTarget();
 // Create the Graph object
 Graph graph(target);
 ```
+Listing 2: Creating an IPU device in Poplar and defining an empty graph object attached to that device.
 
 Before being able to execute or pass parameters to codelets, we need to
 add the codelet to the graph using the `poplar::Graph::addCodelets`
 function. Adding a codelet allows it to then be associated with a vertex
-and later executed. This can be seen in Listing
-[\[lst:addCodelet\]](#lst:addCodelet){reference-type="ref"
-reference="lst:addCodelet"}. Also seen in this snippet is the definition
+and later executed. This can be seen in Listing 3. Also seen in this snippet is the definition
 of a `poplar::program::Sequence` object. This is a series of control
 programs to be executed in order to do things such as map variables to
 vertices and execute compute sets. These can be defined to be as complex
-as needed for the task, here we will show an example of a simple one,
-executing only one compute set. The last line of Listing
-[\[lst:addCodelet\]](#lst:addCodelet){reference-type="ref"
-reference="lst:addCodelet"} creates a compute set object and labels this
-`"computeSet"`. In the next section we will see how to add vertices to
+as needed for the task, here we will show an example of a simple one, executing
+only one compute set. The last line of Listing 3 creates a compute set object
+and labels this `"computeSet"`. In the next section we will see how to add vertices to
 this compute set and to the graph itself.
 
 ``` {#lst:addCodelet label="lst:addCodelet" caption="Adding a codelet to a graph object as well as creating a \\texttt{Sequence} object."}
@@ -306,6 +301,7 @@ poplar::program::Sequence prog;
 // Define the compute set to add vertices to later
 poplar::ComputeSet computeSet = graph.addComputeSet("computeSet");
 ```
+Listing 3: Adding a codelet script to the graph, creating a control sequence object and defining an empty compute set.
 
 ## Mapping Vertices to Tiles
 
@@ -322,9 +318,7 @@ map the vertex to a tile. Using the vertex reference, it is then mapped
 to a specific tile using the `poplar::Graph::setTileMapping` function,
 with the reference as its first parameter and the tile index as its
 second. By doing this repeatedly a vertex can be mapped to every tile on
-the chip, as as seen in Listing
-[\[lst:mapTiles\]](#lst:mapTiles){reference-type="ref"
-reference="lst:mapTiles"}.
+the chip, as as seen in Listing 4.
 
 ``` {#lst:mapTiles label="lst:mapTiles" caption="How to map a vertex to all tiles on a GC200 processor."}
 const unsigned int numberOfTiles = 1472; // maximum is 1472
@@ -334,6 +328,7 @@ for( std::size_t i=0; i<numberOfTiles; ++i){
     graph.setTileMapping(vtx, i);
 }
 ```
+Listing 4: Mapping a vertex to evey tile on a GC200.
 
 However, mapping a single vertex to every tile on a GC200 would only be
 using one sixth of the processor computing power, as each tile can
@@ -362,14 +357,13 @@ for( std::size_t i=0; i<totalThreads; ++i){
     graph.setTileMapping(vtx, tileInt);
 }
 ```
+Listing 5: Mapping one vertex to every thread on a every tile on one GC200.
 
 In practise there will be more than one GC200 processor available, as
 they come in IPU-PODs. We therefor wish to be able to map vertices to
 all available processors. When using `numberOfProcs` processors each
 tile still has a unique index with a range
-$[0, 1471\times$`numberOfProcs`$]$. Listing
-[\[lst:mapThreads\]](#lst:mapThreads){reference-type="ref"
-reference="lst:mapThreads"} shows how to define the `tileInt` parameter
+$[0, 1471\times$`numberOfProcs`$]$. Listing 6 shows how to define the `tileInt` parameter
 to get the desired output. Six vertices are still being mapped to every
 tile but now all IPU-Tiles within an IPU-POD4 system are being used.
 
@@ -388,6 +382,7 @@ for( std::size_t i=0; i<totalThreads; ++i){
     graph.setTileMapping(vtx, tileInt);
 }
 ```
+Listing 6: Mapping one vertex to every thread on every tile across multiple GC200 chips.
 
 ## Passing Parameters
 
@@ -402,8 +397,7 @@ variable within a codelet.
 When passing a variable to a codelet, the variable type inside the
 vertex must reflect the fact it is going to mapped to the codelet. This
 is done simply by declaring an object as type `poplar::Input<T>`.
-Listing [\[lst:inputType\]](#lst:inputType){reference-type="ref"
-reference="lst:inputType"} shows an example of two variables to be
+Listing 7 shows an example of two variables to be
 mapped, one an integer scalar and the other a vector of floating
 points.
 
@@ -417,6 +411,7 @@ class myVertex : public poplar::Vertex
     // ... the rest of the vertex object
 }
 ```
+Listing 7: Declaring an object is to be passed to a codelet.
 
 ### Scalars
 
@@ -437,8 +432,7 @@ similar to the C++ `std::vector` object. The documentation can be found
 [here](https://docs.graphcore.ai/projects/poplar-api/en/latest/poplar/graph/Tensor.html#_CPPv4NO6poplar6TensorixENSt6size_tE),
 for all details on functions and operators available.
 
-Listing [\[lst:scalarMap def\]](#lst:scalarMap def){reference-type="ref"
-reference="lst:scalarMap def"} shows the creation of C++ array,
+Listing 8 shows the creation of C++ array,
 `myScalars`, which is then added to the graph as a `poplar::Tensor`
 using the `poplar::Graph::addConstant` function. The function also
 informs poplar of the type of the elements within the tensor as well as
@@ -454,6 +448,7 @@ for( std::size_t i=0; i<totalThreads; ++i ){
 
 poplar::Tensor myScalars_tensor = graph.addConstant<float>(FLOAT, {totalThreads}, myScalars);
 ```
+Listing 8: Creating a `Tensor` to be added to the graph as a constant.
 
 Now, we need to define which element of the tensor is being mapped to
 which tile. We do this using the `poplar::Grpah::setTileMapping`
@@ -461,9 +456,7 @@ function. The second element of the function is the tile index we wish
 to map to. The last thing to do is inform poplar what variable inside
 the codelet is being mapped to. The variable on the graph can 'connect'
 to a parameter in the codelet via the `poplar::Graph::connect` function.
-These steps can all seen in Listing
-[\[lst:scalarMap\]](#lst:scalarMap){reference-type="ref"
-reference="lst:scalarMap"}, where the calculation of `tileInt` has been
+These steps can all seen in Listing 9, where the calculation of `tileInt` has been
 omitted. Note the mapping of the vertices is included in this snippet as
 it is necessary that the vertex is mapped to be able to connect a
 variable to a parameter within it.
@@ -479,6 +472,7 @@ for( std::size_t i=0; i<totalThreads; ++i){
     graph.connect(vtx["myScalar"], myScalars_tensor[i]);
 }
 ```
+Listing 9: Mapping a scalar to every thread to be used in a codelet.
 
 This method is simple to implement but if the codelet requires vector or
 matrix input then each element would have to be mapped separately and
@@ -496,9 +490,8 @@ to a tile is by first storing them on the tiles themselves rather than
 on the host, as part of the graph. A tensor can be stored on a single
 tile or across many, if it is very large. This method will not be
 covered here, although the method is similar to the ones that have been
-covered. [This](https://www.youtube.com/watch?v=k_jR7DfN67c) short video
-tutorial gives a brief example of how this, and graph creation and
-execution is done.
+covered. This short [video](https://www.youtube.com/watch?v=k_jR7DfN67c) tutorial
+gives a brief example of how this, and graph creation and execution is done.
 
 Here we will show how to stream a single vector to every vertex although
 this method can be extended to pass different vectors to each vertex.
@@ -512,7 +505,7 @@ to the graph, only a vector can be streamed to an IPU-Tile . This may
 seem restrictive but it is not a difficult problem to overcome, if
 desired a multidimensional array can be flattened into a single
 dimensional tensor and then re-shaped into the multidimensional array on
-the IPU-Tile . C++ stores multidimensional arrays in contiguous blocks,
+the IPU-Tile. C++ stores multidimensional arrays in contiguous blocks,
 as though they were flattened anyway.
 
 ``` {#lst:addVariable .c++ caption="Adding a variable the graph and creating the compute set." label="lst:addVariable" language="C++"}
@@ -523,6 +516,7 @@ for( std::size_t i=0; i<myVector_size; ++i )
 
 poplar::Tensor myVector_tensor = graph.addVariable(FLOAT, {myVector_size}, "myVector");
 ```
+Listing 10: Defining a Tensor and added it to the graph as a variable.
 
 After the definition, similar to before we need to create the mapping to
 a specific tile and specific codelet vertex on that tile. This is done
@@ -542,6 +536,7 @@ for( std::size_t i=0; i<totalThreads; ++i ){
 
 auto myVector_stream = graph.addHostToDeviceFIFO("write_myVector", FLOAT, myVector_size);
 ```
+Listing 11: Mapping a vector to a vertex through stream.
 
 To be able to stream information from host to tile the stream object
 must be created, using the `poplar::Graph::addHostToDeviceFIFO`
@@ -556,17 +551,15 @@ device. Its creation and eventual execution will be covered later but
 for now assume we have a `poplar::Engine` object called `engine`. The
 function `poplar::Engine::connectStream` is used to let the engine know
 there is a stream that needs to be executed. Listing
-[\[lst:connectStream\]](#lst:connectStream){reference-type="ref"
-reference="lst:connectStream"} shows an example of this. The first
-parameter is the stream label, as defined in Listing
-[\[lst:vectorMap\]](#lst:vectorMap){reference-type="ref"
-reference="lst:vectorMap"} and the other two parameters are the memory
+12 shows an example of this. The first parameter is the stream label,
+as defined in Listing 11 and the other two parameters are the memory
 addresses of the first and last elements of the array.
 
 ``` {#lst:connectStream caption="Streaming the vector the tiles." label="lst:connectStream"}
 // Attach the data stream to the engine so that the stream is executed
 engine.connectStream("write_myVector", &myVector[0], &myVector[0]+myVector_size);
 ```
+Listing 12: Adding the stream to be executed by the Poplar engine.
 
 ## Retrieving Output
 
@@ -576,8 +569,7 @@ that we are expecting an output array to be streamed from the vertex, we
 do this using the type `poplar::Output<T>`. Doing this allows us to
 write the output directly into the `poplar::Output` object and we do not
 have to define an output array within the `compute` function, like was
-done in Listing [\[lst:myCodelet\]](#lst:myCodelet){reference-type="ref"
-reference="lst:myCodelet"}.
+done in Listing 13.
 
 ``` {#lst:outputType label="lst:outputType" caption="Defining an output type in the codelet."}
 class myVertex : public poplar::Vertex
@@ -587,14 +579,13 @@ class myVertex : public poplar::Vertex
     // ...
 }
 ```
+Listing 13: Defining an object to be outputed from a vertex.
 
 Now we must define an output array and map it to the tiles and vertex,
 similarly to when streaming a vector to the vertex. Here, however, there
 is a convenient shortcut to be able to stream output from tiles to host.
 The function `poplar::Graph::createHostRead` creates and connects the
-streaming object for us. Listing
-[\[lst:streamOutput\]](#lst:streamOutput){reference-type="ref"
-reference="lst:streamOutput"} shows how to implement this. The variable
+streaming object for us. Listing 14 shows how to implement this. The variable
 `output_size` is the known size of the output vector, for the death
 process example this would be `MAX_LENGTH`.
 
@@ -612,6 +603,7 @@ for( std::size_t i = 0; i < totalThreads; ++i ){
  }
  graph.createHostRead("output-read", output);
 ```
+Listing 14: Mapping an output vector from a tensor on the host to a vertex and creating the a stream object using `createHostRead`.
 
 A small thing to note is that the output tensor is multidimensional but
 only a single dimension is streamed from the codelet. As mentioned, we
@@ -627,9 +619,7 @@ computations. To do this there is another helpful function,
 `popolar::Engine::readTensor`, with the first parameter being the name
 of the streaming object, defined in the `createHostRead` function and
 the following two parameters being the first and last memory address of
-where to save the output on the host. Listing
-[\[lst:readOutput\]](#lst:readOutput){reference-type="ref"
-reference="lst:readOutput"} gives an example of this. The output does
+where to save the output on the host. Listing 15 gives an example of this. The output does
 not have to be read into a standard C++ array, as we are reading the
 output to the host we have access to all C++ libraries so the output can
 be read into other formats if desired e.g. `std::vector`.
@@ -638,14 +628,14 @@ be read into other formats if desired e.g. `std::vector`.
 float output_array[totalThreads * output_size] ;
 engine.readTensor("output-read", &output_array[0] &output_array[0]+output_size)
 ```
+Listing 15: Reading a tensor from the IPU onto the host.
 
 ## Graph Execution
 
 Lastly, we need to execute the graph and compute set. However, before
 this we must let poplar know what order to execute control programs, for
 this we add to `prog`, the `poplar::program::Sequence` object defined in
-Listing [\[lst:addCodelet\]](#lst:addCodelet){reference-type="ref"
-reference="lst:addCodelet"}. For a simple graph, with no data streams
+Listing 3. For a simple graph, with no data streams
 and one compute set. This is relatively easy and is done using the
 function `poplar::program::add` with the parameter being the compute set
 executed with `poplar::program::Execute` function.
@@ -654,6 +644,7 @@ executed with `poplar::program::Execute` function.
 // Adding the execution of the compute set to the sequence of programs
 prog.add(Execute(computeSet));
 ```
+Listing 17: Adding an execute compute set command to the control sequence.
 
 Hopefully, truly the last thing to do is to execute the entire graph in
 the order defined by `prog`. This requires the use of the
@@ -662,8 +653,7 @@ so far; the device, the graph, sequence of control programs and data
 streams. An `poplar::Engine` object is created by passing a
 `poplar::Graph` object and a `poplar::Sequence` object to the `Engine`
 constructor. The engine is then loaded onto a device and ran, see
-Listing [\[lst:engine\]](#lst:engine){reference-type="ref"
-reference="lst:engine"}. For illustrative purpose in this snippet,
+Listing 18. For illustrative purpose in this snippet,
 although commented out, a stream connection has been added to the
 engine.
 
@@ -675,14 +665,13 @@ engine.load(device);
 // engine.connectStream( ... );
 engine.run();
 ```
+Listing 18: Running the engine - executing the control sequence and any anything else added to the engine.
 
 #  Complete Example
 
 To bring together what has been discussed in the previous sections we
 will construct the code to stream two parameters to the death process
-codelet example used in Listing
-[\[lst:myCodelet\]](#lst:myCodelet){reference-type="ref"
-reference="lst:myCodelet"}. First we must define the parameters in the
+codelet example used earlier. First we must define the parameters in the
 codelet which are to be passed to the vertex. For this, we change the
 types of the `prob_death` and `initial_pop` variables. The codelet has
 also been updated to write output directly into the `out` vector and
@@ -721,13 +710,12 @@ class myVertex : public poplar::Vertex
     }
 }
 ```
+Listing 19: Codelet example.
 
 Then in the `main.cpp` file we can define the variables, create the
 mappings and vertices to specific tiles and connect the variables to
 those in the codelet. The mappings for all vertices and variables can be
-done within a single for loop, as seen in Listing
-[\[lst:variableMap example\]](#lst:variableMap example){reference-type="ref"
-reference="lst:variableMap example"}. This example maps a single vertex
+done within a single for loop, as seen in Listing 9. This example maps a single vertex
 to every thread on every tile on an IPU-POD4. The graph and control
 sequence are then executed before the output is streamed back to the
 host and the saved in a `std::vector` called `cpu_vector`.
@@ -818,6 +806,7 @@ int main () {
     return 0;
 }
 ```
+Listing 20: Main script example.
 
 # Conclusion
 

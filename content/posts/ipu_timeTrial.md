@@ -134,8 +134,6 @@ seen in Table 1.
 |:------------  | :-----------: | :--------: |
 | Time (ms)     | 32.149        | 2822.955   |
 
-
-
 Table 1: Mean computing time to execute a single Gillespie simulation.
 
 It is clear that a one IPU-Core is much less powerful than a one core in

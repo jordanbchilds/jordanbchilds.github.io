@@ -98,8 +98,8 @@
   "keywords": [
     "IPU", "Guide", "C++"
   ],
-  "articleBody": "Introduction In this article we will discuss how execute a large number of independent programs in parallel, using a new computer chip capable of executing thousands of independent calculations at once. This may be particularly useful in areas of stochastic modelling and Monte Carlo simulation, where repeated and independent simulations are required to learn about uncertainty in model predictions. The chip in question is called the Intelligence Processing Unit (IPU) and is developed by Graphcore, a UK-based company headquartered in Bristol. The IPU is now (as of February 2023) is on its second generation, the Colossus MK2 IPU processor, also known as the GC200.\nAlthough the IPU has many possible applications where its scalability can reduce computational expense we will use the example of a population dynamics simulation model: a discrete time, discrete state space stochastic process - a pure death process. This is a simple model but one that highlights some key aspects of running programs on the IPU and is an area of modelling that can benefit greatly from the IPU’s design. This model assumes that within a given time period there is a probability, $p$, that one individual in the population dies, otherwise the population remains unchanged. No individuals can be born or migrate into the population.\nBefore moving on, it is import to note that in this article some familiarity with C++ is assumed, as this is the only language which IPU applications can be written in. However, it is by no means necessary to be an expert in C++ and the most complex topic used here is pointer arithmetic. The article is focused on being able to execute programs on the IPU, as such an understanding of the death process is not necessary but may be advantageous to have a fuller understanding of the code presented however a brief description of model is given.\nA Brief Introduction to the IPU The GC200 is made of 1,472 independent IPU-Tiles each containing one IPU-Core , possessing 900MB of in-processor memory and capable of executing six independent tasks at once. That is, one GC200 chip can run 8,832 tasks independently without loss of performance. A single chip can be very powerful but the chips were developed with a focus on scalability and offer near seamless performance when used together. This is thanks to the ultra-low latency IPU-Fabric connecting all processors, which is responsible for the transfer of data between IPU-Cores . The processors are available to rent or buy within PODs, starting with four GC200 and increase to have up to 256. The PODs are also designed for scalability and the same ultra-low latency IPU-Fabric which connects chips within the POD is also used to connect to other PODs. One POD consists of both the GC200 processors and one CPU, referred to as the host. The host defines a sequence of instructions to be executed on the GC200 processors, the instructions are written using the Poplar C++ library which was explicitly developed by Graphcore for IPU applications.\nWhen executing a task on an IPU it is best to think of this as a directed graph. Where variables are connected to vertices via edges, the vertices being compute tasks to be executed in parallel and variables being the data used within those tasks. Each vertex is executed on a single thread on an IPU-Core . To gain the best performance from an IPU we wish to have as many compute tasks to execute at once in parallel. A set of compute tasks is referred to as a compute set, both throughout this article and within the poplar programming model. When a compute set is executed the program can not move onto the next task until all tasks in the compute set are completed. As such it best to have tasks of a similar duration otherwise the IPU-Tiles are stood idle awaiting a single task to finish.\nThe IPUs already provide a lot of functionality within artificial intelligence and machine learning, and can be used by popular ML packages such as TensorFlow and PyTorch. These, however, will not discussed here and instead we will focus on writing and executing bespoke C++ programs for the IPU. Running applications on the IPU requires two parts, both need to be written in C++. The first part is the codelet, this is the compute task associated with a vertex. We will show how to execute one codelet repeatedly, however it is not a difficult extension to use different codelets for different vertices. The second part is the main.cpp script which is read and executed by the host, this is where the graph is defined which maps variables to vertices. Graph creation and execution is done using the Poplar library and is done entirely by the host, while the codelet is written in a slightly restricted version of C++.\nThe Codelet C++ Restrictions on the codelet An IPU-Core can compile and read code written in C++, however it does not provide the full functionality of the language. The major difference is that the IPU-Core has no Heap, this means that dynamic memory allocation is not possible. Although this may seem restricting to experienced C++ programmers, if you are new to C++ it makes the learning curve a less steep one.\nThere are some other important limitations that need to considered when writing C++ code for an IPU-Core . The libraries available are a small subset of those available on a CPU. However, Graphcore have created several libraries which can be used as well. These provide functionality such as random number generation and linear algebra as well as much more, full documentation for using libraries can be found in the Poplar documentation. It is often the case that problems can be overcome by ‘creative’ programming. For example, there are a limited number of distributions which can be sampled from on an IPU-Core (normal and uniform). The host, however, has full access to all C++ libraries and so samples can be made from any desired distribution using a C++ library and then passed to the IPU-Core.\nAnother important consideration when writing the codelet is that the compiler must know the size of any array defined at compile time. This may require writing functions to be less general by explicitly stating a dimension that an array is known to be, rather than inferring this from another variable. If the size of an array is not known in advance, defining the array to be ’large enough’ such that it is practically impossible that it would be required to be any larger and dealing with this in a post-hoc manner is an easy solution, albeit expensive in terms of memory requirement.\ncodelet.cpp The codelet is the script that is executed on a single thread on an IPU-Core . It needs access to all relevant functions, objects, structures etc used within its execution. Variables can be passed to the vertex from the host so that each thread does not have to run with the same parameters, this will be discussed in the main.cpp chapter. For now, we will assume we wish to run every thread with the same parameters and so they can be defined within the codelet.\nHere, we are going to use the example of a simple death process. This is only to illustrate the methods required for executing repeated computations on an IPU. The model simulates the scenario where for a time step of size $\\Delta t$ there is a probability, $p$, that one\nmember of a population will die otherwise the population remains unchanged. To forward simulate this model we first simulate whether a death occurs within $[0,\\Delta)$ and then update the population accordingly. Then simulate whether a death occurs within $[d, 2\\Delta)$ and update the population accordingly. This is repeated until the population reached zero and thus no more reactions can occur.\nFor the IPU to be able to run the codelet we must define a new class which derived from the Poplar class poplar::Vertex, let’s call the class myVertex. Inside the definition of myVertex is where all relevant objects related to the simulation are defined and nothing should be defined outside of this. Importantly, myVertex must contain a function called compute which returns a true value. This is akin to the main function in standard C++ programming. A codelet example can be seen in Listing [lst:myCodelet]{reference-type=“ref” reference=“lst:myCodelet”}, where a simple death process is simulated from with an initial population of 100 and a probability of death within $[t, t+\\Delta t)$ is 0.1.\n#include class myVertex : public poplar::Vertex { public: float prob_death = 0.05; unsigned int initial_pop = 100; float rand_unif01() { /* Returns a random number on the interval [0,1] of type float. */ return float(__builtin_ipu_urand32()) / float(4294967295) ; } void sim_death_process(prob_death, init_pop, output_ptr) { /* This function simulates a discrete time death process. output_ptr: is a pointer to the output array. prob_death: defines the probability of a death in the chosen time step. init_pop: is the initial population of the system. */ unsigned int current_pop = init_pop ; *(output_ptr) = current_pop ; unsigned int t = 1; while( current_pop \u003e 0 ) { if( rand_unif01() \u003c prob_death ) { current_pop-- ; } *(output_ptr+t) = current_pop ; t++ ; } } bool compute() { const unsigned int MAX_LENGTH = 5000 ; // large number unsigned int output[MAX_LENGTH] = {0} ; unsigned int* output_ptr = \u0026output[0]; sim_death_process( prob_death, initial_pop, output_ptr, MAX_LENGTH ); return true; } }; The first thing defined within the myVertex class are the parameters of the model; the probability of death within the time step and the initial population. We then define one function to generate a random number from a Uniform(0,1) distribution. This also shows an example of using a function from a Poplar library, the inclusion of the library can be seen at the top of the script using the #include macro. The popLibs libraries do provide functionality to simulate from a uniform distribution but here we define the uniform in this way as another example of function definition. The function, rand_unif01, is defined to draw a random unsigned int and standardise this by dividing by the maximum value of an unsigned integer, outputting a float in the range $[0,1]$. After this we use the function to simulate the model of interest, sim_death_process.\nLastly we have the compute function which defines the output array and the runs the simulation. Also defined here is the MAX_LENGTH variable, as previously mentioned, the IPU must know the exact amount of memory to allocate at compile time. The MAX_LENGTH variable defines the size of the output array and is defined such that we would never expect our simulation output to be larger than MAX_LENGTH. Its value can be chosen by running a few simulations off the IPU and seeing what can be expected from the output.\nmain.cpp Unlike the codelet, since the main script is executed on the host, which is a CPU, it has the full functionality of C++, including dynamic memory allocation and all libraries. It is in this script we build and execute the graph: we define and map variables to vertices, attach codelets to those vertices and retrieve output from the IPU.\nCreating a Graph Firstly, a graph object must be created and attached to an IPU. Listing [lst:attachIPU]{reference-type=“ref” reference=“lst:attachIPU”} shows some boiler plate code to create a device and attach to numberOfProcs GC200 processor(s) to this device. A device is poplar terminology for the IPU system the graph will be executed on. First a device manager is created, this searches for IPU devices which can be attached to. The final two lines attach the main.cpp script to the device created and create an empty graph on that device. An empty graph is one without any variables or vertices, these will have to added. The code snippet presented here also has several print statements which inform the user if there has been a problem when trying to attach to an IPU device.\n// Create the DeviceManager which is used to discover devices (IPUs) auto manager = DeviceManager::createDeviceManager(); // Attempt to attach to a numberOfProcs IPU(s): auto devices = manager.getDevices(poplar::TargetType::IPU, numberOfProcs); std::cout \u003c\u003c \"Trying to attach to IPU\\n\"; auto it = std::find_if(devices.begin(), devices.end(), [](Device \u0026device) { return device.attach(); }); if (it == devices.end()) { std::cerr \u003c\u003c \"Error attaching to device\\n\"; return -1; } auto device = std::move(*it); std::cout \u003c\u003c \"Attached to IPU \" \u003c\u003c device.getId() \u003c\u003c std::endl; // Target device so that any graph will be associated with device Target target = device.getTarget(); // Create the Graph object Graph graph(target); Before being able to execute or pass parameters to codelets, we need to add the codelet to the graph using the poplar::Graph::addCodelets function. Adding a codelet allows it to then be associated with a vertex and later executed. This can be seen in Listing [lst:addCodelet]{reference-type=“ref” reference=“lst:addCodelet”}. Also seen in this snippet is the definition of a poplar::program::Sequence object. This is a series of control programs to be executed in order to do things such as map variables to vertices and execute compute sets. These can be defined to be as complex as needed for the task, here we will show an example of a simple one, executing only one compute set. The last line of Listing [lst:addCodelet]{reference-type=“ref” reference=“lst:addCodelet”} creates a compute set object and labels this \"computeSet\". In the next section we will see how to add vertices to this compute set and to the graph itself.\n// Add codelets to the graph graph.addCodelets(\"myCodelet.cpp\"); // Create a control program that is a sequence of steps poplar::program::Sequence prog; // Define the compute set to add vertices to later poplar::ComputeSet computeSet = graph.addComputeSet(\"computeSet\"); Mapping Vertices to Tiles To be able to execute a compute set it is necessary to first map vertices to specific tiles on which they will be executed. This is done explicitly by connecting a vertex on the graph to a tile index. A single GC200 processor has 1,472 tiles each with a unique index, in the range [0, 1,471]. It should not matter which tile a vertex is mapped to as the they are identical and can share information with ease. Suppose we wish to map a vertex, myVertex, to all tiles on a GC200. Adding the vertex to a compute set informs poplar what vertices can be executed in parallel. The function also creates a vertex reference which is used to map the vertex to a tile. Using the vertex reference, it is then mapped to a specific tile using the poplar::Graph::setTileMapping function, with the reference as its first parameter and the tile index as its second. By doing this repeatedly a vertex can be mapped to every tile on the chip, as as seen in Listing [lst:mapTiles]{reference-type=“ref” reference=“lst:mapTiles”}.\nconst unsigned int numberOfTiles = 1472; // maximum is 1472 for( std::size_t i=0; i",
-  "wordCount" : "5332",
+  "articleBody": "Introduction In this article we will discuss how execute a large number of independent programs in parallel, using a new computer chip capable of executing thousands of independent calculations at once. This may be particularly useful in areas of stochastic modelling and Monte Carlo simulation, where repeated and independent simulations are required to learn about uncertainty in model predictions. The chip in question is called the Intelligence Processing Unit (IPU) and is developed by Graphcore, a UK-based company headquartered in Bristol. The IPU is now (as of February 2023) is on its second generation, the Colossus MK2 IPU processor, also known as the GC200.\nAlthough the IPU has many possible applications where its scalability can reduce computational expense we will use the example of a population dynamics simulation model: a discrete time, discrete state space stochastic process - a pure death process. This is a simple model but one that highlights some key aspects of running programs on the IPU and is an area of modelling that can benefit greatly from the IPU’s design. This model assumes that within a given time period there is a probability, $p$, that one individual in the population dies, otherwise the population remains unchanged. No individuals can be born or migrate into the population.\nBefore moving on, it is import to note that in this article some familiarity with C++ is assumed, as this is the only language which IPU applications can be written in. However, it is by no means necessary to be an expert in C++ and the most complex topic used here is pointer arithmetic. The article is focused on being able to execute programs on the IPU, as such an understanding of the death process is not necessary but may be advantageous to have a fuller understanding of the code presented however a brief description of model is given.\nA Brief Introduction to the IPU The GC200 is made of 1,472 independent IPU-Tiles each containing one IPU-Core , possessing 900MB of in-processor memory and capable of executing six independent tasks at once. That is, one GC200 chip can run 8,832 tasks independently without loss of performance. A single chip can be very powerful but the chips were developed with a focus on scalability and offer near seamless performance when used together. This is thanks to the ultra-low latency IPU-Fabric connecting all processors, which is responsible for the transfer of data between IPU-Cores . The processors are available to rent or buy within PODs, starting with four GC200 and increase to have up to 256. The PODs are also designed for scalability and the same ultra-low latency IPU-Fabric which connects chips within the POD is also used to connect to other PODs. One POD consists of both the GC200 processors and one CPU, referred to as the host. The host defines a sequence of instructions to be executed on the GC200 processors, the instructions are written using the Poplar C++ library which was explicitly developed by Graphcore for IPU applications.\nWhen executing a task on an IPU it is best to think of this as a directed graph. Where variables are connected to vertices via edges, the vertices being compute tasks to be executed in parallel and variables being the data used within those tasks. Each vertex is executed on a single thread on an IPU-Core . To gain the best performance from an IPU we wish to have as many compute tasks to execute at once in parallel. A set of compute tasks is referred to as a compute set, both throughout this article and within the poplar programming model. When a compute set is executed the program can not move onto the next task until all tasks in the compute set are completed. As such it best to have tasks of a similar duration otherwise the IPU-Tiles are stood idle awaiting a single task to finish.\nThe IPUs already provide a lot of functionality within artificial intelligence and machine learning, and can be used by popular ML packages such as TensorFlow and PyTorch. These, however, will not discussed here and instead we will focus on writing and executing bespoke C++ programs for the IPU. Running applications on the IPU requires two parts, both need to be written in C++. The first part is the codelet, this is the compute task associated with a vertex. We will show how to execute one codelet repeatedly, however it is not a difficult extension to use different codelets for different vertices. The second part is the main.cpp script which is read and executed by the host, this is where the graph is defined which maps variables to vertices. Graph creation and execution is done using the Poplar library and is done entirely by the host, while the codelet is written in a slightly restricted version of C++.\nThe Codelet C++ Restrictions on the codelet An IPU-Core can compile and read code written in C++, however it does not provide the full functionality of the language. The major difference is that the IPU-Core has no Heap, this means that dynamic memory allocation is not possible. Although this may seem restricting to experienced C++ programmers, if you are new to C++ it makes the learning curve a less steep one.\nThere are some other important limitations that need to considered when writing C++ code for an IPU-Core . The libraries available are a small subset of those available on a CPU. However, Graphcore have created several libraries which can be used as well. These provide functionality such as random number generation and linear algebra as well as much more, full documentation for using libraries can be found in the Poplar documentation. It is often the case that problems can be overcome by ‘creative’ programming. For example, there are a limited number of distributions which can be sampled from on an IPU-Core (normal and uniform). The host, however, has full access to all C++ libraries and so samples can be made from any desired distribution using a C++ library and then passed to the IPU-Core.\nAnother important consideration when writing the codelet is that the compiler must know the size of any array defined at compile time. This may require writing functions to be less general by explicitly stating a dimension that an array is known to be, rather than inferring this from another variable. If the size of an array is not known in advance, defining the array to be ’large enough’ such that it is practically impossible that it would be required to be any larger and dealing with this in a post-hoc manner is an easy solution, albeit expensive in terms of memory requirement.\ncodelet.cpp The codelet is the script that is executed on a single thread on an IPU-Core . It needs access to all relevant functions, objects, structures etc used within its execution. Variables can be passed to the vertex from the host so that each thread does not have to run with the same parameters, this will be discussed in the main.cpp chapter. For now, we will assume we wish to run every thread with the same parameters and so they can be defined within the codelet.\nHere, we are going to use the example of a simple death process. This is only to illustrate the methods required for executing repeated computations on an IPU. The model simulates the scenario where for a time step of size $\\Delta t$ there is a probability, $p$, that one\nmember of a population will die otherwise the population remains unchanged. To forward simulate this model we first simulate whether a death occurs within $[0,\\Delta)$ and then update the population accordingly. Then simulate whether a death occurs within $[d, 2\\Delta)$ and update the population accordingly. This is repeated until the population reached zero and thus no more reactions can occur.\nFor the IPU to be able to run the codelet we must define a new class which derived from the Poplar class poplar::Vertex, let’s call the class myVertex. Inside the definition of myVertex is where all relevant objects related to the simulation are defined and nothing should be defined outside of this. Importantly, myVertex must contain a function called compute which returns a true value. This is akin to the main function in standard C++ programming. A codelet example can be seen in Listing 1, where a simple death process is simulated from with an initial population of 100 and a probability of death within $[t, t+\\Delta t)$ is 0.1.\n#include class myVertex : public poplar::Vertex { public: float prob_death = 0.05; unsigned int initial_pop = 100; float rand_unif01() { /* Returns a random number on the interval [0,1] of type float. */ return float(__builtin_ipu_urand32()) / float(4294967295) ; } void sim_death_process(prob_death, init_pop, output_ptr) { /* This function simulates a discrete time death process. output_ptr: is a pointer to the output array. prob_death: defines the probability of a death in the chosen time step. init_pop: is the initial population of the system. */ unsigned int current_pop = init_pop ; *(output_ptr) = current_pop ; unsigned int t = 1; while( current_pop \u003e 0 ) { if( rand_unif01() \u003c prob_death ) { current_pop-- ; } *(output_ptr+t) = current_pop ; t++ ; } } bool compute() { const unsigned int MAX_LENGTH = 5000 ; // large number unsigned int output[MAX_LENGTH] = {0} ; unsigned int* output_ptr = \u0026output[0]; sim_death_process( prob_death, initial_pop, output_ptr, MAX_LENGTH ); return true; } }; Listing 1: An codelet.cpp script.\nThe first thing defined within the myVertex class are the parameters of the model; the probability of death within the time step and the initial population. We then define one function to generate a random number from a Uniform(0,1) distribution. This also shows an example of using a function from a Poplar library, the inclusion of the library can be seen at the top of the script using the #include macro. The popLibs libraries do provide functionality to simulate from a uniform distribution but here we define the uniform in this way as another example of function definition. The function, rand_unif01, is defined to draw a random unsigned int and standardise this by dividing by the maximum value of an unsigned integer, outputting a float in the range $[0,1]$. After this we use the function to simulate the model of interest, sim_death_process.\nLastly we have the compute function which defines the output array and the runs the simulation. Also defined here is the MAX_LENGTH variable, as previously mentioned, the IPU must know the exact amount of memory to allocate at compile time. The MAX_LENGTH variable defines the size of the output array and is defined such that we would never expect our simulation output to be larger than MAX_LENGTH. Its value can be chosen by running a few simulations off the IPU and seeing what can be expected from the output.\nmain.cpp Unlike the codelet, since the main script is executed on the host, which is a CPU, it has the full functionality of C++, including dynamic memory allocation and all libraries. It is in this script we build and execute the graph: we define and map variables to vertices, attach codelets to those vertices and retrieve output from the IPU.\nCreating a Graph Firstly, a graph object must be created and attached to an IPU. Listing 2 shows some boiler plate code to create a device and attach to numberOfProcs GC200 processor(s) to this device. A device is poplar terminology for the IPU system the graph will be executed on. First a device manager is created, this searches for IPU devices which can be attached to. The final two lines attach the main.cpp script to the device created and create an empty graph on that device. An empty graph is one without any variables or vertices, these will have to added. The code snippet presented here also has several print statements which inform the user if there has been a problem when trying to attach to an IPU device.\n// Create the DeviceManager which is used to discover devices (IPUs) auto manager = DeviceManager::createDeviceManager(); // Attempt to attach to a numberOfProcs IPU(s): auto devices = manager.getDevices(poplar::TargetType::IPU, numberOfProcs); std::cout \u003c\u003c \"Trying to attach to IPU\\n\"; auto it = std::find_if(devices.begin(), devices.end(), [](Device \u0026device) { return device.attach(); }); if (it == devices.end()) { std::cerr \u003c\u003c \"Error attaching to device\\n\"; return -1; } auto device = std::move(*it); std::cout \u003c\u003c \"Attached to IPU \" \u003c\u003c device.getId() \u003c\u003c std::endl; // Target device so that any graph will be associated with device Target target = device.getTarget(); // Create the Graph object Graph graph(target); Listing 2: Creating an IPU device in Poplar and defining an empty graph object attached to that device.\nBefore being able to execute or pass parameters to codelets, we need to add the codelet to the graph using the poplar::Graph::addCodelets function. Adding a codelet allows it to then be associated with a vertex and later executed. This can be seen in Listing 3. Also seen in this snippet is the definition of a poplar::program::Sequence object. This is a series of control programs to be executed in order to do things such as map variables to vertices and execute compute sets. These can be defined to be as complex as needed for the task, here we will show an example of a simple one, executing only one compute set. The last line of Listing 3 creates a compute set object and labels this \"computeSet\". In the next section we will see how to add vertices to this compute set and to the graph itself.\n// Add codelets to the graph graph.addCodelets(\"myCodelet.cpp\"); // Create a control program that is a sequence of steps poplar::program::Sequence prog; // Define the compute set to add vertices to later poplar::ComputeSet computeSet = graph.addComputeSet(\"computeSet\"); Listing 3: Adding a codelet script to the graph, creating a control sequence object and defining an empty compute set.\nMapping Vertices to Tiles To be able to execute a compute set it is necessary to first map vertices to specific tiles on which they will be executed. This is done explicitly by connecting a vertex on the graph to a tile index. A single GC200 processor has 1,472 tiles each with a unique index, in the range [0, 1,471]. It should not matter which tile a vertex is mapped to as the they are identical and can share information with ease. Suppose we wish to map a vertex, myVertex, to all tiles on a GC200. Adding the vertex to a compute set informs poplar what vertices can be executed in parallel. The function also creates a vertex reference which is used to map the vertex to a tile. Using the vertex reference, it is then mapped to a specific tile using the poplar::Graph::setTileMapping function, with the reference as its first parameter and the tile index as its second. By doing this repeatedly a vertex can be mapped to every tile on the chip, as as seen in Listing 4.\nconst unsigned int numberOfTiles = 1472; // maximum is 1472 for( std::size_t i=0; i",
+  "wordCount" : "5549",
   "inLanguage": "en",
   "datePublished": "2023-02-24T14:30:00Z",
   "dateModified": "2023-02-24T14:30:00Z",
@@ -180,6 +180,29 @@
             </li>
         </ul>
     </nav>
+    <script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$','$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+
+  window.addEventListener('load', (event) => {
+      document.querySelectorAll("mjx-container").forEach(function(x){
+        x.parentElement.classList += 'has-jax'})
+    });
+
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
 </header>
 <main class="main">
 
@@ -189,7 +212,7 @@
     <h1 class="post-title">
       A Beginners Guide to Executing C&#43;&#43; Scripts on an IPU
     </h1>
-    <div class="post-meta"><span title='2023-02-24 14:30:00 +0000 UTC'>February 24, 2023</span>&nbsp;·&nbsp;26 min&nbsp;·&nbsp;Jordan Childs
+    <div class="post-meta"><span title='2023-02-24 14:30:00 +0000 UTC'>February 24, 2023</span>&nbsp;·&nbsp;27 min&nbsp;·&nbsp;Jordan Childs
 
 </div>
   </header> 
@@ -322,11 +345,9 @@ relevant objects related to the simulation are defined and nothing
 should be defined outside of this. Importantly, <code>myVertex</code> must contain
 a function called <code>compute</code> which returns a <code>true</code> value. This is akin
 to the <code>main</code> function in standard C++ programming. A codelet example
-can be seen in Listing
-<a href="#lst:myCodelet">[lst:myCodelet]</a>{reference-type=&ldquo;ref&rdquo;
-reference=&ldquo;lst:myCodelet&rdquo;}, where a simple death process is simulated
+can be seen in Listing 1, where a simple death process is simulated
 from with an initial population of 100 and a probability of death within
-$[t, t+\Delta t)$ is 0.1.</p>
+$[t, t+\Delta t)$  is 0.1.</p>
 <pre tabindex="0"><code>#include &lt;ipu_builtins.h&gt;
 
 class myVertex : public poplar::Vertex
@@ -378,7 +399,8 @@ class myVertex : public poplar::Vertex
         return true;
     }
 };
-</code></pre><p>The first thing defined within the <code>myVertex</code> class are the parameters
+</code></pre><p>Listing 1: An codelet.cpp script.</p>
+<p>The first thing defined within the <code>myVertex</code> class are the parameters
 of the model; the probability of death within the time step and the
 initial population. We then define one function to generate a random
 number from a Uniform(0,1) distribution. This also shows an example of
@@ -407,8 +429,7 @@ the graph: we define and map variables to vertices, attach codelets to
 those vertices and retrieve output from the IPU.</p>
 <h2 id="creating-a-graph">Creating a Graph<a hidden class="anchor" aria-hidden="true" href="#creating-a-graph">#</a></h2>
 <p>Firstly, a graph object must be created and attached to an IPU. Listing
-<a href="#lst:attachIPU">[lst:attachIPU]</a>{reference-type=&ldquo;ref&rdquo;
-reference=&ldquo;lst:attachIPU&rdquo;} shows some boiler plate code to create a
+2 shows some boiler plate code to create a
 device and attach to <code>numberOfProcs</code> GC200 processor(s) to this device.
 A device is poplar terminology for the IPU system the graph will be
 executed on. First a device manager is created, this searches for IPU
@@ -437,20 +458,17 @@ std::cout &lt;&lt; &#34;Attached to IPU &#34; &lt;&lt; device.getId() &lt;&lt; s
 Target target = device.getTarget();
 // Create the Graph object
 Graph graph(target);
-</code></pre><p>Before being able to execute or pass parameters to codelets, we need to
+</code></pre><p>Listing 2: Creating an IPU device in Poplar and defining an empty graph object attached to that device.</p>
+<p>Before being able to execute or pass parameters to codelets, we need to
 add the codelet to the graph using the <code>poplar::Graph::addCodelets</code>
 function. Adding a codelet allows it to then be associated with a vertex
-and later executed. This can be seen in Listing
-<a href="#lst:addCodelet">[lst:addCodelet]</a>{reference-type=&ldquo;ref&rdquo;
-reference=&ldquo;lst:addCodelet&rdquo;}. Also seen in this snippet is the definition
+and later executed. This can be seen in Listing 3. Also seen in this snippet is the definition
 of a <code>poplar::program::Sequence</code> object. This is a series of control
 programs to be executed in order to do things such as map variables to
 vertices and execute compute sets. These can be defined to be as complex
-as needed for the task, here we will show an example of a simple one,
-executing only one compute set. The last line of Listing
-<a href="#lst:addCodelet">[lst:addCodelet]</a>{reference-type=&ldquo;ref&rdquo;
-reference=&ldquo;lst:addCodelet&rdquo;} creates a compute set object and labels this
-<code>&quot;computeSet&quot;</code>. In the next section we will see how to add vertices to
+as needed for the task, here we will show an example of a simple one, executing
+only one compute set. The last line of Listing 3 creates a compute set object
+and labels this <code>&quot;computeSet&quot;</code>. In the next section we will see how to add vertices to
 this compute set and to the graph itself.</p>
 <pre tabindex="0"><code>// Add codelets to the graph
 graph.addCodelets(&#34;myCodelet.cpp&#34;);
@@ -460,7 +478,8 @@ poplar::program::Sequence prog;
 
 // Define the compute set to add vertices to later
 poplar::ComputeSet computeSet = graph.addComputeSet(&#34;computeSet&#34;);
-</code></pre><h2 id="mapping-vertices-to-tiles">Mapping Vertices to Tiles<a hidden class="anchor" aria-hidden="true" href="#mapping-vertices-to-tiles">#</a></h2>
+</code></pre><p>Listing 3: Adding a codelet script to the graph, creating a control sequence object and defining an empty compute set.</p>
+<h2 id="mapping-vertices-to-tiles">Mapping Vertices to Tiles<a hidden class="anchor" aria-hidden="true" href="#mapping-vertices-to-tiles">#</a></h2>
 <p>To be able to execute a compute set it is necessary to first map
 vertices to specific tiles on which they will be executed. This is done
 explicitly by connecting a vertex on the graph to a tile index. A single
@@ -474,16 +493,15 @@ map the vertex to a tile. Using the vertex reference, it is then mapped
 to a specific tile using the <code>poplar::Graph::setTileMapping</code> function,
 with the reference as its first parameter and the tile index as its
 second. By doing this repeatedly a vertex can be mapped to every tile on
-the chip, as as seen in Listing
-<a href="#lst:mapTiles">[lst:mapTiles]</a>{reference-type=&ldquo;ref&rdquo;
-reference=&ldquo;lst:mapTiles&rdquo;}.</p>
+the chip, as as seen in Listing 4.</p>
 <pre tabindex="0"><code>const unsigned int numberOfTiles = 1472; // maximum is 1472
 
 for( std::size_t i=0; i&lt;numberOfTiles; ++i){
     VertexRef vtx = graph.addVertex(computeSet, &#34;myVertex&#34;);
     graph.setTileMapping(vtx, i);
 }
-</code></pre><p>However, mapping a single vertex to every tile on a GC200 would only be
+</code></pre><p>Listing 4: Mapping a vertex to evey tile on a GC200.</p>
+<p>However, mapping a single vertex to every tile on a GC200 would only be
 using one sixth of the processor computing power, as each tile can
 execute six tasks independently. It would therefore be good to be able
 to map multiple tasks to a single tile, so that they can be executed on
@@ -507,13 +525,12 @@ for( std::size_t i=0; i&lt;totalThreads; ++i){
     VertexRef vtx = graph.addVertex(computeSet, &#34;myVertex&#34;);
     graph.setTileMapping(vtx, tileInt);
 }
-</code></pre><p>In practise there will be more than one GC200 processor available, as
+</code></pre><p>Listing 5: Mapping one vertex to every thread on a every tile on one GC200.</p>
+<p>In practise there will be more than one GC200 processor available, as
 they come in IPU-PODs. We therefor wish to be able to map vertices to
 all available processors. When using <code>numberOfProcs</code> processors each
 tile still has a unique index with a range
-$[0, 1471\times$<code>numberOfProcs</code>$]$. Listing
-<a href="#lst:mapThreads">[lst:mapThreads]</a>{reference-type=&ldquo;ref&rdquo;
-reference=&ldquo;lst:mapThreads&rdquo;} shows how to define the <code>tileInt</code> parameter
+$[0, 1471\times$<code>numberOfProcs</code>$]$. Listing 6 shows how to define the <code>tileInt</code> parameter
 to get the desired output. Six vertices are still being mapped to every
 tile but now all IPU-Tiles within an IPU-POD4 system are being used.</p>
 <pre tabindex="0"><code>const unsigned int numberOfTiles = 1472; // maximum is 1472
@@ -529,7 +546,8 @@ for( std::size_t i=0; i&lt;totalThreads; ++i){
     VertexRef vtx = graph.addVertex(computeSet, &#34;myVertex&#34;);
     graph.setTileMapping(vtx, tileInt);
 }
-</code></pre><h2 id="passing-parameters">Passing Parameters<a hidden class="anchor" aria-hidden="true" href="#passing-parameters">#</a></h2>
+</code></pre><p>Listing 6: Mapping one vertex to every thread on every tile across multiple GC200 chips.</p>
+<h2 id="passing-parameters">Passing Parameters<a hidden class="anchor" aria-hidden="true" href="#passing-parameters">#</a></h2>
 <p>Being able to pass parameters to vertices would allow calculations to be
 executed for different data or parameter values. Or, if one task is
 dependent on the previous, it also allows calculation of variables in
@@ -540,8 +558,7 @@ variable within a codelet.</p>
 <p>When passing a variable to a codelet, the variable type inside the
 vertex must reflect the fact it is going to mapped to the codelet. This
 is done simply by declaring an object as type <code>poplar::Input&lt;T&gt;</code>.
-Listing <a href="#lst:inputType">[lst:inputType]</a>{reference-type=&ldquo;ref&rdquo;
-reference=&ldquo;lst:inputType&rdquo;} shows an example of two variables to be
+Listing 7 shows an example of two variables to be
 mapped, one an integer scalar and the other a vector of floating
 points.</p>
 <pre tabindex="0"><code>class myVertex : public poplar::Vertex
@@ -552,7 +569,8 @@ points.</p>
 
     // ... the rest of the vertex object
 }
-</code></pre><h3 id="scalars">Scalars<a hidden class="anchor" aria-hidden="true" href="#scalars">#</a></h3>
+</code></pre><p>Listing 7: Declaring an object is to be passed to a codelet.</p>
+<h3 id="scalars">Scalars<a hidden class="anchor" aria-hidden="true" href="#scalars">#</a></h3>
 <p>A scalar is a single value (a single number). Passing scalars is
 relatively easy however the number of parameters usually increases with
 model complexity and so this is only practical for simple models. For
@@ -569,8 +587,7 @@ when adding variables to a graph. The <code>poplar::Tensor</code> object is very
 similar to the C++ <code>std::vector</code> object. The documentation can be found
 <a href="https://docs.graphcore.ai/projects/poplar-api/en/latest/poplar/graph/Tensor.html#_CPPv4NO6poplar6TensorixENSt6size_tE">here</a>,
 for all details on functions and operators available.</p>
-<p>Listing [[lst:scalarMap def]](#lst:scalarMap def){reference-type=&ldquo;ref&rdquo;
-reference=&ldquo;lst:scalarMap def&rdquo;} shows the creation of C++ array,
+<p>Listing 8 shows the creation of C++ array,
 <code>myScalars</code>, which is then added to the graph as a <code>poplar::Tensor</code>
 using the <code>poplar::Graph::addConstant</code> function. The function also
 informs poplar of the type of the elements within the tensor as well as
@@ -583,15 +600,14 @@ for( std::size_t i=0; i&lt;totalThreads; ++i ){
 }
 
 poplar::Tensor myScalars_tensor = graph.addConstant&lt;float&gt;(FLOAT, {totalThreads}, myScalars);
-</code></pre><p>Now, we need to define which element of the tensor is being mapped to
+</code></pre><p>Listing 8: Creating a <code>Tensor</code> to be added to the graph as a constant.</p>
+<p>Now, we need to define which element of the tensor is being mapped to
 which tile. We do this using the <code>poplar::Grpah::setTileMapping</code>
 function. The second element of the function is the tile index we wish
 to map to. The last thing to do is inform poplar what variable inside
 the codelet is being mapped to. The variable on the graph can &lsquo;connect&rsquo;
 to a parameter in the codelet via the <code>poplar::Graph::connect</code> function.
-These steps can all seen in Listing
-<a href="#lst:scalarMap">[lst:scalarMap]</a>{reference-type=&ldquo;ref&rdquo;
-reference=&ldquo;lst:scalarMap&rdquo;}, where the calculation of <code>tileInt</code> has been
+These steps can all seen in Listing 9, where the calculation of <code>tileInt</code> has been
 omitted. Note the mapping of the vertices is included in this snippet as
 it is necessary that the vertex is mapped to be able to connect a
 variable to a parameter within it.</p>
@@ -604,7 +620,8 @@ variable to a parameter within it.</p>
 
     graph.connect(vtx[&#34;myScalar&#34;], myScalars_tensor[i]);
 }
-</code></pre><p>This method is simple to implement but if the codelet requires vector or
+</code></pre><p>Listing 9: Mapping a scalar to every thread to be used in a codelet.</p>
+<p>This method is simple to implement but if the codelet requires vector or
 matrix input then each element would have to be mapped separately and
 the vector/matrix reconstructed within the codelet. This quickly becomes
 tedious to write and not easy to read.</p>
@@ -618,9 +635,8 @@ to a tile is by first storing them on the tiles themselves rather than
 on the host, as part of the graph. A tensor can be stored on a single
 tile or across many, if it is very large. This method will not be
 covered here, although the method is similar to the ones that have been
-covered. <a href="https://www.youtube.com/watch?v=k_jR7DfN67c">This</a> short video
-tutorial gives a brief example of how this, and graph creation and
-execution is done.</p>
+covered. This short <a href="https://www.youtube.com/watch?v=k_jR7DfN67c">video</a> tutorial
+gives a brief example of how this, and graph creation and execution is done.</p>
 <p>Here we will show how to stream a single vector to every vertex although
 this method can be extended to pass different vectors to each vertex.
 Similarly to before, we start by defining a vector to be streamed and
@@ -633,7 +649,7 @@ to the graph, only a vector can be streamed to an IPU-Tile . This may
 seem restrictive but it is not a difficult problem to overcome, if
 desired a multidimensional array can be flattened into a single
 dimensional tensor and then re-shaped into the multidimensional array on
-the IPU-Tile . C++ stores multidimensional arrays in contiguous blocks,
+the IPU-Tile. C++ stores multidimensional arrays in contiguous blocks,
 as though they were flattened anyway.</p>
 <pre tabindex="0"><code>const unsigned int myVector_size = 10;
 float myVector[myVector_size];
@@ -641,7 +657,8 @@ for( std::size_t i=0; i&lt;myVector_size; ++i )
     myVector[i] = i*0.0001; // or something useful
 
 poplar::Tensor myVector_tensor = graph.addVariable(FLOAT, {myVector_size}, &#34;myVector&#34;);
-</code></pre><p>After the definition, similar to before we need to create the mapping to
+</code></pre><p>Listing 10: Defining a Tensor and added it to the graph as a variable.</p>
+<p>After the definition, similar to before we need to create the mapping to
 a specific tile and specific codelet vertex on that tile. This is done
 exactly the same as before.</p>
 <pre tabindex="0"><code>// Map tensors to tiles
@@ -656,7 +673,8 @@ for( std::size_t i=0; i&lt;totalThreads; ++i ){
 }
 
 auto myVector_stream = graph.addHostToDeviceFIFO(&#34;write_myVector&#34;, FLOAT, myVector_size);
-</code></pre><p>To be able to stream information from host to tile the stream object
+</code></pre><p>Listing 11: Mapping a vector to a vertex through stream.</p>
+<p>To be able to stream information from host to tile the stream object
 must be created, using the <code>poplar::Graph::addHostToDeviceFIFO</code>
 function. The first argument of this function is the stream label then
 the type of the elements being streamed and the number of elements.
@@ -668,36 +686,32 @@ device. Its creation and eventual execution will be covered later but
 for now assume we have a <code>poplar::Engine</code> object called <code>engine</code>. The
 function <code>poplar::Engine::connectStream</code> is used to let the engine know
 there is a stream that needs to be executed. Listing
-<a href="#lst:connectStream">[lst:connectStream]</a>{reference-type=&ldquo;ref&rdquo;
-reference=&ldquo;lst:connectStream&rdquo;} shows an example of this. The first
-parameter is the stream label, as defined in Listing
-<a href="#lst:vectorMap">[lst:vectorMap]</a>{reference-type=&ldquo;ref&rdquo;
-reference=&ldquo;lst:vectorMap&rdquo;} and the other two parameters are the memory
+12 shows an example of this. The first parameter is the stream label,
+as defined in Listing 11 and the other two parameters are the memory
 addresses of the first and last elements of the array.</p>
 <pre tabindex="0"><code>// Attach the data stream to the engine so that the stream is executed
 engine.connectStream(&#34;write_myVector&#34;, &amp;myVector[0], &amp;myVector[0]+myVector_size);
-</code></pre><h2 id="retrieving-output">Retrieving Output<a hidden class="anchor" aria-hidden="true" href="#retrieving-output">#</a></h2>
+</code></pre><p>Listing 12: Adding the stream to be executed by the Poplar engine.</p>
+<h2 id="retrieving-output">Retrieving Output<a hidden class="anchor" aria-hidden="true" href="#retrieving-output">#</a></h2>
 <p>Retrieving output from the codelet is very similar to the process of
 streaming vectors to the codelet. First we have to inform the codelet
 that we are expecting an output array to be streamed from the vertex, we
 do this using the type <code>poplar::Output&lt;T&gt;</code>. Doing this allows us to
 write the output directly into the <code>poplar::Output</code> object and we do not
 have to define an output array within the <code>compute</code> function, like was
-done in Listing <a href="#lst:myCodelet">[lst:myCodelet]</a>{reference-type=&ldquo;ref&rdquo;
-reference=&ldquo;lst:myCodelet&rdquo;}.</p>
+done in Listing 13.</p>
 <pre tabindex="0"><code>class myVertex : public poplar::Vertex
 {
     public:
     poplar::Output&lt;vector&lt;float&gt;&gt; out;
     // ...
 }
-</code></pre><p>Now we must define an output array and map it to the tiles and vertex,
+</code></pre><p>Listing 13: Defining an object to be outputed from a vertex.</p>
+<p>Now we must define an output array and map it to the tiles and vertex,
 similarly to when streaming a vector to the vertex. Here, however, there
 is a convenient shortcut to be able to stream output from tiles to host.
 The function <code>poplar::Graph::createHostRead</code> creates and connects the
-streaming object for us. Listing
-<a href="#lst:streamOutput">[lst:streamOutput]</a>{reference-type=&ldquo;ref&rdquo;
-reference=&ldquo;lst:streamOutput&rdquo;} shows how to implement this. The variable
+streaming object for us. Listing 14 shows how to implement this. The variable
 <code>output_size</code> is the known size of the output vector, for the death
 process example this would be <code>MAX_LENGTH</code>.</p>
 <pre tabindex="0"><code>poplar::Tensor output = graph.addVariable(FLOAT, {totalThreads, output_size}, &#34;output&#34;);
@@ -712,7 +726,8 @@ for( std::size_t i = 0; i &lt; totalThreads; ++i ){
     graph.connect(vtx[&#34;out&#34;], output[i]);
  }
  graph.createHostRead(&#34;output-read&#34;, output);
-</code></pre><p>A small thing to note is that the output tensor is multidimensional but
+</code></pre><p>Listing 14: Mapping an output vector from a tensor on the host to a vertex and creating the a stream object using <code>createHostRead</code>.</p>
+<p>A small thing to note is that the output tensor is multidimensional but
 only a single dimension is streamed from the codelet. As mentioned, we
 cannot stream multidimensional tensors directly to or from the codelet,
 but here is an example of how we can stream sections (slices) of a
@@ -725,34 +740,32 @@ computations. To do this there is another helpful function,
 <code>popolar::Engine::readTensor</code>, with the first parameter being the name
 of the streaming object, defined in the <code>createHostRead</code> function and
 the following two parameters being the first and last memory address of
-where to save the output on the host. Listing
-<a href="#lst:readOutput">[lst:readOutput]</a>{reference-type=&ldquo;ref&rdquo;
-reference=&ldquo;lst:readOutput&rdquo;} gives an example of this. The output does
+where to save the output on the host. Listing 15 gives an example of this. The output does
 not have to be read into a standard C++ array, as we are reading the
 output to the host we have access to all C++ libraries so the output can
 be read into other formats if desired e.g. <code>std::vector</code>.</p>
 <pre tabindex="0"><code>float output_array[totalThreads * output_size] ;
 engine.readTensor(&#34;output-read&#34;, &amp;output_array[0] &amp;output_array[0]+output_size)
-</code></pre><h2 id="graph-execution">Graph Execution<a hidden class="anchor" aria-hidden="true" href="#graph-execution">#</a></h2>
+</code></pre><p>Listing 15: Reading a tensor from the IPU onto the host.</p>
+<h2 id="graph-execution">Graph Execution<a hidden class="anchor" aria-hidden="true" href="#graph-execution">#</a></h2>
 <p>Lastly, we need to execute the graph and compute set. However, before
 this we must let poplar know what order to execute control programs, for
 this we add to <code>prog</code>, the <code>poplar::program::Sequence</code> object defined in
-Listing <a href="#lst:addCodelet">[lst:addCodelet]</a>{reference-type=&ldquo;ref&rdquo;
-reference=&ldquo;lst:addCodelet&rdquo;}. For a simple graph, with no data streams
+Listing 3. For a simple graph, with no data streams
 and one compute set. This is relatively easy and is done using the
 function <code>poplar::program::add</code> with the parameter being the compute set
 executed with <code>poplar::program::Execute</code> function.</p>
 <pre tabindex="0"><code>// Adding the execution of the compute set to the sequence of programs
 prog.add(Execute(computeSet));
-</code></pre><p>Hopefully, truly the last thing to do is to execute the entire graph in
+</code></pre><p>Listing 17: Adding an execute compute set command to the control sequence.</p>
+<p>Hopefully, truly the last thing to do is to execute the entire graph in
 the order defined by <code>prog</code>. This requires the use of the
 <code>poplar::Engine</code> object. The engine is the combination of all we&rsquo;ve done
 so far; the device, the graph, sequence of control programs and data
 streams. An <code>poplar::Engine</code> object is created by passing a
 <code>poplar::Graph</code> object and a <code>poplar::Sequence</code> object to the <code>Engine</code>
 constructor. The engine is then loaded onto a device and ran, see
-Listing <a href="#lst:engine">[lst:engine]</a>{reference-type=&ldquo;ref&rdquo;
-reference=&ldquo;lst:engine&rdquo;}. For illustrative purpose in this snippet,
+Listing 18. For illustrative purpose in this snippet,
 although commented out, a stream connection has been added to the
 engine.</p>
 <pre tabindex="0"><code>// Create the engine
@@ -761,12 +774,11 @@ engine.load(device);
 // Add the host stream to the execution pipe
 // engine.connectStream( ... );
 engine.run();
-</code></pre><h1 id="complete-example">Complete Example<a hidden class="anchor" aria-hidden="true" href="#complete-example">#</a></h1>
+</code></pre><p>Listing 18: Running the engine - executing the control sequence and any anything else added to the engine.</p>
+<h1 id="complete-example">Complete Example<a hidden class="anchor" aria-hidden="true" href="#complete-example">#</a></h1>
 <p>To bring together what has been discussed in the previous sections we
 will construct the code to stream two parameters to the death process
-codelet example used in Listing
-<a href="#lst:myCodelet">[lst:myCodelet]</a>{reference-type=&ldquo;ref&rdquo;
-reference=&ldquo;lst:myCodelet&rdquo;}. First we must define the parameters in the
+codelet example used earlier. First we must define the parameters in the
 codelet which are to be passed to the vertex. For this, we change the
 types of the <code>prob_death</code> and <code>initial_pop</code> variables. The codelet has
 also been updated to write output directly into the <code>out</code> vector and
@@ -802,12 +814,11 @@ comments have been removed.</p>
         return true;
     }
 }
-</code></pre><p>Then in the <code>main.cpp</code> file we can define the variables, create the
+</code></pre><p>Listing 19: Codelet example.</p>
+<p>Then in the <code>main.cpp</code> file we can define the variables, create the
 mappings and vertices to specific tiles and connect the variables to
 those in the codelet. The mappings for all vertices and variables can be
-done within a single for loop, as seen in Listing
-[[lst:variableMap example]](#lst:variableMap example){reference-type=&ldquo;ref&rdquo;
-reference=&ldquo;lst:variableMap example&rdquo;}. This example maps a single vertex
+done within a single for loop, as seen in Listing 9. This example maps a single vertex
 to every thread on every tile on an IPU-POD4. The graph and control
 sequence are then executed before the output is streamed back to the
 host and the saved in a <code>std::vector</code> called <code>cpu_vector</code>.</p>
@@ -895,7 +906,8 @@ host and the saved in a <code>std::vector</code> called <code>cpu_vector</code>.
 
     return 0;
 }
-</code></pre><h1 id="conclusion">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion">#</a></h1>
+</code></pre><p>Listing 20: Main script example.</p>
+<h1 id="conclusion">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion">#</a></h1>
 <p>Although the development time to be able to execute tasks on an IPU can
 be quite significant, it can offer significant computational savings
 where repeated independent tasks need to be executed and hopefully this
