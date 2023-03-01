@@ -140,13 +140,13 @@ It is clear that a one IPU-Core is much less powerful than a one core in
 the Intel Xeon. However, the massive number of IPU-Cores within a single
 processor combined with their ability to run up to six independent tasks
 without loss of performance results in a powerful processor as seen in
-Figures Mango and Raspberry. Which shows the distribution of 1,000
+Figures 1 and 2. Which shows the distribution of 1,000
 executions of simulation batches of size 8,832, for the system described
 in Equation 1.
 
 | ![cpu_batchSim](/ipu_timeTrial/cpu_batchSim.png 'CPU Batch Simulation') | ![ipu_batchSim](/ipu_timeTrial/ipu_batchSim.png 'CPU Batch Simulation') |
 | :--: | :--: |
-| Figure Mango: Simulation times for one batch (8,832 simulations) using the Intel Xeon | Figure Raspberry: Simulation times for one batch using the GC200 |
+| Figure 1: Simulation times for one batch (8,832 simulations) using the Intel Xeon | Figure 2: Simulation times for one batch using the GC200 |
 
 
 These simulations were done in parallel. Each IPU-Core executed six
