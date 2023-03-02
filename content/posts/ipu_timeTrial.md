@@ -206,7 +206,7 @@ time. The results can be seen in Table 2.
 
 |               | Intel Xeon    | IPU-POD4   |
 |:------------  | :-----------: | :--------: |
-| Cost per hour | 3€2.5032 \*   | €6.12      |
+| Cost per hour | €2.5032 \*   | €6.12      |
 | median sim. time | 42.5455s \*\*   | 2.9428s.   |
 |expected sim. cost | €0.024.   | €0.005.    |
 
