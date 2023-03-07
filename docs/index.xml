@@ -31,7 +31,7 @@
       <pubDate>Fri, 24 Feb 2023 14:30:00 +0000</pubDate>
       
       <guid>https://jordanbchilds.github.io/posts/ipu_howto/</guid>
-      <description>Introduction In this article we will discuss how execute a large number of independent programs in parallel, using a new computer chip capable of executing thousands of independent calculations at once. This may be particularly useful in areas of stochastic modelling and Monte Carlo simulation, where repeated and independent simulations are required to learn about uncertainty in model predictions. The chip in question is called the Intelligence Processing Unit (IPU) and is developed by Graphcore, a UK-based company headquartered in Bristol.</description>
+      <description>Introduction In this article we will discuss how to execute a large number of independent programs in parallel, using a new computer chip capable of executing thousands of independent calculations at once. This may be particularly useful in areas of stochastic modelling and Monte Carlo simulation, where repeated and independent simulations are required to learn about uncertainty in model predictions. The chip in question is called the Intelligence Processing Unit (IPU) and is developed by Graphcore, a UK-based company headquartered in Bristol.</description>
     </item>
     
   </channel>
