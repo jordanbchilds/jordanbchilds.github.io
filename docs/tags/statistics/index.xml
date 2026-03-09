@@ -32,7 +32,7 @@
       <pubDate>Fri, 24 Feb 2023 14:30:00 +0000</pubDate>
       <guid>https://jordanbchilds.github.io/posts/hypothesis_testing/</guid>
       <description>&lt;h1 id=&#34;bayesian-hypothesis-testing&#34;&gt;Bayesian hypothesis testing&lt;/h1&gt;
-&lt;p&gt;The t-test is one of the most common tests used in statistics. It compares the means of two normally distributed datasets by calculating a test statistic and comparing it to the t-distribution. Variations of the test exist, including constant and differing variance between groups, paired and unpaired, and non-normality in the data. Here, Bayesian hypothesis testing is briefly discussed, giving an indication of how a two-sample t-test would be conducted within a Bayesian context. Extensions to other situations are available. However, the following example illustrates the main concept. \&lt;/p&gt;</description>
+&lt;p&gt;The t-test is one of the most common tests used in statistics. It compares the means of two normally distributed datasets by calculating a test statistic and comparing it to the t-distribution. Variations of the test exist, including constant and differing variance between groups, paired and unpaired, and non-normality in the data. ADD SOMETHING LINKING T-TEST AND BAYESIAN HYPOTHESIS TESTING. Here, Bayesian hypothesis testing is briefly discussed, giving an indication of how a two-sample t-test would be conducted within a Bayesian context. Extensions to other situations are available. However, the following example illustrates the main concept.&lt;/p&gt;</description>
     </item>
     
     <item>
