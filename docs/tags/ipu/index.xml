@@ -5,12 +5,29 @@
     <link>https://jordanbchilds.github.io/tags/ipu/</link>
     <description>Recent content in IPU on Home</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-gb</language>
-    <lastBuildDate>Fri, 24 Feb 2023 15:00:00 +0000</lastBuildDate><atom:link href="https://jordanbchilds.github.io/tags/ipu/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-gb</language><atom:link href="https://jordanbchilds.github.io/tags/ipu/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A Beginners Guide to Executing C&#43;&#43; Scripts on an IPU</title>
+      <link>https://jordanbchilds.github.io/posts/ipu_howto/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://jordanbchilds.github.io/posts/ipu_howto/</guid>
+      <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;In this article we will discuss how to execute a large number of
+independent programs in parallel, using a new computer chip capable of
+executing thousands of independent calculations at once. This may be
+particularly useful in areas of stochastic modelling and Monte Carlo
+simulation, where repeated and independent simulations are required to
+learn about uncertainty in model predictions. The chip in question is
+called the Intelligence Processing Unit (IPU) and is developed by
+Graphcore, a UK-based company headquartered in Bristol. The IPU is now
+(as of February 2023) on its second generation, the Colossus MK2 IPU
+processor, also known as the GC200.&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>Hardware Accelerated Stochastic Simulation Using an Intelligence Processing Unit</title>
       <link>https://jordanbchilds.github.io/posts/ipu_timetrial/</link>
-      <pubDate>Fri, 24 Feb 2023 15:00:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://jordanbchilds.github.io/posts/ipu_timetrial/</guid>
       <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;Graphcore, a company based in Bristol, UK, have developed a new kind of
@@ -26,24 +43,6 @@ stochastic models. This family of models are used in a wide variety of
 applications including biology, where they can be used to perform &lt;em&gt;in
 silico&lt;/em&gt; experiments, and finance, where they can be used to forecast
 asset prices.&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>A Beginners Guide to Executing C&#43;&#43; Scripts on an IPU</title>
-      <link>https://jordanbchilds.github.io/posts/ipu_howto/</link>
-      <pubDate>Fri, 24 Feb 2023 14:30:00 +0000</pubDate>
-      <guid>https://jordanbchilds.github.io/posts/ipu_howto/</guid>
-      <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
-&lt;p&gt;In this article we will discuss how to execute a large number of
-independent programs in parallel, using a new computer chip capable of
-executing thousands of independent calculations at once. This may be
-particularly useful in areas of stochastic modelling and Monte Carlo
-simulation, where repeated and independent simulations are required to
-learn about uncertainty in model predictions. The chip in question is
-called the Intelligence Processing Unit (IPU) and is developed by
-Graphcore, a UK-based company headquartered in Bristol. The IPU is now
-(as of February 2023) on its second generation, the Colossus MK2 IPU
-processor, also known as the GC200.&lt;/p&gt;</description>
     </item>
     
   </channel>

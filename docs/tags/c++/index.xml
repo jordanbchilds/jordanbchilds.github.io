@@ -5,33 +5,11 @@
     <link>https://jordanbchilds.github.io/tags/c&#43;&#43;/</link>
     <description>Recent content in C&#43;&#43; on Home</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-gb</language>
-    <lastBuildDate>Fri, 24 Feb 2023 15:00:00 +0000</lastBuildDate><atom:link href="https://jordanbchilds.github.io/tags/c++/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Hardware Accelerated Stochastic Simulation Using an Intelligence Processing Unit</title>
-      <link>https://jordanbchilds.github.io/posts/ipu_timetrial/</link>
-      <pubDate>Fri, 24 Feb 2023 15:00:00 +0000</pubDate>
-      <guid>https://jordanbchilds.github.io/posts/ipu_timetrial/</guid>
-      <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
-&lt;p&gt;Graphcore, a company based in Bristol, UK, have developed a new kind of
-processor with the aim of being able to massively parallelise
-computation. The chip is called an Intelligence Processing Unit (IPU)
-and is now on its second generation, the Colossus MK2 IPU processor -
-the GC200. Originally designed to dramatically increase performance in
-machine learning applications, the IPUs architecture can also be used to
-provide big performance increases in many other areas. Here, we will
-show that the IPUs ability for massive parallelisation can be used to
-decrease the computational time for repeated simulation of dynamic,
-stochastic models. This family of models are used in a wide variety of
-applications including biology, where they can be used to perform &lt;em&gt;in
-silico&lt;/em&gt; experiments, and finance, where they can be used to forecast
-asset prices.&lt;/p&gt;</description>
-    </item>
-    
+    <language>en-gb</language><atom:link href="https://jordanbchilds.github.io/tags/c++/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>A Beginners Guide to Executing C&#43;&#43; Scripts on an IPU</title>
       <link>https://jordanbchilds.github.io/posts/ipu_howto/</link>
-      <pubDate>Fri, 24 Feb 2023 14:30:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://jordanbchilds.github.io/posts/ipu_howto/</guid>
       <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;In this article we will discuss how to execute a large number of
@@ -89,6 +67,27 @@ processor, also known as the GC200.&lt;/p&gt;</description>
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; iter;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Here we will briefly discuss how to sample a discrete random variable in theory and practice, before constructing our own algorithm and comparing its performance to the &lt;code&gt;std::discrete_distribution&lt;/code&gt; in the C++ standard library. Many hand-coded discrete samplers have been proposed, but often these are unnecessarily clunky and, consequently, slow. The sampler proposed here is a function, designed to take an &lt;code&gt;std::vector&lt;/code&gt; input representing the weights of the possible outcomes and return an &lt;code&gt;std::size_t&lt;/code&gt; value indicating the randomly sampled vector index. Two versions of the function are given above, one where the sum of the weights (normalising constant) is known and one where it is not. If the normalising constant is not known, then it is calculated and the weights are checked to be non-negative, and if the it is given, it is assumed that this has already been checked.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Hardware Accelerated Stochastic Simulation Using an Intelligence Processing Unit</title>
+      <link>https://jordanbchilds.github.io/posts/ipu_timetrial/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://jordanbchilds.github.io/posts/ipu_timetrial/</guid>
+      <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;Graphcore, a company based in Bristol, UK, have developed a new kind of
+processor with the aim of being able to massively parallelise
+computation. The chip is called an Intelligence Processing Unit (IPU)
+and is now on its second generation, the Colossus MK2 IPU processor -
+the GC200. Originally designed to dramatically increase performance in
+machine learning applications, the IPUs architecture can also be used to
+provide big performance increases in many other areas. Here, we will
+show that the IPUs ability for massive parallelisation can be used to
+decrease the computational time for repeated simulation of dynamic,
+stochastic models. This family of models are used in a wide variety of
+applications including biology, where they can be used to perform &lt;em&gt;in
+silico&lt;/em&gt; experiments, and finance, where they can be used to forecast
+asset prices.&lt;/p&gt;</description>
     </item>
     
   </channel>

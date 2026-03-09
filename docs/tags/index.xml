@@ -5,12 +5,27 @@
     <link>https://jordanbchilds.github.io/tags/</link>
     <description>Recent content in Tags on Home</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-gb</language>
-    <lastBuildDate>Fri, 24 Feb 2023 15:00:00 +0000</lastBuildDate><atom:link href="https://jordanbchilds.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-gb</language><atom:link href="https://jordanbchilds.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Bayesian Inference</title>
+      <link>https://jordanbchilds.github.io/tags/bayesian-inference/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://jordanbchilds.github.io/tags/bayesian-inference/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Bayesian Methods</title>
+      <link>https://jordanbchilds.github.io/tags/bayesian-methods/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://jordanbchilds.github.io/tags/bayesian-methods/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>C&#43;&#43;</title>
       <link>https://jordanbchilds.github.io/tags/c&#43;&#43;/</link>
-      <pubDate>Fri, 24 Feb 2023 15:00:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://jordanbchilds.github.io/tags/c&#43;&#43;/</guid>
       <description></description>
     </item>
@@ -18,15 +33,23 @@
     <item>
       <title>Gillespie Algorithm</title>
       <link>https://jordanbchilds.github.io/tags/gillespie-algorithm/</link>
-      <pubDate>Fri, 24 Feb 2023 15:00:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://jordanbchilds.github.io/tags/gillespie-algorithm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Guide</title>
+      <link>https://jordanbchilds.github.io/tags/guide/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://jordanbchilds.github.io/tags/guide/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Interest</title>
       <link>https://jordanbchilds.github.io/tags/interest/</link>
-      <pubDate>Fri, 24 Feb 2023 15:00:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://jordanbchilds.github.io/tags/interest/</guid>
       <description></description>
     </item>
@@ -34,40 +57,16 @@
     <item>
       <title>IPU</title>
       <link>https://jordanbchilds.github.io/tags/ipu/</link>
-      <pubDate>Fri, 24 Feb 2023 15:00:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://jordanbchilds.github.io/tags/ipu/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Stochastic Modelling</title>
-      <link>https://jordanbchilds.github.io/tags/stochastic-modelling/</link>
-      <pubDate>Fri, 24 Feb 2023 15:00:00 +0000</pubDate>
-      <guid>https://jordanbchilds.github.io/tags/stochastic-modelling/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Bayesian</title>
-      <link>https://jordanbchilds.github.io/tags/bayesian/</link>
-      <pubDate>Fri, 24 Feb 2023 14:30:00 +0000</pubDate>
-      <guid>https://jordanbchilds.github.io/tags/bayesian/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Guide</title>
-      <link>https://jordanbchilds.github.io/tags/guide/</link>
-      <pubDate>Fri, 24 Feb 2023 14:30:00 +0000</pubDate>
-      <guid>https://jordanbchilds.github.io/tags/guide/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Statistics</title>
-      <link>https://jordanbchilds.github.io/tags/statistics/</link>
-      <pubDate>Fri, 24 Feb 2023 14:30:00 +0000</pubDate>
-      <guid>https://jordanbchilds.github.io/tags/statistics/</guid>
+      <title>Markov Chains</title>
+      <link>https://jordanbchilds.github.io/tags/markov-chains/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://jordanbchilds.github.io/tags/markov-chains/</guid>
       <description></description>
     </item>
     
@@ -76,6 +75,30 @@
       <link>https://jordanbchilds.github.io/tags/random-sampling/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://jordanbchilds.github.io/tags/random-sampling/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Statistical Modelling</title>
+      <link>https://jordanbchilds.github.io/tags/statistical-modelling/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://jordanbchilds.github.io/tags/statistical-modelling/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Statistics</title>
+      <link>https://jordanbchilds.github.io/tags/statistics/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://jordanbchilds.github.io/tags/statistics/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Stochastic Modelling</title>
+      <link>https://jordanbchilds.github.io/tags/stochastic-modelling/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://jordanbchilds.github.io/tags/stochastic-modelling/</guid>
       <description></description>
     </item>
     
