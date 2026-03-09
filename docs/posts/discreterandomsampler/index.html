@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>A simple discrete random sampler in C&#43;&#43; | Home</title>
+<meta name="keywords" content="C&#43;&#43;, Random sampling">
+<meta name="description" content="#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+
+// un-normalised weights
+template&lt;typename T&gt;
+std::size_t rdiscrete (const std::vector&lt;T&gt;&amp; weights) {
+    T norm = 0.0;
+    for (const T&amp; w : weights) {
+        if (w&lt;0.0) throw std::domain_error(&#34;Weights must be non-negative.&#34;);
+        norm &#43;= w;
+    }
+    
+    double u = (double)rand() / (double)RAND_MAX * (double)norm;
+    std::size_t iter = 0;
+    for (const T&amp; w : weights) {
+        u -= w;
+        if (u &lt; 0.0) return iter;
+        iter&#43;&#43;;
+    }
+    return iter;
+}
+
+// (un-normalised) weights with a known normalising constant
+template &lt;typename T&gt;
+std::size_t rdiscrete (const std::vector&lt;T&gt;&amp; weights, const T&amp; norm) {
+    if (norm&lt;=0) std::domain_error(&#34;norm must be greater than zero.&#34;);
+    
+    double u = (double)rand() / (double)RAND_MAX * (double)norm;
+    std::size_t iter = 0;
+    for (const T&amp; w : weights) {
+        if (w&lt;0.0) std::domain_error(&#34;weights must be non-negative.&#34;)
+        u -= w;
+        if (u &lt; 0.0) return iter;
+        iter&#43;&#43;;
+    }
+    return iter;
+}
+Here we will briefly discuss how to sample a discrete random variable in theory and practice, before constructing our own algorithm and comparing its performance to the std::discrete_distribution in the C&#43;&#43; standard library. Many hand-coded discrete samplers have been proposed, but often these are unnecessarily clunky and, consequently, slow. The sampler proposed here is a function, designed to take an std::vector input representing the weights of the possible outcomes and return an std::size_t value indicating the randomly sampled vector index. Two versions of the function are given above, one where the sum of the weights (normalising constant) is known and one where it is not. If the normalising constant is not known, then it is calculated and the weights are checked to be non-negative, and if the it is given, it is assumed that this has already been checked.">
+<meta name="author" content="Jordan Childs">
+<link rel="canonical" href="https://jordanbchilds.github.io/posts/discreterandomsampler/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.6a98292fb8fa8cf0f3ba4042d4b75515c04267550f3ad49ff6271b5af9562443.css" integrity="sha256-apgpL7j6jPDzukBC1LdVFcBCZ1UPOtSf9icbWvlWJEM=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://jordanbchilds.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://jordanbchilds.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://jordanbchilds.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://jordanbchilds.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://jordanbchilds.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://jordanbchilds.github.io/posts/discreterandomsampler/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="A simple discrete random sampler in C&#43;&#43;" />
+<meta property="og:description" content="#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+
+// un-normalised weights
+template&lt;typename T&gt;
+std::size_t rdiscrete (const std::vector&lt;T&gt;&amp; weights) {
+    T norm = 0.0;
+    for (const T&amp; w : weights) {
+        if (w&lt;0.0) throw std::domain_error(&#34;Weights must be non-negative.&#34;);
+        norm &#43;= w;
+    }
+    
+    double u = (double)rand() / (double)RAND_MAX * (double)norm;
+    std::size_t iter = 0;
+    for (const T&amp; w : weights) {
+        u -= w;
+        if (u &lt; 0.0) return iter;
+        iter&#43;&#43;;
+    }
+    return iter;
+}
+
+// (un-normalised) weights with a known normalising constant
+template &lt;typename T&gt;
+std::size_t rdiscrete (const std::vector&lt;T&gt;&amp; weights, const T&amp; norm) {
+    if (norm&lt;=0) std::domain_error(&#34;norm must be greater than zero.&#34;);
+    
+    double u = (double)rand() / (double)RAND_MAX * (double)norm;
+    std::size_t iter = 0;
+    for (const T&amp; w : weights) {
+        if (w&lt;0.0) std::domain_error(&#34;weights must be non-negative.&#34;)
+        u -= w;
+        if (u &lt; 0.0) return iter;
+        iter&#43;&#43;;
+    }
+    return iter;
+}
+Here we will briefly discuss how to sample a discrete random variable in theory and practice, before constructing our own algorithm and comparing its performance to the std::discrete_distribution in the C&#43;&#43; standard library. Many hand-coded discrete samplers have been proposed, but often these are unnecessarily clunky and, consequently, slow. The sampler proposed here is a function, designed to take an std::vector input representing the weights of the possible outcomes and return an std::size_t value indicating the randomly sampled vector index. Two versions of the function are given above, one where the sum of the weights (normalising constant) is known and one where it is not. If the normalising constant is not known, then it is calculated and the weights are checked to be non-negative, and if the it is given, it is assumed that this has already been checked." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://jordanbchilds.github.io/posts/discreterandomsampler/" /><meta property="article:section" content="posts" />
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="A simple discrete random sampler in C&#43;&#43;"/>
+<meta name="twitter:description" content="#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+
+// un-normalised weights
+template&lt;typename T&gt;
+std::size_t rdiscrete (const std::vector&lt;T&gt;&amp; weights) {
+    T norm = 0.0;
+    for (const T&amp; w : weights) {
+        if (w&lt;0.0) throw std::domain_error(&#34;Weights must be non-negative.&#34;);
+        norm &#43;= w;
+    }
+    
+    double u = (double)rand() / (double)RAND_MAX * (double)norm;
+    std::size_t iter = 0;
+    for (const T&amp; w : weights) {
+        u -= w;
+        if (u &lt; 0.0) return iter;
+        iter&#43;&#43;;
+    }
+    return iter;
+}
+
+// (un-normalised) weights with a known normalising constant
+template &lt;typename T&gt;
+std::size_t rdiscrete (const std::vector&lt;T&gt;&amp; weights, const T&amp; norm) {
+    if (norm&lt;=0) std::domain_error(&#34;norm must be greater than zero.&#34;);
+    
+    double u = (double)rand() / (double)RAND_MAX * (double)norm;
+    std::size_t iter = 0;
+    for (const T&amp; w : weights) {
+        if (w&lt;0.0) std::domain_error(&#34;weights must be non-negative.&#34;)
+        u -= w;
+        if (u &lt; 0.0) return iter;
+        iter&#43;&#43;;
+    }
+    return iter;
+}
+Here we will briefly discuss how to sample a discrete random variable in theory and practice, before constructing our own algorithm and comparing its performance to the std::discrete_distribution in the C&#43;&#43; standard library. Many hand-coded discrete samplers have been proposed, but often these are unnecessarily clunky and, consequently, slow. The sampler proposed here is a function, designed to take an std::vector input representing the weights of the possible outcomes and return an std::size_t value indicating the randomly sampled vector index. Two versions of the function are given above, one where the sum of the weights (normalising constant) is known and one where it is not. If the normalising constant is not known, then it is calculated and the weights are checked to be non-negative, and if the it is given, it is assumed that this has already been checked."/>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://jordanbchilds.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "A simple discrete random sampler in C++",
+      "item": "https://jordanbchilds.github.io/posts/discreterandomsampler/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "A simple discrete random sampler in C++",
+  "name": "A simple discrete random sampler in C\u002b\u002b",
+  "description": "#include \u0026lt;vector\u0026gt; #include \u0026lt;stdexcept\u0026gt; // un-normalised weights template\u0026lt;typename T\u0026gt; std::size_t rdiscrete (const std::vector\u0026lt;T\u0026gt;\u0026amp; weights) { T norm = 0.0; for (const T\u0026amp; w : weights) { if (w\u0026lt;0.0) throw std::domain_error(\u0026#34;Weights must be non-negative.\u0026#34;); norm += w; } double u = (double)rand() / (double)RAND_MAX * (double)norm; std::size_t iter = 0; for (const T\u0026amp; w : weights) { u -= w; if (u \u0026lt; 0.0) return iter; iter++; } return iter; } // (un-normalised) weights with a known normalising constant template \u0026lt;typename T\u0026gt; std::size_t rdiscrete (const std::vector\u0026lt;T\u0026gt;\u0026amp; weights, const T\u0026amp; norm) { if (norm\u0026lt;=0) std::domain_error(\u0026#34;norm must be greater than zero.\u0026#34;); double u = (double)rand() / (double)RAND_MAX * (double)norm; std::size_t iter = 0; for (const T\u0026amp; w : weights) { if (w\u0026lt;0.0) std::domain_error(\u0026#34;weights must be non-negative.\u0026#34;) u -= w; if (u \u0026lt; 0.0) return iter; iter++; } return iter; } Here we will briefly discuss how to sample a discrete random variable in theory and practice, before constructing our own algorithm and comparing its performance to the std::discrete_distribution in the C++ standard library. Many hand-coded discrete samplers have been proposed, but often these are unnecessarily clunky and, consequently, slow. The sampler proposed here is a function, designed to take an std::vector input representing the weights of the possible outcomes and return an std::size_t value indicating the randomly sampled vector index. Two versions of the function are given above, one where the sum of the weights (normalising constant) is known and one where it is not. If the normalising constant is not known, then it is calculated and the weights are checked to be non-negative, and if the it is given, it is assumed that this has already been checked.\n",
+  "keywords": [
+    "C++", "Random sampling"
+  ],
+  "articleBody": "#include #include // un-normalised weights template\u003ctypename T\u003e std::size_t rdiscrete (const std::vector\u003cT\u003e\u0026 weights) { T norm = 0.0; for (const T\u0026 w : weights) { if (w\u003c0.0) throw std::domain_error(\"Weights must be non-negative.\"); norm += w; } double u = (double)rand() / (double)RAND_MAX * (double)norm; std::size_t iter = 0; for (const T\u0026 w : weights) { u -= w; if (u \u003c 0.0) return iter; iter++; } return iter; } // (un-normalised) weights with a known normalising constant template \u003ctypename T\u003e std::size_t rdiscrete (const std::vector\u003cT\u003e\u0026 weights, const T\u0026 norm) { if (norm\u003c=0) std::domain_error(\"norm must be greater than zero.\"); double u = (double)rand() / (double)RAND_MAX * (double)norm; std::size_t iter = 0; for (const T\u0026 w : weights) { if (w\u003c0.0) std::domain_error(\"weights must be non-negative.\") u -= w; if (u \u003c 0.0) return iter; iter++; } return iter; } Here we will briefly discuss how to sample a discrete random variable in theory and practice, before constructing our own algorithm and comparing its performance to the std::discrete_distribution in the C++ standard library. Many hand-coded discrete samplers have been proposed, but often these are unnecessarily clunky and, consequently, slow. The sampler proposed here is a function, designed to take an std::vector input representing the weights of the possible outcomes and return an std::size_t value indicating the randomly sampled vector index. Two versions of the function are given above, one where the sum of the weights (normalising constant) is known and one where it is not. If the normalising constant is not known, then it is calculated and the weights are checked to be non-negative, and if the it is given, it is assumed that this has already been checked.\n1. Brief theory A discrete random variable (DRV) is one that can take a finite set of values, each with a defined probability of occurring. We assume that we are sampling a number between 0 and n-1, following vector indexes notation. A DRV can be sampled by starting with a random draw from a uniform(0,1) distribution and back calculating the its value on the cumulative mass function. For a random variable, X, which can take values 0,…,n-1, let the probabilities and cumulative probabilities be denoted as follows\n| $$ \\text{Pr} \\left( X=i \\right) = p_i, $$ | | $$ \\text{Pr} \\left( X \\leq i \\right) = \\sum_{j=0}^{i}p_i = c_i. $$ |\nA function to sample a DRV should execute the following two steps.\nSample: $$ U \\sim \\text{Uniform} \\left(0, 1\\right) $$ Find i such that $$ c_{i-1} \\leq U \\le c_i $$ Where $c_{-1}=0.0$. Hard coding these two steps directly is not particularly hard but the computational expense can be reduced by noting two things. Firstly, the cumulative mass function is usually not known and its calculation incurs additional cost. Secondly, the double comparison in step 2 is unnecessary. The second point can be dealt with by comparing the uniform random draw to the CMF sequentially. Knowing it is greater than the previous CMF value, $c_{i-1}$, it is then only necessary to check that it is smaller than $c_i$ before moving onto $c_{i+1}$. However, this still leaves the problem of calculating the CMF.\nWe can re-write the comparison in terms of the probabilities as such $$ U \\le \\sum_{j=0}^{i}p_i. $$ And then rearrange to allow $p_i$ to be on its own, $$ U - \\sum_{j=0}^{i} p_i \\le 0.0 $$.\nChecking the expression sequentially means with each iteration we only have one subtraction and one comparison. A true result allows the search to stop and no more computations are required. For the case where the un-normalised weights are known and not the probabilities themselves, this can be re-written. Let $p_i = w_i / K$, where $w_i$ is the un-normalised weight and $K$ is the normalising constant.\n$$ U - \\frac{1}{K}\\sum_{j=0}^{i} w_i \\le 0.0 $$. $$ U*K -\\sum_{j=0}^{i} w_i \\le 0.0 $$.\nAnd so, comparing the probabilities against a uniform draw between 0 and 1, is equivalent to comparing the weights between 0 and $K$.\n2 Generating samples 2.1 Standard library C++ comes with the standard library (STL), which includes a way to sample a discrete random value, the snippet below shows how this could be done. Note that the discrete_distrsibution does not require the probabilities to be normalised, as such the weights do not sum to 1.0.\ninclude \u003cvector\u003e include \u003crandom\u003e int main () { std::default_random_engine generator; std::vector\u003cint\u003e weights({1,2,3,1,1,2}); std::discrete_distribution\u003cint\u003e distribution(weights.begin(), weights.end()); int randomInt = distribution(generator); } 2.2 Proposed function In the snippet below we sample a DRV using the previously defined function. Although used here the STL header vector does not have to be used and a C style array could be used instead. A uniform random number is drawn using the rand() function, which randomly draws integers between 0 and the largest unsigned int value and is then scaled to be a double between 0.0 and 1.0.\n/* include or define above functions */ int main () { std::vector\u003cint\u003e weights({1,2,3,1,1,2}); std::size_t randomInt = rdiscrete(weights); } Each weight and the normalising constant is checked to ensure that they positive or non-negative, as appropriate. The function will return n, one larger than the largest possible value of the DRV, as an indication that something is wrong. This may occur if the norm is greater than the sum of the weights although due to the random nature of the function, it is not guaranteed.\nIf it is guaranteed that each weight is non-negative, then the check can be removed. However it’s additional expense is low and it will immediately flag if something is wrong.\nComparison This is a simple problem and so the computational expense (measured in time) is small, nevertheless it is always good to know your code is as fast as it can be. We consider two cases; sampling repeatedly from a single distribution and repeatedly sampling from different distributions. Both cases often occur in practice.\nSampling from one distribution Assuming the STL method calculates the normalising constant once, when the object is defined, we will compare it with the case where the normalising constant is known and passed to the function, as this is more alike.\nWe first consider the case of repeated re-sampling from the same distribution. For a varying number of possible outcomes, the figure below shows the results of timing the two methods. It is clear that for a small number of outcomes (10 or less) that there is little difference between the two methods. A larger number of possible outcomes slows down the simpler function drastically whereas the much more optimises STL version appears to be unaffected by the increase.\nSampling different distributions The second case we are interested in is sampling from different distributions. For the STL method this requires re-defining the std::discrete_distribution object for each new sample. Following the same assumption as before, calculating the normalising constant is done once upon object definition, for this case will assume the normalising constant is not known and use the appropriate version of our function. For our simple function it requires passing a new vector of weights to the function, for each new sample. Note the different scale of the y-axis compared to the previous plot. It appears the STL object becomes much slower when needing to sample from a different distribution.\nConclusion Depending on yhe use case, whether you’re repeatedly drawing from the same distribution or not, you may want to chose either option. However the function(s) provided here are simple and do not require the use of a random number generator object, such as std::default_random_engine and instead depends upon the rand function. The functions provided here also have the benefit of not depending on any STL package (with modifications to use C style arrays and removing the std::domain_error’s) which may not always be available or desired.\n",
+  "wordCount" : "1288",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Jordan Childs"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://jordanbchilds.github.io/posts/discreterandomsampler/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Home",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://jordanbchilds.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://jordanbchilds.github.io/" accesskey="h" title="Home (Alt + H)">Home</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://jordanbchilds.github.io/posts" title="Blogs">
+                    <span><br />Blogs</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://jordanbchilds.github.io/aboutme" title="About Me">
+                    <span><br />About Me</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://jordanbchilds.github.io/tags" title="Tags">
+                    <span><br />Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$','$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+
+  window.addEventListener('load', (event) => {
+      document.querySelectorAll("mjx-container").forEach(function(x){
+        x.parentElement.classList += 'has-jax'})
+    });
+
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      A simple discrete random sampler in C&#43;&#43;
+    </h1>
+    <div class="post-meta">7 min&amp;nbsp;·&amp;nbsp;Jordan Childs
+
+</div>
+  </header> 
+  <div class="post-content"><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;vector&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdexcept&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// un-normalised weights
+</span></span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>size_t rdiscrete (<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;&amp;</span> weights) {
+</span></span><span style="display:flex;"><span>    T norm <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">const</span> T<span style="color:#f92672">&amp;</span> w : weights) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (w<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">0.0</span>) <span style="color:#66d9ef">throw</span> std<span style="color:#f92672">::</span>domain_error(<span style="color:#e6db74">&#34;Weights must be non-negative.&#34;</span>);
+</span></span><span style="display:flex;"><span>        norm <span style="color:#f92672">+=</span> w;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">double</span> u <span style="color:#f92672">=</span> (<span style="color:#66d9ef">double</span>)rand() <span style="color:#f92672">/</span> (<span style="color:#66d9ef">double</span>)RAND_MAX <span style="color:#f92672">*</span> (<span style="color:#66d9ef">double</span>)norm;
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>size_t iter <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">const</span> T<span style="color:#f92672">&amp;</span> w : weights) {
+</span></span><span style="display:flex;"><span>        u <span style="color:#f92672">-=</span> w;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (u <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0.0</span>) <span style="color:#66d9ef">return</span> iter;
+</span></span><span style="display:flex;"><span>        iter<span style="color:#f92672">++</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> iter;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// (un-normalised) weights with a known normalising constant
+</span></span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>size_t rdiscrete (<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;&amp;</span> weights, <span style="color:#66d9ef">const</span> T<span style="color:#f92672">&amp;</span> norm) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (norm<span style="color:#f92672">&lt;=</span><span style="color:#ae81ff">0</span>) std<span style="color:#f92672">::</span>domain_error(<span style="color:#e6db74">&#34;norm must be greater than zero.&#34;</span>);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">double</span> u <span style="color:#f92672">=</span> (<span style="color:#66d9ef">double</span>)rand() <span style="color:#f92672">/</span> (<span style="color:#66d9ef">double</span>)RAND_MAX <span style="color:#f92672">*</span> (<span style="color:#66d9ef">double</span>)norm;
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>size_t iter <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">const</span> T<span style="color:#f92672">&amp;</span> w : weights) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (w<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">0.0</span>) std<span style="color:#f92672">::</span>domain_error(<span style="color:#e6db74">&#34;weights must be non-negative.&#34;</span>)
+</span></span><span style="display:flex;"><span>        u <span style="color:#f92672">-=</span> w;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (u <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0.0</span>) <span style="color:#66d9ef">return</span> iter;
+</span></span><span style="display:flex;"><span>        iter<span style="color:#f92672">++</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> iter;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Here we will briefly discuss how to sample a discrete random variable in theory and practice, before constructing our own algorithm and comparing its performance to the <code>std::discrete_distribution</code> in the C++ standard library. Many hand-coded discrete samplers have been proposed, but often these are unnecessarily clunky and, consequently, slow. The sampler proposed here is a function, designed to take an <code>std::vector</code> input representing the weights of the possible outcomes and return an <code>std::size_t</code> value indicating the randomly sampled vector index. Two versions of the function are given above, one where the sum of the weights (normalising constant) is known and one where it is not. If the normalising constant is not known, then it is calculated and the weights are checked to be non-negative, and if the it is given, it is assumed that this has already been checked.</p>
+<h1 id="1-brief-theory">1. Brief theory<a hidden class="anchor" aria-hidden="true" href="#1-brief-theory">#</a></h1>
+<p>A discrete random variable (DRV) is one that can take a finite set of values, each with a defined probability of occurring. We assume that we are sampling a number between 0 and n-1, following vector indexes notation. A DRV can be sampled by starting with a random draw from a uniform(0,1) distribution and back calculating the its value on the cumulative mass function. For a random variable, <em>X</em>, which can take values 0,&hellip;,n-1, let the probabilities and cumulative probabilities be denoted as follows</p>
+<p>| $$ \text{Pr} \left( X=i \right) = p_i, $$ |
+| $$ \text{Pr} \left( X \leq i \right) = \sum_{j=0}^{i}p_i = c_i. $$ |</p>
+<p>A function to sample a DRV should execute the following two steps.</p>
+<ol>
+<li>Sample: $$ U \sim \text{Uniform} \left(0, 1\right) $$</li>
+<li>Find <em>i</em> such that $$ c_{i-1} \leq U \le c_i $$</li>
+</ol>
+<p>Where $c_{-1}=0.0$. Hard coding these two steps directly is not particularly hard but the computational expense can be reduced by noting two things. Firstly, the cumulative mass function is usually not known and its calculation incurs additional cost. Secondly, the double comparison in step 2 is unnecessary. The second point can be dealt with by comparing the uniform random draw to the CMF sequentially. Knowing it is greater than the previous CMF value, $c_{i-1}$, it is then only necessary to check that it is smaller than $c_i$ before moving onto $c_{i+1}$. However, this still leaves the problem of calculating the CMF.</p>
+<p>We can re-write the comparison in terms of the probabilities as such
+$$ U \le \sum_{j=0}^{i}p_i. $$
+And then rearrange to allow $p_i$ to be on its own,
+$$ U - \sum_{j=0}^{i} p_i \le 0.0 $$.</p>
+<p>Checking the expression sequentially means with each iteration we only have one subtraction and one comparison. A true result allows the search to stop and no more computations are required. For the case where the un-normalised weights are known and not the probabilities themselves, this can be re-written. Let $p_i = w_i / K$, where $w_i$ is the un-normalised weight and $K$ is the normalising constant.</p>
+<p>$$ U - \frac{1}{K}\sum_{j=0}^{i} w_i \le 0.0 $$.
+$$ U*K -\sum_{j=0}^{i} w_i \le 0.0 $$.</p>
+<p>And so, comparing the probabilities against a uniform draw between 0 and 1, is equivalent to comparing the weights between 0 and $K$.</p>
+<h1 id="2-generating-samples">2 Generating samples<a hidden class="anchor" aria-hidden="true" href="#2-generating-samples">#</a></h1>
+<h2 id="21-standard-library">2.1 Standard library<a hidden class="anchor" aria-hidden="true" href="#21-standard-library">#</a></h2>
+<p>C++ comes with the standard library (STL), which includes a way to sample a discrete random value, the snippet below shows how this could be done. Note that the <code>discrete_distrsibution</code> does not require the probabilities to be normalised, as such the weights do not sum to 1.0.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>include <span style="color:#f92672">&lt;</span>vector<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>include <span style="color:#f92672">&lt;</span>random<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> main () {
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>default_random_engine generator;
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> weights({<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>});
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>discrete_distribution<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> distribution(weights.begin(), weights.end());
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> randomInt <span style="color:#f92672">=</span> distribution(generator);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="22-proposed-function">2.2 Proposed function<a hidden class="anchor" aria-hidden="true" href="#22-proposed-function">#</a></h2>
+<p>In the snippet below we sample a DRV using the previously defined function. Although used here the STL header <code>vector</code> does not have to be used and a C style array could be used instead. A uniform random number is drawn using the <code>rand()</code> function, which randomly draws integers between 0 and the largest <code>unsigned int</code> value and is then scaled to be a <code>double</code> between 0.0 and 1.0.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">/*  
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    include or define above functions
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span> () {
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> weights({<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>});
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>size_t randomInt <span style="color:#f92672">=</span> rdiscrete(weights);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Each weight and the normalising constant is checked to ensure that they positive or non-negative, as appropriate. The function will return <code>n</code>, one larger than the largest possible value of the DRV, as an indication that something is wrong. This may occur if the <code>norm</code> is greater than the sum of the weights although due to the random nature of the function, it is not guaranteed.</p>
+<p>If it is guaranteed that each weight is non-negative, then the check can be removed. However it&rsquo;s additional expense is low and it will immediately flag if something is wrong.</p>
+<h1 id="comparison">Comparison<a hidden class="anchor" aria-hidden="true" href="#comparison">#</a></h1>
+<p>This is a simple problem and so the computational expense (measured in time) is small, nevertheless it is always good to know your code is as fast as it can be. We consider two cases; sampling repeatedly from a single distribution and repeatedly sampling from different distributions. Both cases often occur in practice.</p>
+<h2 id="sampling-from-one-distribution">Sampling from one distribution<a hidden class="anchor" aria-hidden="true" href="#sampling-from-one-distribution">#</a></h2>
+<p>Assuming the STL method calculates the normalising constant once, when the object is defined, we will compare it with the case where the normalising constant is known and passed to the function, as this is more alike.</p>
+<p>We first consider the case of repeated re-sampling from the same distribution. For a varying number of possible outcomes, the figure below shows the results of timing the two methods. It is clear that for a small number of outcomes (10 or less) that there is little difference between the two methods. A larger number of possible outcomes slows down the simpler function drastically whereas the much more optimises STL version appears to be unaffected by the increase.</p>
+<h2 id="sampling-different-distributions">Sampling different distributions<a hidden class="anchor" aria-hidden="true" href="#sampling-different-distributions">#</a></h2>
+<p>The second case we are interested in is sampling from different distributions. For the STL method this requires re-defining the <code>std::discrete_distribution</code> object for each new sample. Following the same assumption as before, calculating the normalising constant is done once upon object definition, for this case will assume the normalising constant is not known and use the appropriate version of our function. For our simple function it requires passing a new vector of weights to the function, for each new sample. Note the different scale of the y-axis compared to the previous plot. It appears the STL object becomes much slower when needing to sample from a different distribution.</p>
+<h1 id="conclusion">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion">#</a></h1>
+<p>Depending on yhe use case, whether you&rsquo;re repeatedly drawing from the same distribution or not, you may want to chose either option. However the function(s) provided here are simple and do not require the use of a random number generator object, such as <code>std::default_random_engine</code> and instead depends upon the <code>rand</code> function. The functions provided here also have the benefit of not depending on any STL package (with modifications to use C style arrays and removing the <code>std::domain_error</code>&rsquo;s) which may not always be available or desired.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://jordanbchilds.github.io/tags/c&#43;&#43;/">C&#43;&#43;</a></li>
+      <li><a href="https://jordanbchilds.github.io/tags/random-sampling/">Random Sampling</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://jordanbchilds.github.io/posts/bayesian_introduction/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>Introduction to Bayesian Statistics</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2026 <a href="https://jordanbchilds.github.io/">Home</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

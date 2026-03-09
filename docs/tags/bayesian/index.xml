@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Bayesian on Home</title>
+    <link>https://jordanbchilds.github.io/tags/bayesian/</link>
+    <description>Recent content in Bayesian on Home</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <lastBuildDate>Fri, 24 Feb 2023 14:30:00 +0000</lastBuildDate><atom:link href="https://jordanbchilds.github.io/tags/bayesian/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Introduction to Bayesian Statistics</title>
+      <link>https://jordanbchilds.github.io/posts/bayesian_introduction/</link>
+      <pubDate>Fri, 24 Feb 2023 14:30:00 +0000</pubDate>
+      <guid>https://jordanbchilds.github.io/posts/bayesian_introduction/</guid>
+      <description>&lt;h1 id=&#34;bayesian-statistics&#34;&gt;Bayesian statistics&lt;/h1&gt;
+&lt;p&gt;Unlike frequentist statisticians, Bayesian statisticians believe that there is no ``true&amp;rsquo;&amp;rsquo; value of the parameters in a statistical model. Instead, Bayesian methods summarise parameter beliefs after observing data (&lt;em&gt;a posteriori&lt;/em&gt;) by a probability distribution, giving more weight to more likely values. Parameter beliefs before observing any data (&lt;em&gt;a priori&lt;/em&gt;) are called prior beliefs, and are similarly summarised by a probability distribution. Prior beliefs can be as vague or informed as required to reflect the beliefs of relevant experts. A lack of prior can be reflected by vague prior beliefs, with a high variance. In contrast, a large amount of prior knowledge from previous work may result in well-informed priors with high precision. Parameter beliefs are updated by combining prior beliefs and new evidence presented from a dataset. Bayesian methodology is fully probabilistic and considers model parameters, hidden states, as well as missing and observed data in the same vein. The coherent treatment of model parameters, data, and hidden states has allowed Bayesian methods to be used in a wide range of inference problems.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

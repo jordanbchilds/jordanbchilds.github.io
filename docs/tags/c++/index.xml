@@ -11,18 +11,84 @@
       <title>Hardware Accelerated Stochastic Simulation Using an Intelligence Processing Unit</title>
       <link>https://jordanbchilds.github.io/posts/ipu_timetrial/</link>
       <pubDate>Fri, 24 Feb 2023 15:00:00 +0000</pubDate>
-      
       <guid>https://jordanbchilds.github.io/posts/ipu_timetrial/</guid>
-      <description>Introduction Graphcore, a company based in Bristol, UK, have developed a new kind of processor with the aim of being able to massively parallelise computation. The chip is called an Intelligence Processing Unit (IPU) and is now on its second generation, the Colossus MK2 IPU processor - the GC200. Originally designed to dramatically increase performance in machine learning applications, the IPUs architecture can also be used to provide big performance increases in many other areas.</description>
+      <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;Graphcore, a company based in Bristol, UK, have developed a new kind of
+processor with the aim of being able to massively parallelise
+computation. The chip is called an Intelligence Processing Unit (IPU)
+and is now on its second generation, the Colossus MK2 IPU processor -
+the GC200. Originally designed to dramatically increase performance in
+machine learning applications, the IPUs architecture can also be used to
+provide big performance increases in many other areas. Here, we will
+show that the IPUs ability for massive parallelisation can be used to
+decrease the computational time for repeated simulation of dynamic,
+stochastic models. This family of models are used in a wide variety of
+applications including biology, where they can be used to perform &lt;em&gt;in
+silico&lt;/em&gt; experiments, and finance, where they can be used to forecast
+asset prices.&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>A Beginners Guide to Executing C&#43;&#43; Scripts on an IPU</title>
       <link>https://jordanbchilds.github.io/posts/ipu_howto/</link>
       <pubDate>Fri, 24 Feb 2023 14:30:00 +0000</pubDate>
-      
       <guid>https://jordanbchilds.github.io/posts/ipu_howto/</guid>
-      <description>Introduction In this article we will discuss how to execute a large number of independent programs in parallel, using a new computer chip capable of executing thousands of independent calculations at once. This may be particularly useful in areas of stochastic modelling and Monte Carlo simulation, where repeated and independent simulations are required to learn about uncertainty in model predictions. The chip in question is called the Intelligence Processing Unit (IPU) and is developed by Graphcore, a UK-based company headquartered in Bristol.</description>
+      <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;In this article we will discuss how to execute a large number of
+independent programs in parallel, using a new computer chip capable of
+executing thousands of independent calculations at once. This may be
+particularly useful in areas of stochastic modelling and Monte Carlo
+simulation, where repeated and independent simulations are required to
+learn about uncertainty in model predictions. The chip in question is
+called the Intelligence Processing Unit (IPU) and is developed by
+Graphcore, a UK-based company headquartered in Bristol. The IPU is now
+(as of February 2023) on its second generation, the Colossus MK2 IPU
+processor, also known as the GC200.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>A simple discrete random sampler in C&#43;&#43;</title>
+      <link>https://jordanbchilds.github.io/posts/discreterandomsampler/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://jordanbchilds.github.io/posts/discreterandomsampler/</guid>
+      <description>&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;vector&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;stdexcept&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// un-normalised weights
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;template&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;typename&lt;/span&gt; T&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;std&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;size_t rdiscrete (&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; std&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;vector&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;T&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;amp;&lt;/span&gt; weights) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    T norm &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; T&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt; w : weights) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (w&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.0&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;throw&lt;/span&gt; std&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;domain_error(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Weights must be non-negative.&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        norm &lt;span style=&#34;color:#f92672&#34;&gt;+=&lt;/span&gt; w;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt; u &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt;)rand() &lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt;)RAND_MAX &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt;)norm;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    std&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;size_t iter &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; T&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt; w : weights) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        u &lt;span style=&#34;color:#f92672&#34;&gt;-=&lt;/span&gt; w;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (u &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.0&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; iter;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        iter&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; iter;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// (un-normalised) weights with a known normalising constant
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;template&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;typename&lt;/span&gt; T&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;std&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;size_t rdiscrete (&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; std&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;vector&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;T&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;amp;&lt;/span&gt; weights, &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; T&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt; norm) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (norm&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;) std&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;domain_error(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;norm must be greater than zero.&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt; u &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt;)rand() &lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt;)RAND_MAX &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt;)norm;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    std&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;size_t iter &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; T&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt; w : weights) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (w&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.0&lt;/span&gt;) std&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;domain_error(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;weights must be non-negative.&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        u &lt;span style=&#34;color:#f92672&#34;&gt;-=&lt;/span&gt; w;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (u &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.0&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; iter;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        iter&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; iter;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Here we will briefly discuss how to sample a discrete random variable in theory and practice, before constructing our own algorithm and comparing its performance to the &lt;code&gt;std::discrete_distribution&lt;/code&gt; in the C++ standard library. Many hand-coded discrete samplers have been proposed, but often these are unnecessarily clunky and, consequently, slow. The sampler proposed here is a function, designed to take an &lt;code&gt;std::vector&lt;/code&gt; input representing the weights of the possible outcomes and return an &lt;code&gt;std::size_t&lt;/code&gt; value indicating the randomly sampled vector index. Two versions of the function are given above, one where the sum of the weights (normalising constant) is known and one where it is not. If the normalising constant is not known, then it is calculated and the weights are checked to be non-negative, and if the it is given, it is assumed that this has already been checked.&lt;/p&gt;</description>
     </item>
     
   </channel>

@@ -2,7 +2,7 @@
 <html lang="en" dir="auto">
 
 <head>
-	<meta name="generator" content="Hugo 0.110.0"><meta charset="utf-8">
+	<meta name="generator" content="Hugo 0.157.0"><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -20,6 +20,7 @@
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
 <link rel="alternate" type="application/rss+xml" href="https://jordanbchilds.github.io/index.xml">
+<link rel="alternate" hreflang="en" href="https://jordanbchilds.github.io/">
 <noscript>
     <style>
         #theme-toggle,
@@ -60,11 +61,9 @@
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://jordanbchilds.github.io/" />
-
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Home"/>
 <meta name="twitter:description" content=""/>
-
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -117,6 +116,8 @@
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -179,9 +180,10 @@ However, I am interested in moving into functional programming so this may be ex
     </h2>
   </header>
   <div class="entry-content">
-    <p>Introduction Graphcore, a company based in Bristol, UK, have developed a new kind of processor with the aim of being able to massively parallelise computation. The chip is called an Intelligence Processing Unit (IPU) and is now on its second generation, the Colossus MK2 IPU processor - the GC200. Originally designed to dramatically increase performance in machine learning applications, the IPUs architecture can also be used to provide big performance increases in many other areas....</p>
+    <p>Introduction Graphcore, a company based in Bristol, UK, have developed a new kind of processor with the aim of being able to massively parallelise computation. The chip is called an Intelligence Processing Unit (IPU) and is now on its second generation, the Colossus MK2 IPU processor - the GC200. Originally designed to dramatically increase performance in machine learning applications, the IPUs architecture can also be used to provide big performance increases in many other areas. Here, we will show that the IPUs ability for massive parallelisation can be used to decrease the computational time for repeated simulation of dynamic, stochastic models. This family of models are used in a wide variety of applications including biology, where they can be used to perform in silico experiments, and finance, where they can be used to forecast asset prices.
+...</p>
   </div>
-  <footer class="entry-footer"><span title='2023-02-24 15:00:00 +0000 UTC'>February 24, 2023</span>&nbsp;·&nbsp;11 min&nbsp;·&nbsp;Jordan Childs</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2023-02-24 15:00:00 &#43;0000 UTC&#39;&gt;February 24, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;11 min&amp;nbsp;·&amp;nbsp;Jordan Childs</footer>
   <a class="entry-link" aria-label="post link to Hardware Accelerated Stochastic Simulation Using an Intelligence Processing Unit" href="https://jordanbchilds.github.io/posts/ipu_timetrial/"></a>
 </article>
 
@@ -191,15 +193,83 @@ However, I am interested in moving into functional programming so this may be ex
     </h2>
   </header>
   <div class="entry-content">
-    <p>Introduction In this article we will discuss how to execute a large number of independent programs in parallel, using a new computer chip capable of executing thousands of independent calculations at once. This may be particularly useful in areas of stochastic modelling and Monte Carlo simulation, where repeated and independent simulations are required to learn about uncertainty in model predictions. The chip in question is called the Intelligence Processing Unit (IPU) and is developed by Graphcore, a UK-based company headquartered in Bristol....</p>
+    <p>Introduction In this article we will discuss how to execute a large number of independent programs in parallel, using a new computer chip capable of executing thousands of independent calculations at once. This may be particularly useful in areas of stochastic modelling and Monte Carlo simulation, where repeated and independent simulations are required to learn about uncertainty in model predictions. The chip in question is called the Intelligence Processing Unit (IPU) and is developed by Graphcore, a UK-based company headquartered in Bristol. The IPU is now (as of February 2023) on its second generation, the Colossus MK2 IPU processor, also known as the GC200.
+...</p>
   </div>
-  <footer class="entry-footer"><span title='2023-02-24 14:30:00 +0000 UTC'>February 24, 2023</span>&nbsp;·&nbsp;27 min&nbsp;·&nbsp;Jordan Childs</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2023-02-24 14:30:00 &#43;0000 UTC&#39;&gt;February 24, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;27 min&amp;nbsp;·&amp;nbsp;Jordan Childs</footer>
   <a class="entry-link" aria-label="post link to A Beginners Guide to Executing C&#43;&#43; Scripts on an IPU" href="https://jordanbchilds.github.io/posts/ipu_howto/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>A Brief Introduction to Markov Chain Monte Carlo
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>BAYESIAN CONTEXT
+Markov chain Monte Carlo (MCMC) is a common method used to sample from a posterior distribution when the analysis is not fully conjugate. The premise of the method is to construct a Markov chain whose stationary distribution is the posterior density. Once the Markov chain has converged to the posterior, any sample generated by the chain will be a realisation from the posterior distribution. The period before the chain reaches the stationary distribution is referred to as the ‘burn-in’ period, and these samples are removed before analysing the posteriors. Often, multiple chains are executed to ensure they converge to the same distribution, and checks are implemented to ensure this.
+...</p>
+  </div>
+  <footer class="entry-footer">&lt;span title=&#39;2023-02-24 14:30:00 &#43;0000 UTC&#39;&gt;February 24, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;11 min&amp;nbsp;·&amp;nbsp;Jordan Childs</footer>
+  <a class="entry-link" aria-label="post link to A Brief Introduction to Markov Chain Monte Carlo" href="https://jordanbchilds.github.io/posts/mcmc_introduction/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>A Brief Introduction to Markov Chains
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>A brief introduction to Markov chains A Markov chain is a sequence of random variables whose current state depends only on the previous state and is independent of all states before that. This condition is known as the memoryless or Markov property. Their applications span many areas of statistics, including parameter inference and statistical modelling.
+The memoryless property implies that the current state is a random variable whose possible values are described by a probability density dependent on the previous state. Being sequential, Markov chains are usually thought to progress with time, with updates occurring at discrete or continuous intervals. The state space of a Markov chain, the possible values of the random variables, can be either multi- or univariate and be discrete or continuous. Here we introduce both discrete and continuous state-space Markov chains with an example of both.
+...</p>
+  </div>
+  <footer class="entry-footer">&lt;span title=&#39;2023-02-24 14:30:00 &#43;0000 UTC&#39;&gt;February 24, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;7 min&amp;nbsp;·&amp;nbsp;Jordan Childs</footer>
+  <a class="entry-link" aria-label="post link to A Brief Introduction to Markov Chains" href="https://jordanbchilds.github.io/posts/markov_chains_introduction/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>Bayesian Hypothesis Testing
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Bayesian hypothesis testing The t-test is one of the most common tests used in statistics. It compares the means of two normally distributed datasets by calculating a test statistic and comparing it to the t-distribution. Variations of the test exist, including constant and differing variance between groups, paired and unpaired, and non-normality in the data. Here, Bayesian hypothesis testing is briefly discussed, giving an indication of how a two-sample t-test would be conducted within a Bayesian context. Extensions to other situations are available. However, the following example illustrates the main concept. \
+...</p>
+  </div>
+  <footer class="entry-footer">&lt;span title=&#39;2023-02-24 14:30:00 &#43;0000 UTC&#39;&gt;February 24, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;4 min&amp;nbsp;·&amp;nbsp;Jordan Childs</footer>
+  <a class="entry-link" aria-label="post link to Bayesian Hypothesis Testing" href="https://jordanbchilds.github.io/posts/hypothesis_testing/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>Introduction to Bayesian Statistics
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Bayesian statistics Unlike frequentist statisticians, Bayesian statisticians believe that there is no ``true’’ value of the parameters in a statistical model. Instead, Bayesian methods summarise parameter beliefs after observing data (a posteriori) by a probability distribution, giving more weight to more likely values. Parameter beliefs before observing any data (a priori) are called prior beliefs, and are similarly summarised by a probability distribution. Prior beliefs can be as vague or informed as required to reflect the beliefs of relevant experts. A lack of prior can be reflected by vague prior beliefs, with a high variance. In contrast, a large amount of prior knowledge from previous work may result in well-informed priors with high precision. Parameter beliefs are updated by combining prior beliefs and new evidence presented from a dataset. Bayesian methodology is fully probabilistic and considers model parameters, hidden states, as well as missing and observed data in the same vein. The coherent treatment of model parameters, data, and hidden states has allowed Bayesian methods to be used in a wide range of inference problems.
+...</p>
+  </div>
+  <footer class="entry-footer">&lt;span title=&#39;2023-02-24 14:30:00 &#43;0000 UTC&#39;&gt;February 24, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;6 min&amp;nbsp;·&amp;nbsp;Jordan Childs</footer>
+  <a class="entry-link" aria-label="post link to Introduction to Bayesian Statistics" href="https://jordanbchilds.github.io/posts/bayesian_introduction/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>A simple discrete random sampler in C&#43;&#43;
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>#include &lt;vector&gt; #include &lt;stdexcept&gt; // un-normalised weights template&lt;typename T&gt; std::size_t rdiscrete (const std::vector&lt;T&gt;&amp; weights) { T norm = 0.0; for (const T&amp; w : weights) { if (w&lt;0.0) throw std::domain_error(&#34;Weights must be non-negative.&#34;); norm &#43;= w; } double u = (double)rand() / (double)RAND_MAX * (double)norm; std::size_t iter = 0; for (const T&amp; w : weights) { u -= w; if (u &lt; 0.0) return iter; iter&#43;&#43;; } return iter; } // (un-normalised) weights with a known normalising constant template &lt;typename T&gt; std::size_t rdiscrete (const std::vector&lt;T&gt;&amp; weights, const T&amp; norm) { if (norm&lt;=0) std::domain_error(&#34;norm must be greater than zero.&#34;); double u = (double)rand() / (double)RAND_MAX * (double)norm; std::size_t iter = 0; for (const T&amp; w : weights) { if (w&lt;0.0) std::domain_error(&#34;weights must be non-negative.&#34;) u -= w; if (u &lt; 0.0) return iter; iter&#43;&#43;; } return iter; } Here we will briefly discuss how to sample a discrete random variable in theory and practice, before constructing our own algorithm and comparing its performance to the std::discrete_distribution in the C&#43;&#43; standard library. Many hand-coded discrete samplers have been proposed, but often these are unnecessarily clunky and, consequently, slow. The sampler proposed here is a function, designed to take an std::vector input representing the weights of the possible outcomes and return an std::size_t value indicating the randomly sampled vector index. Two versions of the function are given above, one where the sum of the weights (normalising constant) is known and one where it is not. If the normalising constant is not known, then it is calculated and the weights are checked to be non-negative, and if the it is given, it is assumed that this has already been checked.
+...</p>
+  </div>
+  <footer class="entry-footer">7 min&amp;nbsp;·&amp;nbsp;Jordan Childs</footer>
+  <a class="entry-link" aria-label="post link to A simple discrete random sampler in C&#43;&#43;" href="https://jordanbchilds.github.io/posts/discreterandomsampler/"></a>
 </article>
     </main>
     
 <footer class="footer">
-    <span>&copy; 2023 <a href="https://jordanbchilds.github.io/">Home</a></span>
+    <span>&copy; 2026 <a href="https://jordanbchilds.github.io/">Home</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

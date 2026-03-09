@@ -5,6 +5,9 @@
     <loc>https://jordanbchilds.github.io/aboutme/</loc>
     <lastmod>2023-02-28T17:24:37+00:00</lastmod>
   </url><url>
+    <loc>https://jordanbchilds.github.io/</loc>
+    <lastmod>2023-02-28T17:24:37+00:00</lastmod>
+  </url><url>
     <loc>https://jordanbchilds.github.io/tags/c&#43;&#43;/</loc>
     <lastmod>2023-02-24T15:00:00+00:00</lastmod>
   </url><url>
@@ -12,9 +15,6 @@
     <lastmod>2023-02-24T15:00:00+00:00</lastmod>
   </url><url>
     <loc>https://jordanbchilds.github.io/posts/ipu_timetrial/</loc>
-    <lastmod>2023-02-24T15:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://jordanbchilds.github.io/</loc>
     <lastmod>2023-02-24T15:00:00+00:00</lastmod>
   </url><url>
     <loc>https://jordanbchilds.github.io/tags/interest/</loc>
@@ -35,9 +35,31 @@
     <loc>https://jordanbchilds.github.io/posts/ipu_howto/</loc>
     <lastmod>2023-02-24T14:30:00+00:00</lastmod>
   </url><url>
+    <loc>https://jordanbchilds.github.io/posts/mcmc_introduction/</loc>
+    <lastmod>2023-02-24T14:30:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jordanbchilds.github.io/posts/markov_chains_introduction/</loc>
+    <lastmod>2023-02-24T14:30:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jordanbchilds.github.io/tags/bayesian/</loc>
+    <lastmod>2023-02-24T14:30:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jordanbchilds.github.io/posts/hypothesis_testing/</loc>
+    <lastmod>2023-02-24T14:30:00+00:00</lastmod>
+  </url><url>
     <loc>https://jordanbchilds.github.io/tags/guide/</loc>
     <lastmod>2023-02-24T14:30:00+00:00</lastmod>
   </url><url>
+    <loc>https://jordanbchilds.github.io/posts/bayesian_introduction/</loc>
+    <lastmod>2023-02-24T14:30:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jordanbchilds.github.io/tags/statistics/</loc>
+    <lastmod>2023-02-24T14:30:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jordanbchilds.github.io/posts/discreterandomsampler/</loc>
+  </url><url>
     <loc>https://jordanbchilds.github.io/categories/</loc>
+  </url><url>
+    <loc>https://jordanbchilds.github.io/tags/random-sampling/</loc>
   </url>
 </urlset>

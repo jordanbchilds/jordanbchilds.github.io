@@ -19,6 +19,7 @@
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
 <link rel="alternate" type="application/rss+xml" href="https://jordanbchilds.github.io/tags/c&#43;&#43;/index.xml">
+<link rel="alternate" hreflang="en" href="https://jordanbchilds.github.io/tags/c&#43;&#43;/">
 <noscript>
     <style>
         #theme-toggle,
@@ -59,11 +60,9 @@
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://jordanbchilds.github.io/tags/c&#43;&#43;/" />
-
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="C&#43;&#43;"/>
 <meta name="twitter:description" content=""/>
-
 </head>
 
 <body class="list" id="top">
@@ -103,6 +102,8 @@
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -138,9 +139,10 @@
     </h2>
   </header>
   <div class="entry-content">
-    <p>Introduction Graphcore, a company based in Bristol, UK, have developed a new kind of processor with the aim of being able to massively parallelise computation. The chip is called an Intelligence Processing Unit (IPU) and is now on its second generation, the Colossus MK2 IPU processor - the GC200. Originally designed to dramatically increase performance in machine learning applications, the IPUs architecture can also be used to provide big performance increases in many other areas....</p>
+    <p>Introduction Graphcore, a company based in Bristol, UK, have developed a new kind of processor with the aim of being able to massively parallelise computation. The chip is called an Intelligence Processing Unit (IPU) and is now on its second generation, the Colossus MK2 IPU processor - the GC200. Originally designed to dramatically increase performance in machine learning applications, the IPUs architecture can also be used to provide big performance increases in many other areas. Here, we will show that the IPUs ability for massive parallelisation can be used to decrease the computational time for repeated simulation of dynamic, stochastic models. This family of models are used in a wide variety of applications including biology, where they can be used to perform in silico experiments, and finance, where they can be used to forecast asset prices.
+...</p>
   </div>
-  <footer class="entry-footer"><span title='2023-02-24 15:00:00 +0000 UTC'>February 24, 2023</span>&nbsp;·&nbsp;11 min&nbsp;·&nbsp;Jordan Childs</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2023-02-24 15:00:00 &#43;0000 UTC&#39;&gt;February 24, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;11 min&amp;nbsp;·&amp;nbsp;Jordan Childs</footer>
   <a class="entry-link" aria-label="post link to Hardware Accelerated Stochastic Simulation Using an Intelligence Processing Unit" href="https://jordanbchilds.github.io/posts/ipu_timetrial/"></a>
 </article>
 
@@ -150,15 +152,29 @@
     </h2>
   </header>
   <div class="entry-content">
-    <p>Introduction In this article we will discuss how to execute a large number of independent programs in parallel, using a new computer chip capable of executing thousands of independent calculations at once. This may be particularly useful in areas of stochastic modelling and Monte Carlo simulation, where repeated and independent simulations are required to learn about uncertainty in model predictions. The chip in question is called the Intelligence Processing Unit (IPU) and is developed by Graphcore, a UK-based company headquartered in Bristol....</p>
+    <p>Introduction In this article we will discuss how to execute a large number of independent programs in parallel, using a new computer chip capable of executing thousands of independent calculations at once. This may be particularly useful in areas of stochastic modelling and Monte Carlo simulation, where repeated and independent simulations are required to learn about uncertainty in model predictions. The chip in question is called the Intelligence Processing Unit (IPU) and is developed by Graphcore, a UK-based company headquartered in Bristol. The IPU is now (as of February 2023) on its second generation, the Colossus MK2 IPU processor, also known as the GC200.
+...</p>
   </div>
-  <footer class="entry-footer"><span title='2023-02-24 14:30:00 +0000 UTC'>February 24, 2023</span>&nbsp;·&nbsp;27 min&nbsp;·&nbsp;Jordan Childs</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2023-02-24 14:30:00 &#43;0000 UTC&#39;&gt;February 24, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;27 min&amp;nbsp;·&amp;nbsp;Jordan Childs</footer>
   <a class="entry-link" aria-label="post link to A Beginners Guide to Executing C&#43;&#43; Scripts on an IPU" href="https://jordanbchilds.github.io/posts/ipu_howto/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>A simple discrete random sampler in C&#43;&#43;
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>#include &lt;vector&gt; #include &lt;stdexcept&gt; // un-normalised weights template&lt;typename T&gt; std::size_t rdiscrete (const std::vector&lt;T&gt;&amp; weights) { T norm = 0.0; for (const T&amp; w : weights) { if (w&lt;0.0) throw std::domain_error(&#34;Weights must be non-negative.&#34;); norm &#43;= w; } double u = (double)rand() / (double)RAND_MAX * (double)norm; std::size_t iter = 0; for (const T&amp; w : weights) { u -= w; if (u &lt; 0.0) return iter; iter&#43;&#43;; } return iter; } // (un-normalised) weights with a known normalising constant template &lt;typename T&gt; std::size_t rdiscrete (const std::vector&lt;T&gt;&amp; weights, const T&amp; norm) { if (norm&lt;=0) std::domain_error(&#34;norm must be greater than zero.&#34;); double u = (double)rand() / (double)RAND_MAX * (double)norm; std::size_t iter = 0; for (const T&amp; w : weights) { if (w&lt;0.0) std::domain_error(&#34;weights must be non-negative.&#34;) u -= w; if (u &lt; 0.0) return iter; iter&#43;&#43;; } return iter; } Here we will briefly discuss how to sample a discrete random variable in theory and practice, before constructing our own algorithm and comparing its performance to the std::discrete_distribution in the C&#43;&#43; standard library. Many hand-coded discrete samplers have been proposed, but often these are unnecessarily clunky and, consequently, slow. The sampler proposed here is a function, designed to take an std::vector input representing the weights of the possible outcomes and return an std::size_t value indicating the randomly sampled vector index. Two versions of the function are given above, one where the sum of the weights (normalising constant) is known and one where it is not. If the normalising constant is not known, then it is calculated and the weights are checked to be non-negative, and if the it is given, it is assumed that this has already been checked.
+...</p>
+  </div>
+  <footer class="entry-footer">7 min&amp;nbsp;·&amp;nbsp;Jordan Childs</footer>
+  <a class="entry-link" aria-label="post link to A simple discrete random sampler in C&#43;&#43;" href="https://jordanbchilds.github.io/posts/discreterandomsampler/"></a>
 </article>
     </main>
     
 <footer class="footer">
-    <span>&copy; 2023 <a href="https://jordanbchilds.github.io/">Home</a></span>
+    <span>&copy; 2026 <a href="https://jordanbchilds.github.io/">Home</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
