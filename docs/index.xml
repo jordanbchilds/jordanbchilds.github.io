@@ -84,8 +84,7 @@ processor, also known as the GC200.&lt;/p&gt;</description>
       <link>https://jordanbchilds.github.io/posts/mixture_models/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://jordanbchilds.github.io/posts/mixture_models/</guid>
-      <description>&lt;h1 id=&#34;mixture-models&#34;&gt;Mixture models&lt;/h1&gt;
-&lt;p&gt;Mixture models are a diverse set of statistical models which can take an endless number of form, the discussion here is focused on finite mixture models. The most common form of which is likely the Guassian mixture moodel (GMM) \parencite{reynolds_gaussian_2009}, used for a variety of applications including clustering, an unsupervised classification method, and traditional modelling. Mixture models are often used to cluster like data-points into groups. In the Bayesian paradigm this is done by inferring a latent classification variable for each data-point. Before discussing this, mixture distributions and models are introduced to give the reader an intuitive understanding of the models themselves.&lt;/p&gt;</description>
+      <description>&lt;p&gt;Before discussing Bayesian classifcation methods we intoduce the concept of mixture models, often used for unsupervised classification tasks. Mixture models are a diverse set of statistical models which can take an endless number of forms, the discussion here is limited on finite mixture models. The most common form of which is likely the Guassian mixture model (GMM), used for a variety of applications including clustering, an unsupervised classification method, and traditional modelling. Mixture models are often used to cluster like data-points into groups. In the Bayesian paradigm this is done by inferring a latent classification variable for each data-point.&lt;/p&gt;</description>
     </item>
     
     <item>
