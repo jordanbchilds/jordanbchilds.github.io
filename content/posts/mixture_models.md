@@ -48,7 +48,7 @@ $$
 $$
 where $\boldsymbol{\theta}=(\theta_1, \theta_2, \dots, \theta_J)$, the set of component parameters. The general likelihood function, for observations $\boldsymbol{y}$, is
 $$
-    L(\boldsymbol{\theta} | \boldsymbol{x}, \boldsymbol{y}) = \prod_{i=1}^n \left\{ \sum_{j=1}^J w_j f_j\left(y_i|\theta_j, x_i\right) \right\}.
+    L(\boldsymbol{\theta} | \boldsymbol{x}, \boldsymbol{y}) = \prod_{i=1}^n \bigg\{ \sum_{j=1}^J w_j f_j\left(y_i|\theta_j, x_i\right) \bigg\}.
 $$
 By expansion of the likelihood, it is clear that this becomes increasingly complex when components or data are added. In particular, the likelihood is an $n$-degree polynomial in the component weights. Therefore, evaluating the likelihood directly is dificult. The calculation can, however, be simplified by the inclusion of the latent variables indicating component belonging for each data-point. Consequently, being inferring the latent states the data is clustered into $J$ groups.
 
