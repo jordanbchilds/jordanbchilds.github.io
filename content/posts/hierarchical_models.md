@@ -61,30 +61,28 @@ The hyper-parameters, $\{a_1, b_1, a_2, b_2\}$, are known and chosen by us to su
 
 First, consider the FCDs of the prior parameter $\alpha$,
 $$
-\begin{split}
-    p(\alpha | \beta, \boldsymbol{\theta}, \boldsymbol{y}) &\propto p\left(\alpha, \beta, \boldsymbol{\theta}, \boldsymbol{y}\right), \\
-    &\propto p(\boldsymbol{y} | \boldsymbol{\theta}) p (\boldsymbol{\theta} | \alpha, \beta) p(\alpha) p(\beta), \\
-    &\propto p(\boldsymbol{\theta} | \alpha, \beta) p(\alpha), \\
-    &\propto \prod_{i=1}^n \left\{ {\theta_i}^{\alpha-1} \left( 1 - \theta_i\right)^{\beta-1}\right\} \times \alpha^{a_1 -1} e^{-b_1 \alpha}, \\
+\begin{aligned}
+    p(\alpha | \beta, \boldsymbol{\theta}, \boldsymbol{y}) &\propto p\left(\alpha, \beta, \boldsymbol{\theta}, \boldsymbol{y}\right), \\\\
+    &\propto p(\boldsymbol{y} | \boldsymbol{\theta}) p (\boldsymbol{\theta} | \alpha, \beta) p(\alpha) p(\beta), \\\\
+    &\propto p(\boldsymbol{\theta} | \alpha, \beta) p(\alpha), \\\\
+    &\propto \prod_{i=1}^n \left\{ {\theta_i}^{\alpha-1} \left( 1 - \theta_i\right)^{\beta-1}\right\} \times \alpha^{a_1 -1} e^{-b_1 \alpha}, \\\\
      &\propto \alpha^{a_1 -1} e^{-b_1 \alpha} \prod_{i=1}^n{\theta_i}^{\alpha-1}. \\
-\end{split}
+\end{aligned}
 $$
 Unfortunately, this is not the form of a known probability distribution, and therefor the analysis is not semi-conjugate. Despite this, inference can still proceed by implementating MCMC methods, see [here](https://jordanbchilds.github.io/posts/mcmc_introduction/). Nevertheless, it can be seen that given $a_1, b_1$ and $\boldsymbol{\theta}$, $p(\alpha | \beta, \boldsymbol{\theta}, \boldsymbol{y})$ is independent of $\beta$ and $\boldsymbol{y}$. Similarly, calculating the FCD of $\beta$ shows that given $a_2, b_2$ and $\boldsymbol{\theta}$, it is independent of the observations $\boldsymbol{y}$ and $\alpha$. 
 $$
-\begin{split}
     p(\beta | \alpha, \boldsymbol{\theta}, \boldsymbol{y}) 
-     &\propto \alpha^{a_\beta -1} e^{-b_\beta \beta} \prod_{i=1}^n\left( 1 - \theta_i\right)^{\beta-1}\\
-\end{split}
+     \propto \alpha^{a_\beta -1} e^{-b_\beta \beta} \prod_{i=1}^n\left( 1 - \theta_i\right)^{\beta-1}
 $$
 
 The final parameters to consider are the individual school success rates
 $$
-\begin{split}
-    p(\theta_i | \alpha, \beta, \boldsymbol{\theta}_{-i}, \boldsymbol{y}) &\propto p\left(\alpha, \beta, \boldsymbol{\theta}, \boldsymbol{y}\right), \\
-    &\propto p(\boldsymbol{y} | \boldsymbol{\theta}) p (\boldsymbol{\theta} | \alpha, \beta), \\
-    &\propto \prod_{i=1}^n \left\{ {\theta_i}^{y_i} \left( 1 - \theta_i\right)^{n_i - y_i}\right\} \times \prod_{i=1}^n\left\{ {\theta_i}^{\alpha-1} \left(1 - \theta_i)^{\beta -1}\right)\right\}, \\
+\begin{aligned}
+    p(\theta_i | \alpha, \beta, \boldsymbol{\theta}_{-i}, \boldsymbol{y}) &\propto p\left(\alpha, \beta, \boldsymbol{\theta}, \boldsymbol{y}\right), \\\\
+    &\propto p(\boldsymbol{y} | \boldsymbol{\theta}) p (\boldsymbol{\theta} | \alpha, \beta), \\\\
+    &\propto \prod_{i=1}^n \left\{ {\theta_i}^{y_i} \left( 1 - \theta_i\right)^{n_i - y_i}\right\} \times \prod_{i=1}^n\left\{ {\theta_i}^{\alpha-1} \left(1 - \theta_i)^{\beta -1}\right)\right\}, \\\\
      &\propto {\theta_i}^{y_i + \alpha - 1} \left(1 - \theta_i\right)^{n_i - y_i + \beta - 1}.
-\end{split}
+\end{aligned}
 $$
 This is the form of a Beta distribution with parameters $y_i+\alpha$ and $n_i - y_i + \beta$, and, therefore, 
 $$
