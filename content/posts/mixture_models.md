@@ -68,7 +68,7 @@ Conditioning the likelihood function on latent states can reduce its complexity.
 
 Let $Z_i$ be the latent state of the $i$-th observation, which is distributed according to the component weights *a priori*,
 $$
-    \text{Pr} \left( Z_i = j | \boldsymbol{w} \right) = w_j.CA
+    \text{Pr} \left( Z_i = j | \boldsymbol{w} \right) = w_j.
 $$
 
 Inference for the latent states can progress by considering their full conditional distributions (FCDs). The law of conditional probability implies that the FCD is proportional to the joint density, $p\left(\boldsymbol{y}, \boldsymbol{Z}, \boldsymbol{\theta}, \boldsymbol{w} \right)$. The probability can be calculated up to proportionality, and so any function not dependent on $Z_i$ can be ignored
