@@ -1,6 +1,5 @@
 ---
 title: "A Beginners Guide to Executing C++ Scripts on an IPU"
-date: 2023-02-24T14:30:00Z
 
 mathjax: true
 tags: ["IPU", "Guide", "C++"]
@@ -155,7 +154,7 @@ can be seen in Listing 1, where a simple death process is simulated
 from with an initial population of 100 and a probability of death within
 $[t, t+\Delta t)$  is 0.1.
 
-```{c++ title-one}
+```cpp
 #include <ipu_builtins.h>
 
 class myVertex : public poplar::Vertex
@@ -255,7 +254,7 @@ these will have to added. The code snippet presented here also has
 several print statements which inform the user if there has been a
 problem when trying to attach to an IPU device.
 
-``` {#lst:attachIPU label="lst:attachIPU" caption="Code snippet to construct an empty and attach to an IPU."}
+```
 // Create the DeviceManager which is used to discover devices (IPUs)
 auto manager = DeviceManager::createDeviceManager();
 // Attempt to attach to a numberOfProcs IPU(s):
@@ -290,7 +289,7 @@ only one compute set. The last line of Listing 3 creates a compute set object
 and labels this `"computeSet"`. In the next section we will see how to add vertices to
 this compute set and to the graph itself.
 
-``` {#lst:addCodelet label="lst:addCodelet" caption="Adding a codelet to a graph object as well as creating a \\texttt{Sequence} object."}
+```
 // Add codelets to the graph
 graph.addCodelets("myCodelet.cpp");
 
@@ -319,7 +318,7 @@ with the reference as its first parameter and the tile index as its
 second. By doing this repeatedly a vertex can be mapped to every tile on
 the chip, as seen in Listing 4.
 
-``` {#lst:mapTiles label="lst:mapTiles" caption="How to map a vertex to all tiles on a GC200 processor."}
+```
 const unsigned int numberOfTiles = 1472; // maximum is 1472
 
 for( std::size_t i=0; i<numberOfTiles; ++i){
@@ -342,7 +341,7 @@ times. The snippet maps a single vertex to every thread on the chip, it
 is possible to execute more vertices than there are threads by mapping
 more than six vertices to a single tile.
 
-``` {#lst:mapThreads label="lst:mapThreads" caption="How to map a vertex to all threads on an GC200 processor."}
+```
 const unsigned int numberOfTiles = 1472; // maximum is 1472
 const unsigend int numberOfThreads = 6; // maximum is 6
 
@@ -366,7 +365,7 @@ $[0, 1471\times$`numberOfProcs`$]$. Listing 6 shows how to define the `tileInt` 
 to get the desired output. Six vertices are still being mapped to every
 tile but now all IPU-Tiles within an IPU-POD4 system are being used.
 
-``` {#lst:mapThreads label="lst:mapThreads" caption="How to map a vertex to all available threads in an IPU-POD4."}
+```
 const unsigned int numberOfTiles = 1472; // maximum is 1472
 const unsigend int numberOfThreads = 6; // maximum is 6
 const unsigend int numberOfProcs = 4; // maximum depends on POD size
@@ -400,7 +399,7 @@ Listing 7 shows an example of two variables to be
 mapped, one an integer scalar and the other a vector of floating
 points.
 
-``` {#lst:inputType label="lst:inputType" caption="Declaring input type variables inside a codelet."}
+```
 class myVertex : public poplar::Vertex
 {
     public:
@@ -439,7 +438,7 @@ its size and shape. Here, the tensor is declared with elements of the
 poplar type `FLOAT` and it is a single dimension tensor of length
 `totalThreads`.
 
-``` {#lst:scalarMap def label="lst:scalarMap def" caption="Defining a one dimensional tensor to map individual elements to the codelets."}
+```
 float myScalars[totalThreads];
 for( std::size_t i=0; i<totalThreads; ++i ){
     myScalars[i] = i*0.001 ; // or something useful
@@ -460,7 +459,7 @@ omitted. Note the mapping of the vertices is included in this snippet as
 it is necessary that the vertex is mapped to be able to connect a
 variable to a parameter within it.
 
-``` {#lst:scalarMap label="lst:scalarMap" caption="Creating a map of scalar to codelet."}
+```
 for( std::size_t i=0; i<totalThreads; ++i){
     // ... Calculate tileInt
     graph.setTileMapping(myScalars_tensor[i], tileInt);
@@ -507,7 +506,7 @@ dimensional tensor and then re-shaped into the multidimensional array on
 the IPU-Tile. C++ stores multidimensional arrays in contiguous blocks,
 as though they were flattened anyway.
 
-``` {#lst:addVariable .c++ caption="Adding a variable the graph and creating the compute set." label="lst:addVariable" language="C++"}
+```
 const unsigned int myVector_size = 10;
 float myVector[myVector_size];
 for( std::size_t i=0; i<myVector_size; ++i )
@@ -521,7 +520,7 @@ After the definition, similar to before we need to create the mapping to
 a specific tile and specific codelet vertex on that tile. This is done
 exactly the same as before.
 
-``` {#lst:vectorMap caption="Mapping a vector to the codelet." label="lst:vectorMap"}
+```
 // Map tensors to tiles
 for( std::size_t i=0; i<totalThreads; ++i ){
     // ... Calculate tileInt
@@ -554,7 +553,7 @@ there is a stream that needs to be executed. Listing
 as defined in Listing 11 and the other two parameters are the memory
 addresses of the first and last elements of the array.
 
-``` {#lst:connectStream caption="Streaming the vector the tiles." label="lst:connectStream"}
+```
 // Attach the data stream to the engine so that the stream is executed
 engine.connectStream("write_myVector", &myVector[0], &myVector[0]+myVector_size);
 ```
@@ -570,7 +569,7 @@ write the output directly into the `poplar::Output` object and we do not
 have to define an output array within the `compute` function, like was
 done in Listing 13.
 
-``` {#lst:outputType label="lst:outputType" caption="Defining an output type in the codelet."}
+```
 class myVertex : public poplar::Vertex
 {
     public:
@@ -588,7 +587,7 @@ streaming object for us. Listing 14 shows how to implement this. The variable
 `output_size` is the known size of the output vector, for the death
 process example this would be `MAX_LENGTH`.
 
-``` {#lst:streamOutput label="lst:streamOutput" caption="Retrieving codelet output via a stream."}
+```
 poplar::Tensor output = graph.addVariable(FLOAT, {totalThreads, output_size}, "output");
 
 for( std::size_t i = 0; i < totalThreads; ++i ){
@@ -623,7 +622,7 @@ not have to be read into a standard C++ array, as we are reading the
 output to the host we have access to all C++ libraries so the output can
 be read into other formats if desired e.g. `std::vector`.
 
-``` {#lst:readOutput caption="How to read the output." label="lst:readOutput"}
+```
 float output_array[totalThreads * output_size] ;
 engine.readTensor("output-read", &output_array[0] &output_array[0]+output_size)
 ```
@@ -639,7 +638,7 @@ and one compute set. This is relatively easy and is done using the
 function `poplar::program::add` with the parameter being the compute set
 executed with `poplar::program::Execute` function.
 
-``` {#lst:progAdd label="lst:progAdd" caption="Adding the compute set execution to the sequence of programs to execute."}
+```
 // Adding the execution of the compute set to the sequence of programs
 prog.add(Execute(computeSet));
 ```
@@ -656,7 +655,7 @@ Listing 18. For illustrative purpose in this snippet,
 although commented out, a stream connection has been added to the
 engine.
 
-``` {#lst:engine label="lst:engine" caption="Executing the graph in the sequence defined by \\texttt{prog}."}
+```
 // Create the engine
 Engine engine(graph, prog);
 engine.load(device);
@@ -676,7 +675,7 @@ types of the `prob_death` and `initial_pop` variables. The codelet has
 also been updated to write output directly into the `out` vector and
 comments have been removed.
 
-``` {#lst:something clever .c++ caption="Streaming parameter example, codelet definition." label="lst:something clever" language="C++"}
+```
 class myVertex : public poplar::Vertex
 {
     public:
@@ -719,7 +718,7 @@ to every thread on every tile on an IPU-POD4. The graph and control
 sequence are then executed before the output is streamed back to the
 host and the saved in a `std::vector` called `cpu_vector`.
 
-``` {#lst:variableMap example label="lst:variableMap example" caption="Defining a one dimensional tensor to map individual elements to the codelets."}
+```
 int main () {
     unsigned int numberOfThreads = 6;
     unsigned int numberOfTiles = 1472;

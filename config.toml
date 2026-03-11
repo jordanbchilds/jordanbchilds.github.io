@@ -5,19 +5,28 @@ title = "Home"
 paginate = 2
 publishDir = "docs"
 
+[author]
+name = "Jordan Childs"
+email = "jordanbchilds@gmail.com"
+
 [params]
 env = "production"
 description = ""
 author = "Jordan Childs"
 defaultTheme = "auto"
+math = true
 
 ShowReadingTime = true
 displayFullLangName = true
 ShowPostNavLinks = true
 ShowCodeCopyButtons = true
 
+
+[markup]
+goldmark.renderer.unsafe = true
+
 [params.homeInfoParams]
-Title = "What to expect"
+Title = ""
 Content = """
 In this blog I will (sporadically) post about topics related to statistics and data science.
 They will likely focus on the implementation of Bayesian data analysis or stochastic simulation.
@@ -25,7 +34,6 @@ As these topics are of interest to me I'm hoping they will also be of interest t
 Given the subject area it is expected that blogs posted will include some code, mostly I use R, C++ or Julia.
 However, I am interested in moving into functional programming so this may be expected in the future.
 """
-
 [[params.socialIcons]]
 name = "GitHub"
 url = "https://github.com/jordanbchilds/"
@@ -33,6 +41,10 @@ url = "https://github.com/jordanbchilds/"
 [[params.socialIcons]]
 name = "e-mail"
 url = "mailto:jordanbchilds@gmail.com"
+[social]
+github = "https://github.com/jordanbchilds/"
+email = "mailto:jordanbchilds@gmail.com"
+facebook_admin = ""
 
 [[menu.main]]
 name = "Blogs"

@@ -2,7 +2,6 @@
 bibliography:
 - bib.bib
 title: "Hardware Accelerated Stochastic Simulation Using an Intelligence Processing Unit"
-date: 2023-02-24T15:00:00Z
 author: "Jordan Childs"
 
 mathjax: true
@@ -144,7 +143,7 @@ Figures 1 and 2. Which shows the distribution of 1,000
 executions of simulation batches of size 8,832, for the system described
 in Equation 1.
 
-| ![cpu_batchSim](/ipu_timeTrial/cpu_batchSim.png 'CPU Batch Simulation') | ![ipu_batchSim](/ipu_timeTrial/ipu_batchSim.png 'CPU Batch Simulation') |
+| ![cpu_batchSim](/static/ipu_timeTrial/cpu_batchSim.png 'CPU Batch Simulation') | ![ipu_batchSim](/static/ipu_timeTrial/ipu_batchSim.png 'CPU Batch Simulation') |
 | :--: | :--: |
 | Figure 1: Simulation times for one batch (8,832 simulations) using the Intel Xeon | Figure 2: Simulation times for one batch using the GC200 |
 
@@ -178,7 +177,7 @@ of independent processes that can be executed on GC200. This gives a
 speed-up factor of approximately 14.5 when comparing the two chips, as
 seen in Figure 3.
 
-| ![cpu_batchSim](/ipu_timeTrial/cpuIPU_ratio.png 'CPU Batch Simulation') |
+| ![cpu_batchSim](/static/ipu_timeTrial/cpuIPU_ratio.png 'CPU Batch Simulation') |
 | :--: |
 | Figure 3: The speed-up factor when comparing the time taken to execute one simulation batch on the Intel Xeon vs. the GC200. |
 
