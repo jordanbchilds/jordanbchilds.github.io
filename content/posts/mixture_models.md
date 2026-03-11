@@ -28,7 +28,7 @@ $$
 
 Figure 1 shows the PDF with a range of parameter values; it is clear from this that a wide variety of densities are possible from just the combination of normal distributions. The endless variety in the density functions available when considering mixture distributions means they are popular prior distributions in Bayesian statistics, when standard distributions are not capable of appropriately capturing prior beliefs.
 
-| ![Variety of three-component normal mixture distribution](../../static/mixture_models/mixtureDistribution.png) |
+| ![Variety of three-component normal mixture distribution](/mixture_models/mixtureDistribution.png) |
 | :-- |
 | Figure 1: **Variety of three-component normal mixture distribution**. Each row alters only a single parameter. The top row of distributions alters the proportion of the red component, decreasing from left to right and splitting the weights evenly between the other two components. The middle row alters the variance of the blue component, increasing from left to right. The bottom row only changes the mean of the blue component and all other parameters are kept the same. |
 

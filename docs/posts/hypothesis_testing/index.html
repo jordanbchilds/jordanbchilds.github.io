@@ -182,26 +182,31 @@
         </ul>
     </nav>
     <script>
-  MathJax = {
+  window.MathJax = {
     tex: {
       inlineMath: [['$', '$'], ['\\(', '\\)']],
-      displayMath: [['$$','$$'], ['\\[', '\\]']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
       processEscapes: true,
       processEnvironments: true
     },
     options: {
       skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    },
+    startup: {
+      pageReady: () => {
+        return window.MathJax.startup.defaultPageReady().then(() => {
+          document.querySelectorAll('mjx-container').forEach((node) => {
+            node.parentElement.classList.add('has-jax');
+          });
+        });
+      }
     }
   };
-
-  window.addEventListener('load', (event) => {
-      document.querySelectorAll("mjx-container").forEach(function(x){
-        x.parentElement.classList += 'has-jax'})
-    });
-
 </script>
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-<script type="text/javascript" id="MathJax-script" async
+<script
+  type="text/javascript"
+  id="MathJax-script"
+  async
   src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 </header>
