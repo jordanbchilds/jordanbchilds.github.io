@@ -84,6 +84,6 @@ $$
 $$
 In this example, the posterior distribution can be found analytically and is a known distribution, and, therefore, the model is conjugate. 
 
-## Non-conjugate analysis
+# Non-conjugate analysis
 
-ADD SOMETHING HERE
+Unfortunately, analysis is not always conjugate and the posterior distribution cannot be found in closed form. When this is the case it is still possible to conduct Bayesian analysis by repeatedly sampling from the posterior distribution. The posterior sample can be inspected to insight into posterior expectations and variances. How the sample is generated is discussed [here](https://jordanbchilds.github.io/posts/mcmc_introduction/).
