@@ -68,19 +68,19 @@ Conditioning the likelihood function on latent states can reduce its complexity.
 
 Let $Z_i$ be the latent state of the $i$-th observation, which is distributed according to the component weights *a priori*,
 $$
-    \text{Pr} \left( Z_i = j | \boldsymbol{w} \right) = w_j.
+    \text{Pr} \left( Z_i = j | \boldsymbol{w} \right) = w_j.CA
 $$
 
 Inference for the latent states can progress by considering their full conditional distributions (FCDs). The law of conditional probability implies that the FCD is proportional to the joint density, $p\left(\boldsymbol{y}, \boldsymbol{Z}, \boldsymbol{\theta}, \boldsymbol{w} \right)$. The probability can be calculated up to proportionality, and so any function not dependent on $Z_i$ can be ignored
 $$
-\begin{split}
+\begin{align*}
     \text{Pr} \left(Z_i = j | \boldsymbol{y}, \boldsymbol{x}, \boldsymbol{\theta}, \boldsymbol{w}\right) &\propto p\left(\boldsymbol{y}, \boldsymbol{Z}, \boldsymbol{\theta}, \boldsymbol{w}\right), \\
     &= p\left(\boldsymbol{y}, \boldsymbol{Z} | \boldsymbol{\theta}, \boldsymbol{w} \right) p (\boldsymbol{\theta}, \boldsymbol{w}), \\
     &\propto p\left(\boldsymbol{y} | \boldsymbol{Z}, \boldsymbol{\theta}, \boldsymbol{w}\right) p\left(\boldsymbol{Z} | \boldsymbol{\theta}, \boldsymbol{w}\right), \\
     &= \prod_{l=1}^n p\left(y_l, | Z_l, \boldsymbol{\theta} \right) p\left(Z_l | \boldsymbol{w}\right), \\
     &= p\left(y_i, | Z_i, \boldsymbol{\theta} \right) p\left(Z_i | \boldsymbol{w}\right), \\
     &\propto w_j f_j\left( y_i | \theta_j \right).
-\end{split}
+\end{align*}
 $$
 The joint density, $p(\boldsymbol{y}, \boldsymbol{Z} | \boldsymbol{\theta}, \boldsymbol{w})$, is split into the observed data likelihood, $p(\boldsymbol{y} | \boldsymbol{Z}, \boldsymbol{\theta}, \boldsymbol{w})$ and the latent state density $p(\boldsymbol{Z}|\boldsymbol{\theta}, \boldsymbol{w})$, and simplified. The probability that the $i$-th observation is classified as belonging to the $j$-th component is found to be proportional to the weighted density of the $j$-th component, evaluated at $y_i$. After calculating the normalising constant, the posterior probability can be written exactly,
 $$
