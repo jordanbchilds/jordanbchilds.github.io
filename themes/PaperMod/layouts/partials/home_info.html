@@ -1,10 +1,15 @@
+{{- $about := site.GetPage "/aboutme" -}}
 {{- with site.Params.homeInfoParams }}
 <article class="first-entry home-info">
     <header class="entry-header">
         <h1>{{ .Title | markdownify }}</h1>
     </header>
     <div class="entry-content">
+        {{- if $about -}}
+        {{ $about.Content }}
+        {{- else -}}
         {{ .Content | markdownify }}
+        {{- end -}}
     </div>
     <footer class="entry-footer">
         {{ partial "social_icons.html" site.Params.socialIcons }}
