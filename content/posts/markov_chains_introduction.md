@@ -19,13 +19,13 @@ Given that at time index $t$ the previous state is $X_{t-1} = S_i$, the transiti
 
 Suppose a system can be in four distinct states, $\{S_1, S_2, S_3, S_4\}$, with known transition probabilities, the system can be represented in a directed graph, as shown in Figure 1. Here, by inspection of the graph, it can be seen that when the system is in $S_1$, the next state can be either $S_2$ or $S_3$, with equal probability.
 
-| ![Discrete state-space Markov chain](../../static/markov_chains_introduction/discreteMarkovChain1.png) |
+| ![Discrete state-space Markov chain](/markov_chains_introduction/discreteMarkovChain1.png) |
 | :--: |
 | Figure 1: **Discrete state-space Markov chain**. A directed graph showing the possible transitions and their probabilities of the Markov chain. The directed edges between nodes indicate a possible transition over a discrete time interval. For example, moving from $S_2$ to $S_3$, over one time increment, is possible, but not from $S_3$ to $S_2$. Each transition is associated with probability, seen adjacent to the edge connecting to nodes. |
 
 Intuitively, within the system described in Figure 1, the probability distribution of the current system state depends only on the previous state and not any state before that. It can also be seen in the directed graph that if the system reaches $S_4$, it will remain in this state indefinitely. This is an example of a stationary distribution of the Markov chain. Given an infinite amount of time, the system will reach $S_4$ with probability 1, and once it does, it can not escape. In this example, the stationary distribution has all weight associated with $S_4$ and none to the other states. Although in more complex systems, this may not be the case. For example, the system depicted in Figure 2, shows a stationary distribution split across two states; $S_4$ and $S_5$. By inspection of the directed graph, it is clear that once the system enters $S_4$, it will oscillate between $S_4$ and $S_5$ indefinitely.
 
-| ![Discrete state-space Markov chain with non-singular stationary distribution](../../static/markov_chains_introduction/discreteMarkovChain2.png) |
+| ![Discrete state-space Markov chain with non-singular stationary distribution](/markov_chains_introduction/discreteMarkovChain2.png) |
 | :--: |
 | Figure 2: **Discrete state-space Markov chain with non-singular stationary distribution**. A directed graph showing the possible transitions and their probabilities of the Markov chain. The connections between nodes indicate that it is possible to transition between the two states over a discrete time interval. The arrow of these connections indicates in which direction it is possible to move. The stationary distribution of this Markov chain has equal weight associated with states $S_4$ and $S_5$ but zero weight associated with the remaining nodes. |
 
@@ -69,7 +69,7 @@ $$
 The random variables $\{X_t : t=0,1,2,\dots\}$ form a continuous state-space, discrete-time Markov chain, referred to as a normal random walk. Whose transition density is a normal distribution centred around the previous state, with variance $\sigma^2$. Figure 3 shows a number of realisations from this model, with varying standard deviations of the additive random noise.
 
 
-| ![Example simulations of normal random walk](../../static/markov_chains_introduction/randomWalkSimulations.png) |
+| ![Example simulations of normal random walk](/markov_chains_introduction/randomWalkSimulations.png) |
 | :--: |
 | Figure 3: **Example simulations of normal random walk**. Twenty realisations from a normal random walk, with initial value $X_0=0$ (both) and standard deviations $\sigma=0.25$ (left) and $\sigma=1.0$ (right). |
 
@@ -78,4 +78,3 @@ As presented here, the normal random walk is univariate; however, this need not 
 # Final remarks
 
 ADD SOME FINAL REMARKS ABOUT SOMETHING
-
