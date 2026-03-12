@@ -147,6 +147,11 @@
     text-align: start;
 }
 
+.post-content table th img {
+    display: block;
+    margin: 0 auto;
+}
+
 .post-content table:not(.highlighttable) td code:only-child {
     margin: auto 0;
 }
