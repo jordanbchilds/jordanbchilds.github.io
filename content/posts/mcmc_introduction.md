@@ -13,89 +13,99 @@ In this blog common methods to sample from the posterior distribtion are introdu
 
 The Gibbs sampler, Algorithm 1, has become one of the most common methods to construct an MCMC scheme. It is generally less computationally expensive than the other proposed algorithms. However, it imposes some restrictions on the models which can be used. The algorithm requires analytic expressions for the full-conditional distribution (FCD) of each parameter. An FCD is the distribution of a single parameter, $\theta_i$ (the $i$-th element of $\boldsymbol{\theta}$), conditional on every other entity (parameters and data), $$p(\theta_i |\theta_1, \dots, \theta_{i-1}, \theta_{i+1}, \dots, \theta_m, \boldsymbol{x}).$$
 
-Suppose we wish to infer a set of unknown parameters in a model, whose posterior, $p(\boldsymbol{\theta}|\boldsymbol{x})$, cannot be found analytically nor can it be sampled from. However, the FCD for each element of $\boldsymbol{\theta}$ can be found analytically and sampled from. Then, a Markov chain can be constructed by sequential sampling of the FCDs of each element of $\boldsymbol{\theta}$, and its stationary distribution is the joint-posterior, $p(\boldsymbol{\theta}| \boldsymbol{x})$. The Gibbs sampling algorithm is described in Algorithm 1. 
+Suppose we wish to infer a set of unknown parameters in a model, whose posterior, $p(\boldsymbol{\theta}|\boldsymbol{x})$, cannot be found analytically nor can it be sampled from. However, the FCD for each element of $\boldsymbol{\theta}$ can be found analytically and sampled from. Then, a Markov chain can be constructed by sequential sampling of the FCDs of each element of $\boldsymbol{\theta}$, and its stationary distribution is the joint-posterior, $p(\boldsymbol{\theta}| \boldsymbol{x})$. The Gibbs sampling algorithm is described in Algorithm 1.
 
-$$
-\begin{align*}
-    &\text{1. Initialise the state of the chain}\boldsymbol{\theta}^{(0)} = (\theta_1^{(0)}, \dots, \theta_m^{(0)})^\text{T} \text{ and set } j=1. \\
-    &\text{2. Generate} \boldsymbol{\theta}^{(j)} \text{ by sequential realisations from full-conditionals }\\
-        & \hspace{1cm} \theta_1^{(j)} \sim p(\theta_1 | \theta_2^{(j-1)}, \dots, \theta_m^{(j-1)}, \boldsymbol{x}) \\
-        & \hspace{1cm}  \theta_2^{(j)} \sim p(\theta_2 | \theta_1^{(j)}, \theta_3^{(j-1)} \dots, \theta_m^{(j-1)}, \boldsymbol{x}) \\
-        &\hspace{2cm} \vdots  \\
-        & \hspace{1cm}  \theta_m^{(j)} \sim p(\theta_m | \theta_1^{(j)}, \dots, \theta_{m-1}^{(j)}, \boldsymbol{x}) \\
-    &\text{3. Increment } j \text{ by 1 and return to step 2. }
-\end{align*}
-$$
+{{< rawhtml >}}
+<p>\[
+\begin{aligned}
+    &\text{1. Initialise the state of the chain } \boldsymbol{\theta}^{(0)} = (\theta_1^{(0)}, \dots, \theta_m^{(0)})^\text{T} \text{ and set } j=1. \\
+    &\text{2. Generate } \boldsymbol{\theta}^{(j)} \text{ by sequential realisations from full-conditionals } \\
+    &\hspace{1cm} \theta_1^{(j)} \sim p(\theta_1 \mid \theta_2^{(j-1)}, \dots, \theta_m^{(j-1)}, \boldsymbol{x}) \\
+    &\hspace{1cm} \theta_2^{(j)} \sim p(\theta_2 \mid \theta_1^{(j)}, \theta_3^{(j-1)}, \dots, \theta_m^{(j-1)}, \boldsymbol{x}) \\
+    &\hspace{2cm} \vdots \\
+    &\hspace{1cm} \theta_m^{(j)} \sim p(\theta_m \mid \theta_1^{(j)}, \dots, \theta_{m-1}^{(j)}, \boldsymbol{x}) \\
+    &\text{3. Increment } j \text{ by 1 and return to step 2.}
+\end{aligned}
+\]</p>
+{{< /rawhtml >}}
 
 The Gibbs sampler produces an $m$-dimensional Markov chain which will eventually, after a burn-in period, samples from the joint-posterior density. However, the time taken to reach the stationary distribution is not known, and the quality of the posterior draw produced is not guaranteed. How to assess both aspects of inference is discussed later. 
 
 # Metropolis-Hastings
 
-The Metropolis-Hastings algorithm can be used when sampling from full-conditionals is not available, i.e. the FCD can not be sampled from directly. Unlike the Gibbs sampler, the method requires new $\boldsymbol{\theta}$ values to be actively proposed before being accepted or rejected. The acceptance probability combines information from the proposal distribution and posterior density. The proposal distribution, commonly denoted $q(\cdot | \cdot)$, often depends on the previously accepted value of $\boldsymbol{\theta}$. Following this notation, the algorithm is described in Algorithm 2.
-
-$$
-\begin{align*}
-    &\text{1. Initialise the state of the chain }\boldsymbol{\theta}^{(0)} = (\theta_1^{(0)}, \dots, \theta_m^{(0)})^\text{T} \text{ and set } j=1.\\
+The Metropolis-Hastings algorithm can be used when sampling from full-conditionals is not available, i.e. the FCD can not be sampled from directly. Unlike the Gibbs sampler, the method requires new $\boldsymbol{\theta}$ values to be actively proposed before being accepted or rejected. The acceptance probability combines information from the proposal distribution and posterior density. The proposal distribution, commonly denoted $q(\cdot \mid \cdot)$, often depends on the previously accepted value of $\boldsymbol{\theta}$. Following this notation, the algorithm is described in Algorithm 2.
+{{< rawhtml >}}
+<p>\[
+\begin{aligned}
+    &\text{1. Initialise the state of the chain } \boldsymbol{\theta}^{(0)} = (\theta_1^{(0)}, \dots, \theta_m^{(0)})^\text{T} \text{ and set } j=1. \\
     &\text{2. Propose a new parameter value} \\
-    & \hspace{1cm} \boldsymbol{\theta}^* \sim q(\cdot|\boldsymbol{\theta}^{(j-1)}).\\
+    &\hspace{1cm} \boldsymbol{\theta}^{*} \sim q(\cdot \mid \boldsymbol{\theta}^{(j-1)}). \\
     &\text{3. Calculate the acceptance probability } \\
-        & \hspace{1cm} \alpha(\boldsymbol{\theta}^{(j-1)}, \boldsymbol{\theta}^*) = \min \left\{ 1, \: \frac{p(\boldsymbol{\theta}^*|\boldsymbol{x})}{p(\boldsymbol{\theta}^{(j-1)}|\boldsymbol{x})} \frac{q(\boldsymbol{\theta}^{(j-1)}|\boldsymbol{\theta}^*)}{q(\boldsymbol{\theta}^* | \boldsymbol{\theta}^{(j-1)})} \right\} \\
-        & \hspace{2.8cm} = \min \left\{ 1, \:\frac{p(\boldsymbol{\theta}^*)L(\boldsymbol{\theta}^*|\boldsymbol{x})}{p(\boldsymbol{\theta}^{(j-1)})L(\boldsymbol{\theta}^{(j-1)}|\boldsymbol{x})} \frac{q(\boldsymbol{\theta}^{(j-1)}|\boldsymbol{\theta}^*)}{q(\boldsymbol{\theta}^* | \boldsymbol{\theta}^{(j-1)})} \right\}. \\
-    &\text{4. Set } \boldsymbol{\theta}^{(j)} = \boldsymbol{\theta}^* \text{ with probability }\alpha(\boldsymbol{\theta}^{(j-1)}, \boldsymbol{\theta}^*) \text{ otherwise set } \boldsymbol{\theta}^{(j)} = \boldsymbol{\theta}^{(j-1)} \\
-    &\text{5. Increment } j \text{ by 1 and return to step 2.}\\
-\end{align*}
-$$ 
-
+    &\hspace{1cm} \alpha(\boldsymbol{\theta}^{(j-1)}, \boldsymbol{\theta}^{*}) = \min \left\lbrace 1, \frac{p(\boldsymbol{\theta}^{*}\mid\boldsymbol{x})}{p(\boldsymbol{\theta}^{(j-1)}\mid\boldsymbol{x})} \frac{q(\boldsymbol{\theta}^{(j-1)}\mid\boldsymbol{\theta}^{*})}{q(\boldsymbol{\theta}^{*} \mid \boldsymbol{\theta}^{(j-1)})} \right\rbrace \\
+    &\hspace{2.8cm} = \min \left\lbrace 1, \frac{p(\boldsymbol{\theta}^{*})L(\boldsymbol{\theta}^{*}\mid\boldsymbol{x})}{p(\boldsymbol{\theta}^{(j-1)})L(\boldsymbol{\theta}^{(j-1)}\mid\boldsymbol{x})} \frac{q(\boldsymbol{\theta}^{(j-1)}\mid\boldsymbol{\theta}^{*})}{q(\boldsymbol{\theta}^{*} \mid \boldsymbol{\theta}^{(j-1)})} \right\rbrace. \\
+    &\text{4. Set } \boldsymbol{\theta}^{(j)} = \boldsymbol{\theta}^{*} \text{ with probability } \alpha(\boldsymbol{\theta}^{(j-1)}, \boldsymbol{\theta}^{*}) \text{ otherwise set } \boldsymbol{\theta}^{(j)} = \boldsymbol{\theta}^{(j-1)} \\
+    &\text{5. Increment } j \text{ by 1 and return to step 2.}
+\end{aligned}
+\]</p>
+{{< /rawhtml >}}
 Note that the acceptance probability contains a ratio of posterior densities, the ratio cancels out the normalising constant, and thus is equal to a ratio of prior multiplied by likelihood. The form of the acceptance probability in Algorithm 2 ensures that the Markov chain's stationary distribution is the posterior density of interest, with proposed values in areas of higher posterior density having a higher acceptance probability.
 
 The proposal distribution, $q(\cdot|\boldsymbol{\theta})$, is of particular importance, as it determines the algorithm's efficiency. Ideally, the proposal distribution closely resembles the stationary distribution (posterior distribution). If this is not the case, the chain may have inefficient exploration of the parameter space, which can lead to long burn-in periods and increased computational cost. Common proposal distributions are discussed in next. Similarly to the Gibbs sampler, no guarantees are made about the quality of posterior draws or burn-in length.
 
 ## Independent proposal
 
-An independent proposal is one that does not rely on the current state of the Markov chain. The proposal density can then be written $q(\boldsymbol{\theta}^*)$, without the $\boldsymbol{\theta}^{(j-1)}$ dependence, and the acceptance probability becomes
-$$
-\begin{split}
-    \alpha(\boldsymbol{\theta}, \boldsymbol{\theta}^*) &= \min \left\{1, \: \frac{p(\boldsymbol{\theta}^*|\boldsymbol{x})}{p(\boldsymbol{\theta}|\boldsymbol{x})} \frac{q(\boldsymbol{\theta})}{q(\boldsymbol{\theta}^*)} \right\}, \\
-    &= \min \left\{1, \: \frac{p(\boldsymbol{\theta}^*)L(\boldsymbol{\theta}^*|\boldsymbol{x})}{p(\boldsymbol{\theta})L(\boldsymbol{\theta}|\boldsymbol{x})} \frac{q(\boldsymbol{\theta})}{q(\boldsymbol{\theta}^*)} \right\}.
-\end{split}
-$$
+An independent proposal is one that does not rely on the current state of the Markov chain. The proposal density can then be written $q(\boldsymbol{\theta}^{*})$, without the $\boldsymbol{\theta}^{(j-1)}$ dependence, and the acceptance probability becomes
+{{< rawhtml >}}
+<p>\[
+\begin{aligned}
+    \alpha(\boldsymbol{\theta}, \boldsymbol{\theta}^{*}) &= \min \left\lbrace 1, \frac{p(\boldsymbol{\theta}^{*}\mid\boldsymbol{x})}{p(\boldsymbol{\theta}\mid\boldsymbol{x})} \frac{q(\boldsymbol{\theta})}{q(\boldsymbol{\theta}^{*})} \right\rbrace, \\
+    &= \min \left\lbrace 1, \frac{p(\boldsymbol{\theta}^{*})L(\boldsymbol{\theta}^{*}\mid\boldsymbol{x})}{p(\boldsymbol{\theta})L(\boldsymbol{\theta}\mid\boldsymbol{x})} \frac{q(\boldsymbol{\theta})}{q(\boldsymbol{\theta}^{*})} \right\rbrace.
+\end{aligned}
+\]</p>
+{{< /rawhtml >}}
 Note that the superscript of the previously accepted value of $\boldsymbol{\theta}^{(j-1)}$ has been dropped for brevity. A special case of the independent proposal is when the prior distribution is used to propose values. In this case, the acceptance ratio simplifies to become the ratio of the likelihoods,
-$$
-\begin{split}
-    \alpha(\boldsymbol{\theta}, \boldsymbol{\theta}^*) &= \min \left\{1, \: \frac{p(\boldsymbol{\theta}^*)L(\boldsymbol{\theta}^*|\boldsymbol{x})}{p(\boldsymbol{\theta})L(\boldsymbol{\theta}|\boldsymbol{x})} \frac{p(\boldsymbol{\theta})}{p(\boldsymbol{\theta}^*)} \right\}, \\
-    &= \min \left\{1, \: \frac{L(\boldsymbol{\theta}^*|\boldsymbol{x})}{L(\boldsymbol{\theta}|\boldsymbol{x}) } \right\}. \\
-\end{split}
-$$
+{{< rawhtml >}}
+<p>\[
+\begin{aligned}
+    \alpha(\boldsymbol{\theta}, \boldsymbol{\theta}^{*}) &= \min \left\lbrace 1, \frac{p(\boldsymbol{\theta}^{*})L(\boldsymbol{\theta}^{*}\mid\boldsymbol{x})}{p(\boldsymbol{\theta})L(\boldsymbol{\theta}\mid\boldsymbol{x})} \frac{p(\boldsymbol{\theta})}{p(\boldsymbol{\theta}^{*})} \right\rbrace, \\
+    &= \min \left\lbrace 1, \frac{L(\boldsymbol{\theta}^{*}\mid\boldsymbol{x})}{L(\boldsymbol{\theta}\mid\boldsymbol{x}) } \right\rbrace.
+\end{aligned}
+\]</p>
+{{< /rawhtml >}}
 
 A prior proposal distribution is efficient if the prior closely resembles the posterior. Often, this is not the case, and the algorithm leads to a low acceptance probability and slow exploration of the parameter space.
 
 ## Symmetric proposal
 
-A proposal is considered symmetric if $q(\boldsymbol{\theta} | \boldsymbol{\theta}^*) = q(\boldsymbol{\theta}^*| \boldsymbol{\theta})$ for all $\boldsymbol{\theta}, \boldsymbol{\theta}^* \in \Theta$. When this is true, the acceptance probability simplifies to a ratio of the stationary distributions, as such 
+A proposal is considered symmetric if $q(\boldsymbol{\theta} \mid \boldsymbol{\theta}^{*}) = q(\boldsymbol{\theta}^{*}\mid \boldsymbol{\theta})$ for all $\boldsymbol{\theta}, \boldsymbol{\theta}^{*} \in \Theta$. When this is true, the acceptance probability simplifies to a ratio of the stationary distributions, as such 
 
-$$
-\begin{split}
-    \alpha(\boldsymbol{\theta}, \boldsymbol{\theta}^*) &= \min \left\{1, \: \frac{p(\boldsymbol{\theta}^*|\boldsymbol{x})}{p(\boldsymbol{\theta}|\boldsymbol{x})} \right\} \\ 
-    &= \min \left\{1, \: \frac{p(\boldsymbol{\theta}^*)L(\boldsymbol{\theta}^*|\boldsymbol{x})}{p(\boldsymbol{\theta})L(\boldsymbol{\theta}|\boldsymbol{x})} \right\}.
-\end{split}
-$$
+{{< rawhtml >}}
+<p>\[
+\begin{aligned}
+    \alpha(\boldsymbol{\theta}, \boldsymbol{\theta}^{*}) &= \min \left\lbrace 1, \frac{p(\boldsymbol{\theta}^{*}\mid\boldsymbol{x})}{p(\boldsymbol{\theta}\mid\boldsymbol{x})} \right\rbrace \\
+    &= \min \left\lbrace 1, \frac{p(\boldsymbol{\theta}^{*})L(\boldsymbol{\theta}^{*}\mid\boldsymbol{x})}{p(\boldsymbol{\theta})L(\boldsymbol{\theta}\mid\boldsymbol{x})} \right\rbrace.
+\end{aligned}
+\]</p>
+{{< /rawhtml >}}
 
 Symmetric proposals are common when constructing MCMC schemes, the most common of which is the random walk proposal. 
 
 ## Random walk proposal
 
 A special case of the symmetric distribution is a random walk, which adds independent and identically distributed random noise to the previously accepted parameter values. That is,
-$$
-    \boldsymbol{\theta}^* = \boldsymbol{\theta}^{(j-1)} + \boldsymbol{\varepsilon}_j,
-$$
-where $\boldsymbol{\varepsilon}_j$ are independent and identically distributed random variables. Usually, the noise is normally distributed and centred around $\boldsymbol{0}$ ($m$-dimensional zero vector). Let 
-$$
+{{< rawhtml >}}
+<p>\[
+    \boldsymbol{\theta}^{*} = \boldsymbol{\theta}^{(j-1)} + \boldsymbol{\varepsilon}_j,
+\]</p>
+<p>where \(\boldsymbol{\varepsilon}_j\) are independent and identically distributed random variables. Usually, the noise is normally distributed and centred around \(\boldsymbol{0}\) (\(m\)-dimensional zero vector). Let</p>
+<p>\[
     \boldsymbol{\varepsilon}_j \sim \text{N}\left(\boldsymbol{0}, \Sigma\right),
-$$
-for all $j$, then the a proposed value of $\boldsymbol{\theta}$ is drawn from 
-$$
-    \boldsymbol{\theta}^*|\boldsymbol{\theta}^{(j-1)} \sim \text{N}\left(\boldsymbol{\theta}^{(j-1)}, \Sigma\right).
-$$
+\]</p>
+<p>for all \(j\), then the a proposed value of \(\boldsymbol{\theta}\) is drawn from</p>
+<p>\[
+    \boldsymbol{\theta}^{*}\mid\boldsymbol{\theta}^{(j-1)} \sim \text{N}\left(\boldsymbol{\theta}^{(j-1)}, \Sigma\right).
+\]</p>
+{{< /rawhtml >}}
 
 It remains to choose a covariance matrix, $\Sigma$, the choice of which is important for the efficiency of the inference scheme. Similarly to before, a quick exploration of parameter space is preferred. To achieve this, a covariance matrix is needed that shows similar correlations to the posterior distribution and marginal variances which are not too big nor too small. Small marginal variances lead to slow exploration of the parameter space with many proposed values being accepted. Large marginal variances will lead to too few proposed values being accepted and slow exploration. 
 
