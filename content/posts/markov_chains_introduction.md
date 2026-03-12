@@ -31,14 +31,18 @@ Intuitively, within the system described in Figure 1, the probability distributi
 
 A stationary distribution represents the time-limiting behaviour of the system and the proportion of time the chain spends in each state as the system-time tends to infinity. If one exists, the system's stationary distribution can be calculated analytically for discrete-time, discrete-state-space Markov chains.
  
-As the size of the state space increases, summarising the possible transitions and their probabilities within a directed graph becomes inconvenient. Therefore, this information is often summarised in a transition matrix, whose $(i,j)$-th element is the probability of transitioning from state $i$ to $j$, $p_{ij}$. For the system described in Figure 2, the transition matrix, $P$, is
-$$
-    P = \begin{pmatrix} 0 & 1/2 & 1/2 & 0 & 0 \\ 
+{{< rawhtml >}}
+<p>As the size of the state space increases, summarising the possible transitions and their probabilities within a directed graph becomes inconvenient. Therefore, this information is often summarised in a transition matrix, whose \((i,j)\)-th element is the probability of transitioning from state \(i\) to \(j\), \(p_{ij}\). For the system described in Figure 2, the transition matrix, \(P\), is</p>
+<p>\[
+    P = \begin{pmatrix}
+    0 & 1/2 & 1/2 & 0 & 0 \\
     0 & 1/4 & 3/4 & 0 & 0 \\
     4/5 & 0 & 0 & 1/5 & 0 \\
     0 & 0 & 0 & 0 & 1 \\
-    0 & 0 & 0 & 1/3 & 2/3\end{pmatrix}.
-$$
+    0 & 0 & 0 & 1/3 & 2/3
+    \end{pmatrix}.
+\]</p>
+{{< /rawhtml >}}
 
 The $i$-th row of the transition matrix is the PMF of the current state if the system was previously in the $i$-th state. For example, the $3^\mathrm{rd}$ row, $\left(4/5, 0, 0, 1/5, 0 \right)
 $ gives probabilities 4/5 and 1/5 of being in the $1^\mathrm{st}$ and $4^\mathrm{th}$ states, respectively, and all other states having a zero probability. This is reflected in Figure 2 where the only directed edges leaving $S_3$ are to $S_1$ and $S_4$, with the appropriate weights.
