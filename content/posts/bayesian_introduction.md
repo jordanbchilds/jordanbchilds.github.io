@@ -72,13 +72,15 @@ $$
     p(\tau) = \frac{b^a}{\Gamma(a)} \tau^{a-1}\exp\left(-b\tau\right).
 $$
 
-The posterior distribution $p(\tau | \boldsymbol{x})$ can then be found up to proportionality by multiplying the prior density and likelihood functions.
-$$
+{{< rawhtml >}}
+<p>The posterior distribution \(p(\tau \mid \boldsymbol{x})\) can then be found up to proportionality by multiplying the prior density and likelihood functions.</p>
+<p>\[
 \begin{aligned}
-    p(\tau | \boldsymbol{x}) &\propto \frac{b^a}{\Gamma(a)} \tau^{a-1}\exp\left(-b\tau\right) \times \prod_{i=1}^n \sqrt{\frac{\tau}{2\pi}} \exp \left[-\frac{1}{2\tau} (x_i - \mu)^2\right] \\ \\
-    &\propto \tau^{a + n/2 -1} \exp\left\{ -\left[b + \frac{1}{2}\sum_{i=1}^n(x_i - \mu)^2\right]\tau\right\}
+    p(\tau \mid \boldsymbol{x}) &\propto \frac{b^a}{\Gamma(a)} \tau^{a-1}\exp\left(-b\tau\right) \times \prod_{i=1}^n \sqrt{\frac{\tau}{2\pi}} \exp \left[-\frac{\tau}{2} (x_i - \mu)^2\right] \\
+    &\propto \tau^{a + n/2 -1} \exp\left\lbrace -\left[b + \frac{1}{2}\sum_{i=1}^n(x_i - \mu)^2\right]\tau\right\rbrace
 \end{aligned}
-$$
+\]</p>
+{{< /rawhtml >}}
 
 The form of $p(\tau | \boldsymbol{x})$, up to proportionality, has the same form as a gamma distribution and, therefore, $\tau$ must follow a gamma distribution *a posteriori*. Hence, the posterior belief for $\tau$ is summarised by a gamma distribution with shape $a + n/2$ and rate $\left[b + \frac{1}{2}\sum_{i=1}^n(x_i - \mu)^2\right]$, and the posterior distribution can be written as
 $$
