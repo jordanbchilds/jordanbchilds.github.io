@@ -26,9 +26,9 @@ Upon inspection of the data there appears to be little overall trend in energy s
 
 The dataset contains some missing values, however the degree of missingness is relatively low, with between 41 and 121 missing values per variable in a dataset of over 50,000 observations. The missing values are therefore not of concern in regards to data quality but should be filled to make model fitting easier and more consistent across modelling techniques and python packages. To estimate the missing values for each variable a Kalman filter is used to extract the smoothed estimates. The filter is fitted independently for each variable and the missing values replaced by their estimates. The `filled` data is used for all model fitting throughout this investigation, but the estimated values are omitted when calculating model comparison statistics, such as mean squared error.
 
-<img src="/static/energy_spot_price_statistical_model_comparison/spot_price_data.png" alt="Raw data" width="1770" height="1466">
+<img src="/static/energy_spot_price_statistical_model_comparison/spot_price_data.png" alt="Raw data">
 
-<img src="/static/energy_spot_price_statistical_model_comparison/energy_price_by_day.png" alt="By day price" width="2068" height="1166">
+<img src="/static/energy_spot_price_statistical_model_comparison/energy_price_by_day.png" alt="By day price">
 
 # Methods
 
@@ -78,7 +78,7 @@ The seasonal order of the models is not inferred but fixed. During initial inspe
 
 The general form of the seasonal ARIMAX model if given above, and so formal definition is not necessary here. The mathematical definition of the seasonal ARIMA is found by removing the exogenous variables from the ARIMAX definition, and, again, a formal definite is omitted.
 
-<img src="/static/energy_spot_price_statistical_model_comparison/arima_predictions.png" alt="ARIMA predictions" width="1764" height="1466">
+<img src="/static/energy_spot_price_statistical_model_comparison/arima_predictions.png" alt="ARIMA predictions">
 
 
 #### Hourly independence seasonal ARIMA
@@ -96,7 +96,7 @@ $$
 $$
 </div>
 
-<img src="/static/energy_spot_price_statistical_model_comparison/arimat_predictions.png" alt="sARIMAt predictions" width="1764" height="1466">
+<img src="/static/energy_spot_price_statistical_model_comparison/arimat_predictions.png" alt="sARIMAt predictions">
 
 ## VAR
 
@@ -116,7 +116,7 @@ Where $\boldsymbol{\epsilon}_{t}$ are independent and identically distributed mu
 
 [FUNCTIONS AND PREDICTION]
 
-<img src="/static/energy_spot_price_statistical_model_comparison/var_predictions.png" alt="var predictions" width="1727" height="1466">
+<img src="/static/energy_spot_price_statistical_model_comparison/var_predictions.png" alt="var predictions">
 
 
 ## ARCH
@@ -157,7 +157,7 @@ The orders of the GARCH-AR models are chosen by fitting a range of models to the
 
 [FUNCTIONS AND PREDICTIONS]
 
-<img src="/static/energy_spot_price_statistical_model_comparison/garch_predictions.png" alt="GARCH predictions" width="1764" height="1466">
+<img src="/static/energy_spot_price_statistical_model_comparison/garch_predictions.png" alt="GARCH predictions">
 
 # Results
 
@@ -192,8 +192,8 @@ The models used above come with associated assumptions. Mostly, the ARIMA-type a
 
 The GARCH-type models, assume a dynamic variance and it is modelled as such. Inspecting the standardised residuals again, we see results more inline with the assumptions. The residuals show far fewer points with drastically larger than expected values and are more consitent with a standard normal distribution, as would be expected.
 
-<img src="/static/energy_spot_price_statistical_model_comparison/sarima_std_residuals.png" alt="sARIMA residuals" width="1470" height="1166">
-<img src="/static/energy_spot_price_statistical_model_comparison/garch_std_residuals.png" alt="GARCH residuals" width="1318" height="1118">
+<img src="/static/energy_spot_price_statistical_model_comparison/sarima_std_residuals.png" alt="sARIMA residuals">
+<img src="/static/energy_spot_price_statistical_model_comparison/garch_std_residuals.png" alt="GARCH residuals">
 
 
 # Conclusion
