@@ -182,7 +182,7 @@
     <p>Introduction Unlike other commodities, such as oil, storing energy for later use is difficult and expensive. Therefore, it’s supply and demand must be monitored real-time and alterations must be made to maintain an equilibrium. One of the ways in which this equilibrium is maintained is that energy production and consumption are predicted one day ahead, and an hourly energy spot-price required to close the deficit is calculated. The hourly spot-price is the price paid for energy to close the deficit between predicted and real-time us. The price is determined the day prior and so the today’s spot-prices were set yesterday.
 ...</p>
   </div>
-  <footer class="entry-footer">&lt;span title=&#39;2026-05-12 00:00:00 &#43;0000 UTC&#39;&gt;May 12, 2026&lt;/span&gt;&amp;nbsp;·&amp;nbsp;15 min&amp;nbsp;·&amp;nbsp;Jordan Childs</footer>
+  <footer class="entry-footer">Published May 12, 2026 · By Jordan Childs · Estimated reading time: 15 min</footer>
   <a class="entry-link" aria-label="post link to A Comparison of Statistical Models of Energy Spot Price in the UK" href="https://jordanbchilds.github.io/posts/energy_spot_statistical_model_comparison/"></a>
 </article>
 
@@ -195,7 +195,7 @@
     <p>Introduction In this article we will discuss how to execute a large number of independent programs in parallel, using a new computer chip capable of executing thousands of independent calculations at once. This may be particularly useful in areas of stochastic modelling and Monte Carlo simulation, where repeated and independent simulations are required to learn about uncertainty in model predictions. The chip in question is called the Intelligence Processing Unit (IPU) and is developed by Graphcore, a UK-based company headquartered in Bristol. The IPU is now (as of February 2023) on its second generation, the Colossus MK2 IPU processor, also known as the GC200.
 ...</p>
   </div>
-  <footer class="entry-footer">27 min&amp;nbsp;·&amp;nbsp;Jordan Childs</footer>
+  <footer class="entry-footer">By Jordan Childs · Estimated reading time: 27 min</footer>
   <a class="entry-link" aria-label="post link to A Beginners Guide to Executing C&#43;&#43; Scripts on an IPU" href="https://jordanbchilds.github.io/posts/ipu_howto/"></a>
 </article>
 
@@ -208,7 +208,7 @@
     <p>#include &lt;vector&gt; #include &lt;stdexcept&gt; // un-normalised weights template&lt;typename T&gt; std::size_t rdiscrete (const std::vector&lt;T&gt;&amp; weights) { T norm = 0.0; for (const T&amp; w : weights) { if (w&lt;0.0) throw std::domain_error(&#34;Weights must be non-negative.&#34;); norm &#43;= w; } double u = (double)rand() / (double)RAND_MAX * (double)norm; std::size_t iter = 0; for (const T&amp; w : weights) { u -= w; if (u &lt; 0.0) return iter; iter&#43;&#43;; } return iter; } // (un-normalised) weights with a known normalising constant template &lt;typename T&gt; std::size_t rdiscrete (const std::vector&lt;T&gt;&amp; weights, const T&amp; norm) { if (norm&lt;=0) std::domain_error(&#34;norm must be greater than zero.&#34;); double u = (double)rand() / (double)RAND_MAX * (double)norm; std::size_t iter = 0; for (const T&amp; w : weights) { if (w&lt;0.0) std::domain_error(&#34;weights must be non-negative.&#34;) u -= w; if (u &lt; 0.0) return iter; iter&#43;&#43;; } return iter; } Here we will briefly discuss how to sample a discrete random variable in theory and practice, before constructing our own algorithm and comparing its performance to the std::discrete_distribution in the C&#43;&#43; standard library. Many hand-coded discrete samplers have been proposed, but often these are unnecessarily clunky and, consequently, slow. The sampler proposed here is a function, designed to take an std::vector input representing the weights of the possible outcomes and return an std::size_t value indicating the randomly sampled vector index. Two versions of the function are given above, one where the sum of the weights (normalising constant) is known and one where it is not. If the normalising constant is not known, then it is calculated and the weights are checked to be non-negative, and if the it is given, it is assumed that this has already been checked.
 ...</p>
   </div>
-  <footer class="entry-footer">7 min&amp;nbsp;·&amp;nbsp;Jordan Childs</footer>
+  <footer class="entry-footer">By Jordan Childs · Estimated reading time: 7 min</footer>
   <a class="entry-link" aria-label="post link to A simple discrete random sampler in C&#43;&#43;" href="https://jordanbchilds.github.io/posts/discreterandomsampler/"></a>
 </article>
 
@@ -221,7 +221,7 @@
     <p>Before discussing Bayesian classifcation methods we intoduce the concept of mixture models, often used for unsupervised classification tasks. Mixture models are a diverse set of statistical models which can take an endless number of forms, the discussion here is limited on finite mixture models. The most common form of which is likely the Guassian mixture model (GMM), used for a variety of applications including clustering, an unsupervised classification method, and traditional modelling. Mixture models are often used to cluster like data-points into groups. In the Bayesian paradigm this is done by inferring a latent classification variable for each data-point.
 ...</p>
   </div>
-  <footer class="entry-footer">9 min&amp;nbsp;·&amp;nbsp;Jordan Childs</footer>
+  <footer class="entry-footer">By Jordan Childs · Estimated reading time: 9 min</footer>
   <a class="entry-link" aria-label="post link to Bayesian Classifiation by Mixture Models" href="https://jordanbchilds.github.io/posts/mixture_models/"></a>
 </article>
 
@@ -234,7 +234,7 @@
     <p>The t-test is one of the most common tests used in statistics. It compares the means of two normally distributed datasets by calculating a test statistic and comparing it to the t-distribution. Variations of the test exist, including constant and differing variance between groups, paired and unpaired, and non-normality in the data. Here, Bayesian hypothesis testing is discussed, giving an indication of how a two-sample t-test would be conducted within a Bayesian context. Extensions to other situations are available, but the focus of this is to illustrate the how hyptothesis testing is done within the Bayesian paraidgm.
 ...</p>
   </div>
-  <footer class="entry-footer">4 min&amp;nbsp;·&amp;nbsp;Jordan Childs</footer>
+  <footer class="entry-footer">By Jordan Childs · Estimated reading time: 4 min</footer>
   <a class="entry-link" aria-label="post link to Bayesian Hypothesis Testing" href="https://jordanbchilds.github.io/posts/hypothesis_testing/"></a>
 </article>
 
@@ -247,7 +247,7 @@
     <p>Introduction Graphcore, a company based in Bristol, UK, have developed a new kind of processor with the aim of being able to massively parallelise computation. The chip is called an Intelligence Processing Unit (IPU) and is now on its second generation, the Colossus MK2 IPU processor - the GC200. Originally designed to dramatically increase performance in machine learning applications, the IPUs architecture can also be used to provide big performance increases in many other areas. Here, we will show that the IPUs ability for massive parallelisation can be used to decrease the computational time for repeated simulation of dynamic, stochastic models. This family of models are used in a wide variety of applications including biology, where they can be used to perform in silico experiments, and finance, where they can be used to forecast asset prices.
 ...</p>
   </div>
-  <footer class="entry-footer">11 min&amp;nbsp;·&amp;nbsp;Jordan Childs</footer>
+  <footer class="entry-footer">By Jordan Childs · Estimated reading time: 11 min</footer>
   <a class="entry-link" aria-label="post link to Hardware Accelerated Stochastic Simulation Using an Intelligence Processing Unit" href="https://jordanbchilds.github.io/posts/ipu_timetrial/"></a>
 </article>
 
@@ -260,7 +260,7 @@
     <p>Hierarchical models are synonymous with Bayesian methods, which is better equiped to be able to infer the parameters of large and complex models when compared to frequentist methods. They are popular as they allow simple building blocks to be combined to form a large and complex model. The ability of hierarchical models to reflect complex systems means they have been applied to a variety of modelling situations, within all aspects of science.
 ...</p>
   </div>
-  <footer class="entry-footer">6 min&amp;nbsp;·&amp;nbsp;Jordan Childs</footer>
+  <footer class="entry-footer">By Jordan Childs · Estimated reading time: 6 min</footer>
   <a class="entry-link" aria-label="post link to Introduction to Bayesian Hierarchical Models" href="https://jordanbchilds.github.io/posts/hierarchical_models/"></a>
 </article>
 
@@ -273,7 +273,7 @@
     <p>Unlike frequentist statisticians, Bayesian statisticians believe that there is no ’true’ value of the parameters in a statistical model. Instead, Bayesian methods summarise parameter beliefs after observing data (a posteriori) by a probability distribution, giving more weight to more likely values. Parameter beliefs before observing any data (a priori) are called prior beliefs, and are similarly summarised by a probability distribution. Prior beliefs can be as vague or informed as required to reflect the beliefs of relevant experts. A lack of prior can be reflected by vague prior beliefs, with a high variance. In contrast, a large amount of prior knowledge from previous work may result in well-informed priors with high precision. Parameter beliefs are updated by combining prior beliefs and new evidence presented from a dataset. Bayesian methodology is fully probabilistic and considers model parameters, hidden states, as well as missing and observed data in the same vein. The coherent treatment of model parameters, data, and hidden states has allowed Bayesian methods to be used in a wide range of inference problems.
 ...</p>
   </div>
-  <footer class="entry-footer">6 min&amp;nbsp;·&amp;nbsp;Jordan Childs</footer>
+  <footer class="entry-footer">By Jordan Childs · Estimated reading time: 6 min</footer>
   <a class="entry-link" aria-label="post link to Introduction to Bayesian Statistics" href="https://jordanbchilds.github.io/posts/bayesian_introduction/"></a>
 </article>
 
@@ -286,7 +286,7 @@
     <p>In the Bayesian paradigm, it is often the case that a posterior distirbution cannot be found analytically, such as wehn analysis is conjugate. However, this is need not be the end. Markov chain Monte Carlo (MCMC) is a common method used to sample from a posterior distribution when the analysis is not conjugate. The premise of the method is to construct a Markov chain whose stationary distribution is the posterior density. Once the Markov chain has converged to the posterior, any sample generated by the chain will be a realisation from the posterior distribution and posterior beliefs can be inpsected by inspection of the posterior samples.
 ...</p>
   </div>
-  <footer class="entry-footer">12 min&amp;nbsp;·&amp;nbsp;Jordan Childs</footer>
+  <footer class="entry-footer">By Jordan Childs · Estimated reading time: 12 min</footer>
   <a class="entry-link" aria-label="post link to Introduction to Markov Chain Monte Carlo" href="https://jordanbchilds.github.io/posts/mcmc_introduction/"></a>
 </article>
 
@@ -300,7 +300,7 @@
 The Markov property implies that the current state is a random variable whose possible values are described by a probability density dependent on the previous state. Being sequential, Markov chains are usually thought to progress with time, with updates occurring at discrete or continuous intervals. The state space of a Markov chain, the possible values of the random variables, can be either multi- or univariate and be discrete or continuous. Here we introduce both discrete and continuous state-space Markov chains with an example of both. The discussion is limited to discrete-time Markov chains, that iterate at fixed time intervals but continuous-time extensions exist. It is assumed that the reader is familiar with conscepts in statistics such random variables and probability density functions.
 ...</p>
   </div>
-  <footer class="entry-footer">7 min&amp;nbsp;·&amp;nbsp;Jordan Childs</footer>
+  <footer class="entry-footer">By Jordan Childs · Estimated reading time: 7 min</footer>
   <a class="entry-link" aria-label="post link to Introduction to Markov Chains" href="https://jordanbchilds.github.io/posts/markov_chains_introduction/"></a>
 </article>
     </main>
