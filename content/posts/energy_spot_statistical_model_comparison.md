@@ -34,13 +34,14 @@ The dataset contains some missing values, however the degree of missingness is r
 
 Three model categories are compared, each one is considered with and without the use of explanatory (exogenous) variables, and their predictive performance is compared using a sliding window prediction. The energy spot-price is set in 24 hour chucks, that is, the hourly spot prices for tomorrow, for example, are set today. Making predictions 24 hours ahead replicates the real-world need for predicting hourly spot-prices the day before. The dataset is split into two subsets; training and validation, with the final month's worth of data being used to validate and compare model predictions. A sliding window is used to make predictions, reflecting the necessity to forecast the next days energy price, For each model the window used spans a two year period (assumed to be 730 days). Although not shown here, fitting the model on the log-scale provides a better fit to the data and is consistent with other works modelling energy prices and so all models considered are here are on the log-scale. 
 
-For the models described in the this blog, the response variable, $Y_t$, denotes the log spot-price at time $t$. The set of observed exogenous variables observed at time $t$ are denoted $\boldsymbol{x}_t$. This set contains the wind and solar generation of the previous day, the forecasted energy load, and two dummy variables indicating a whether the observation is made on a Saturday or Sunday. The previous days wind and solar generation must be used as generation at the time of spot-price would not be known. 
+For the models described in the this blog, the response variable, $Y_t$, denotes the log spot-price at time $t$. The set of observed exogenous variables observed at time $t$ are denoted $\boldsymbol{x}_{t}$. This set contains the wind and solar generation of the previous day, the forecasted energy load, and two dummy variables indicating a whether the observation is made on a Saturday or Sunday. The previous days wind and solar generation must be used as generation at the time of spot-price would not be known. 
 
 In the remainder of this section, the different models are described and their implementation is briefly described. A detailed description of each model and its mathematical and statistical underpinnings are not provided here, but a short description is provided. 
 
 ## ARIMA
 
 Auto-Regression Integrated Moving Average (ARIMA) models are ubiquitous within time-series modelling and combines two modelling techniques into a single model. An autoregression (AR) models the current state of a time-series as a linear combination of the previous $p$ states, while a moving average (MA) model models the current state as a linear combination of the previous $q$ model errors. Combing these, an ARMA$(p,q)$ models the current state as a linear combination of the previous $p$ states and $q$ model errors. The integrated component of the model arises from the ARMA assumption of stationarity i.e. there is no trend within the data. If a time series is not stationary, the response variable can be differenced $d$ times to achieve a stationary series. As well as stationarity, ARMA models assume constant model variance (volatility). The model is defined for a orders $(p,d,q)$ and can be written as 
+<div class="math">
 $$
 \begin{aligned}
     &\;\phi(L)(1-L)^d Y_t = \theta(L)\epsilon_t, \\
@@ -48,9 +49,12 @@ $$
     \theta(L) &= 1 + \theta_1 L + \theta_2 L^{2} + \dots + \theta_q L^{q},\\
 \end{aligned}
 $$
+</div>
+
 where the operator $L$ is known as the lag operator and is defined such that $L^n Y_t = Y_{t-n}$. Although appearing complex, the model can be broken down into more easily digestible parts. Firstly, the differencing is achieved by the $(1-L)^d$ term, which acts directly on the observed data $Y_t$. The AR model component is achieved through $\left(1-\phi(L)\right)$, which acts on the stationary series produced through differencing. Expanding the brackets, it can be seen that this produces a linear combination of the previous $p$ differenced values. Lastly the MA component is achieved by the $\left(1+\theta(L)\right)$, which acts on the model errors, expanding the brackets we find this to be a linear combination of the previous $q$ model errors. 
 
-The model can be extended to include seasonal effects and exogenous variables. Seasonal effects often have a significant impact on a time-series. For example, consider a energy generated via solar panels, which is highly correlated to the time of year. Including this seasonal relationship within a model can drastically improve model fit and performance. A seasonal component to an ARIMA model is introduced at a specified seasonal lag, $s$, and seasonal components are added multiplicatively such that interactions between seasonal and non-seasonal components arise within the model. Exogenous variables, which are believed to be correlated to the response variable, are included additively akin to a linear regression. For a time-series $Y_1, Y_2, \dots$ and set of $m$ exogenous variables observed at time $t$, $\boldsymbol{x}_t$, the general seasonal ARIMAX model is
+The model can be extended to include seasonal effects and exogenous variables. Seasonal effects often have a significant impact on a time-series. For example, consider a energy generated via solar panels, which is highly correlated to the time of year. Including this seasonal relationship within a model can drastically improve model fit and performance. A seasonal component to an ARIMA model is introduced at a specified seasonal lag, $s$, and seasonal components are added multiplicatively such that interactions between seasonal and non-seasonal components arise within the model. Exogenous variables, which are believed to be correlated to the response variable, are included additively akin to a linear regression. For a time-series $Y_1, Y_2, \dots$ and set of $m$ exogenous variables observed at time $t$, $\boldsymbol{x}_{t}$, the general seasonal ARIMAX model is
+<div class="math">
 $$
 \begin{aligned}
     \Phi(L^s)\phi(L)(1-&L)^d(1-L^s)^D Y_t = \Theta(L^s)\theta(L)\epsilon_t + \boldsymbol{b}^T\boldsymbol{x}_t,\\
@@ -60,6 +64,8 @@ $$
     \theta(L) &= 1 + \theta_1 L + \theta_2 L^{2} + \dots + \theta_q L^{q}.
 \end{aligned}
 $$
+</div>
+
 Where $\boldsymbol{b}$ is $m$-dimensional vector of exogenous coefficients. Similarly to the ARIMA model, the may seem complex but each component of the model directly corresponds to a function and set of brackets, and expanding other brackets will yield a linear combination of the expected elements
 
 ### Model fitting
@@ -78,6 +84,7 @@ The general form of the seasonal ARIMAX model if given above, and so formal defi
 #### Hourly independence seasonal ARIMA
 
 The hourly-independent model, ARIMAt, differs slightly in its form, where observations made on different hours are assumed to be from an hour-specific seasonal ARIMA model. Let $Y_{t,h}$ be the logged energy spot-price on the $t$-th day and $h$-th hour. It is assumed that each model has the same seasonal effect, however the orders; $p,q,P,Q$, are allowed to vary. The model is defined as 
+<div class="math">
 $$
 \begin{aligned}
     \Phi^h(L^s)&\phi^h(L)(1-L)^{d_h}(1-L^s)^{D_h} Y_{t,h}= \Theta^h(L^s)\theta^h(L)\epsilon_{t,h}\\
@@ -87,19 +94,23 @@ $$
     \theta^h(L) &= 1 + \theta_1^h L + \theta_2^h L^{2} + \dots + \theta_{q_h}^h L^{q_h}\\
 \end{aligned}
 $$
+</div>
 
 <img src="/static/energy_spot_price_statistical_model_comparison/arimat_predictions.png" alt="sARIMAt predictions" width="1764" height="1466">
 
 ## VAR
 
-The seasonal ARIMA presented consider energy prices as a single univariate time-series. However, the process could be viewed in a multivariate context where energy prices over a single day are treated as a random vector. This also reflects the modelling situation of day-ahead energy spot-prices, where a single 24-hour period is forecasted. Multivariate extensions of the ARIMA model exist, however, these are notoriously difficult to fit due, in part, to the increased number of model parameters, which scales quadratically with the number of lags, compared to linearly in the univariate setting. Much like the univariate case, the vector autoregressive (VAR) model assumes the current state depends on a linear combination of past states up to a defined lag, $p$. Let $\boldsymbol{Y}_t$ be a $k$-dimensional vector of log spot-prices for the $t$-th day i.e. $k=24$, the model is defined as
+The seasonal ARIMA presented consider energy prices as a single univariate time-series. However, the process could be viewed in a multivariate context where energy prices over a single day are treated as a random vector. This also reflects the modelling situation of day-ahead energy spot-prices, where a single 24-hour period is forecasted. Multivariate extensions of the ARIMA model exist, however, these are notoriously difficult to fit due, in part, to the increased number of model parameters, which scales quadratically with the number of lags, compared to linearly in the univariate setting. Much like the univariate case, the vector autoregressive (VAR) model assumes the current state depends on a linear combination of past states up to a defined lag, $p$. Let $\boldsymbol{Y}_{t}$ be a $k$-dimensional vector of log spot-prices for the $t$-th day i.e. $k=24$, the model is defined as
+<div class="math">
 $$
-\begin{align}
-    \boldsymbol{Y}_t &= \sum_{i=1}^p A_i \boldsymbol{Y}_{t-i} + \Beta^T X_t + \boldsymbol{\epsilon}_t, \\
+\begin{aligned}
+    \boldsymbol{Y}_t &= \sum_{i=1}^p A_i \boldsymbol{Y}_{t-i} + B^T X_t + \boldsymbol{\epsilon}_t, \\
 	\boldsymbol{\epsilon}_t &\sim \mathcal{N}\left(\boldsymbol{0}, \Sigma\right).
-\end{align}
+\end{aligned}
 $$
-Where $\boldsymbol{\epsilon}_t$ are independent and identically distributed multivariate normal random variables with zero-vector mean and covariance matrix $\Sigma$ and $A_i$ are $k\times k$ coefficient matrices. Exogenous variables are also introduced additively, for a $k\times m$ observed data matrix, the $k\times m$coefficient matrix is denoted $\Beta$. Similarly to ARIMA models, the VAR models assumes that volatility is constant. The VAR model is fitted to the logged spot-price data both with and without the inclusion of the exogenous variables.
+</div>
+
+Where $\boldsymbol{\epsilon}_{t}$ are independent and identically distributed multivariate normal random variables with zero-vector mean and covariance matrix $\Sigma$ and $A_i$ are $k\times k$ coefficient matrices. Exogenous variables are also introduced additively, for a $k\times m$ observed data matrix, the $k\times m$ coefficient matrix is denoted $B$. Similarly to ARIMA models, the VAR models assumes that volatility is constant. The VAR model is fitted to the logged spot-price data both with and without the inclusion of the exogenous variables.
 
 ### Model Fitting
 
@@ -111,6 +122,7 @@ Where $\boldsymbol{\epsilon}_t$ are independent and identically distributed mult
 ## ARCH
 
 The ARIMA model (and extensions of) assume that the volatility is constant, this is likely not the case. Spikes in energy prices are known to occur due to a variety of political or practical factors, by their definition the spikes are outside of what would be expected from under normal circumstances and violate the constant volatility assumption. Autoregressive conditional heteroskedasticity (ARCH) models assume that the volatility is stochastic and dependent on a linear combination of the previous model errors upto a specified lag, $p$. The generalised ARCH (GARCH) models extends this to include a dependents on a linear combination of previous model variances, upto a specific lag, $q$. For a response variable $Y_t$, observed at time $t$, time-dependent model volatility is denoted $\sigma_t^2$. The model is defined as follows
+<div class="math">
 $$
 \begin{aligned}
     Y_t &= \mu + \epsilon_t, \\
@@ -118,11 +130,15 @@ $$
     \sigma_t^2 &= \alpha_0 + \sum_{i=1}^q \alpha_i\epsilon_{t-i}^2 + \sum_{i=1}^p\beta_i\sigma_{t-1}^2.
 \end{aligned}
 $$
+</div>
+
 The parameter $\mu$ indicates a consent overall mean from which random deviations are made. Although a useful, the model's assumption of a constant mean may be too strong and we wish to incorporate way to allow this vary in some sensible way.
 
 ### GARCH-ARX
 
 The GARCH-ARX combines the GARCH model with an autoregression component to model the expected value of $Y_t$, rather than replying on a constant mean parameter. The mean, is therefore, modelled as linear combination of previous observations up to specified lag, $p^\prime$. Exogenous can also be introduced in a similar way manner to the ARIMA models. Continuing the notation from the discussion on ARIMA models, the GARCH-AR model is
+
+<div class="math">
 $$
 \begin{aligned}
     &\phi(L)Y_t =  \boldsymbol{b}^T\boldsymbol{x}_t + \epsilon_t, \\
@@ -131,6 +147,7 @@ $$
     \phi(L) &= 1 - \phi_1L^{1} - \phi_2L^{2} - \dots - \phi_{p^\prime}L^{p^\prime}. 
 \end{aligned}
 $$
+</div>
 
 Here two GARCH models are considered, both with AR mean models and one which includes exogenous variables.
 
@@ -182,4 +199,3 @@ The GARCH-type models, assume a dynamic variance and it is modelled as such. Ins
 # Conclusion
 
 From the range of statistical models tested the sARIMA with not exogenous variables showed lowest within- and out-of-sample errors, suggesting that this model captured the data the best. However, the data did not conform to one of the ARIMA modelling assumptions, namely, constant variance. Although the model captured the trend in the data well, due to this failure the model's predictive intervals should not be trusted. The issue was seen in the other constant-variance models investigated within this blog. The GARCH-type models, however, did not show the same problem. These models a dyanmic volatility, which is modelled. Although these models did not show as close a fit to the data, assessed by the within- and out-of-sample MAEs and RSMEs, as the sARIMA model, the lower AICs and better diagnostics suggest that this is more appropriate for predicting hourly energy spot prices. 
-

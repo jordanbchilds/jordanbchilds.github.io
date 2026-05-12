@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Python on Home</title>
+    <link>https://jordanbchilds.github.io/tags/python/</link>
+    <description>Recent content in Python on Home</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <lastBuildDate>Tue, 12 May 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://jordanbchilds.github.io/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A Comparison of Statistical Models of Energy Spot Price in the UK</title>
+      <link>https://jordanbchilds.github.io/posts/energy_spot_statistical_model_comparison/</link>
+      <pubDate>Tue, 12 May 2026 00:00:00 +0000</pubDate>
+      <guid>https://jordanbchilds.github.io/posts/energy_spot_statistical_model_comparison/</guid>
+      <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;Unlike other commodities, such as oil, storing energy for later use is difficult and expensive. Therefore, it&amp;rsquo;s supply and demand must be monitored real-time and alterations must be made to maintain an equilibrium. One of the ways in which this equilibrium is maintained is that energy production and consumption are predicted one day ahead, and an hourly energy spot-price required to close the deficit is calculated. The hourly spot-price is the price paid for energy to close the deficit between predicted and real-time us. The price is determined the day prior and so the today&amp;rsquo;s spot-prices were set yesterday.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
