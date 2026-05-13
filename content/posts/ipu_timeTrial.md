@@ -127,8 +127,6 @@ simulation but to demonstrate the relative power of a single IPU-Core
 with the Intel Xeon Processor, the mean time of 1,000 simulation can be
 seen in Table 1.
 
-
-
 |               | Intel Xeon    | IPU-POD4   |
 |:------------  | :-----------: | :--------: |
 | Time (ms)     | 32.149        | 2822.955   |

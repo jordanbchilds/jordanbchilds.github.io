@@ -30,7 +30,7 @@ Suppose the dataset contains information for $N$ uniquely identified schools acr
 | School | $n$  |  $Y$ |
 | :----- | ---- | ---- |
 |1 | 120 | 95 |
-|2 | 99 | 65 |
+|2 |  99 | 65 |
 |3 | 108 | 71 |
 
 Table 1: **Example subset of data concerning GCSE results of UK schools**.

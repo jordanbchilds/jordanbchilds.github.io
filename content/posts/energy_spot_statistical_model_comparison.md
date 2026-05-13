@@ -3,14 +3,16 @@ title: "A Comparison of Statistical Models of Energy Spot Price in the UK"
 date: 2026-05-12
 
 mathjax: true
-tags: ["Statistics", "Python"]
+tags: ["Statistics", "Data Analysis", "Python"]
 ---
 
 # Introduction
 
-Unlike other commodities, such as oil, storing energy for later use is difficult and expensive. Therefore, it's supply and demand must be monitored real-time and alterations must be made to maintain an equilibrium. One of the ways in which this equilibrium is maintained is that energy production and consumption are predicted one day ahead, and an hourly energy spot-price required to close the deficit is calculated. The hourly spot-price is the price paid for energy to close the deficit between predicted and real-time us. The price is determined the day prior and so the today's spot-prices were set yesterday.
+Electricity differs from many financial and commodity assets because large-scale storage remains expensive, requiring supply and demand to be balanced continuously. In the UK day-ahead market, hourly electricity prices are determined through auctions that incorporate expected generation, demand, and transmission constraints. In Great Britain, this balance is overseen by the National Energy System Operator (NESO), which manages the grid through a combination of forward markets and a real-time Balancing Mechanism. A key feature of the UK energy merket is the day-ahead auction, which is facilitated by two exchanges; EPEX SPOT and Nord Pool's N2EX. The auctions operate such that the all successful buyers and sellers recieve the same clearing price, despite the large difference in cost to produce electricty between renewable and non-renewable methods. The price is determined by the most expensive energy producer to be accepted for that period, this is called the marginal price. The spot prices today were, therefore, set in yesterday auctions. Both produced and suppliers commit to their positions a day ahead. 
 
-Being able to model the energy spot-price is, therefore, of keen interest to energy producers [AND OTHERS?] who would be able to profit by increasing or decreasing their supply if the price is high enough. In this blog post we investigate a range or time-series modelling techniques to be able to predict the energy spot-price and compare them based on their predictive performance.
+Accurately forecasting the energy spot price is, therfore, of interest to both energy produces and users. Produces could increase supply if energy prices rise a sufficient degree, or equally reduce supply when the spot price is too low. Similarly, large-scale evergy users could shift intense energy usage to periods of low price. In recent years forecasting energy spot-prices has grown considerable more challenging, as the UK's renewable energy production has increasesd considerably. The weather-dependent nature of renewable production means that energy production can drop or spike unexpectedly, causing a spike in spot-price. Unexpectedly high renewable out can cause prices to drop, and even go negative, similarly unexpected drops in renewable output can causes prices to spike as more expensive gas and coal is required to cover the shortfall. 
+
+In this post, we investigate a range of time-series modelling techniques to be able to predict the energy spot-price and compare them based on their predictive performance.
 
 # The Data
 
@@ -20,7 +22,7 @@ The data is sourced from Transmission System Operators and power exchanges, and 
 
 ## Features of the data
 
-Upon inspection of the data there appears to be little overall trend in energy spot price over the five year period, with relatively flat long-term mean, see Figure 1. However, there are significant price spike increasing or decreasing the price outside of its usual range. Most notably in late 2017, when the price spiked by many magnitudes. We also see a strong seasonal pattern in the data between days, with a high correlation for energy prices collected at the same time of day, see Figure 1. Prices on the weekend appear to differ from their weekday counter-parts but maintain a similar overall trend.
+Upon inspection of the data there appears to be little overall trend in energy spot price over the five year period, with relatively flat long-term mean, see Figure 1. However, there are significant price spike increasing or decreasing the price outside of its usual range. Most notably in late 2017, when a combination of low wind output and tight gas supply caused prices to spike by several multiples of their normal range. We also see a strong seasonal pattern in the data between days, with a high correlation for energy prices collected at the same time of day, see Figure 1. Prices on the weekend appear to differ from their weekday counter-parts but maintain a similar overall trend.
 
 ## Missing values
 
@@ -28,7 +30,13 @@ The dataset contains some missing values, however the degree of missingness is r
 
 <img src="/static/energy_spot_price_statistical_model_comparison/spot_price_data.png" alt="Raw data">
 
+|Figure 1: **Spot Price Data**. (Top): The hourly-spot price for the training dataset. (Bottom): The hourly spot-price for the validation dataset, the final month of data. The coloured bands highlight weeked spot-prices, purple showing Saturday and pink Sunday. |
+|:---:|
+
 <img src="/static/energy_spot_price_statistical_model_comparison/energy_price_by_day.png" alt="By day price">
+
+|Figure 2: **Average Spot Price is Correlated Between Days**. The mean spot price at each hour separated by day of the week, calculated from the whole dataset. Each colour corresponds to a different day of the week. |
+|:---:|
 
 # Methods
 
@@ -38,22 +46,11 @@ For the models described in the this blog, the response variable, $Y_t$, denotes
 
 In the remainder of this section, the different models are described and their implementation is briefly described. A detailed description of each model and its mathematical and statistical underpinnings are not provided here, but a short description is provided. 
 
+The VAR models are fitted using the `VAR` function from the python `statsmodels.tsa.api` module. This function also allows. 
+
 ## ARIMA
 
-Auto-Regression Integrated Moving Average (ARIMA) models are ubiquitous within time-series modelling and combines two modelling techniques into a single model. An autoregression (AR) models the current state of a time-series as a linear combination of the previous $p$ states, while a moving average (MA) model models the current state as a linear combination of the previous $q$ model errors. Combing these, an ARMA$(p,q)$ models the current state as a linear combination of the previous $p$ states and $q$ model errors. The integrated component of the model arises from the ARMA assumption of stationarity i.e. there is no trend within the data. If a time series is not stationary, the response variable can be differenced $d$ times to achieve a stationary series. As well as stationarity, ARMA models assume constant model variance (volatility). The model is defined for a orders $(p,d,q)$ and can be written as 
-<div class="math">
-$$
-\begin{aligned}
-    &\;\phi(L)(1-L)^d Y_t = \theta(L)\epsilon_t, \\
-    \phi(L) &= 1 - \phi_1 L - \Phi_2 L^{s} - \dots - \Phi_p L^{p}, \\
-    \theta(L) &= 1 + \theta_1 L + \theta_2 L^{2} + \dots + \theta_q L^{q},\\
-\end{aligned}
-$$
-</div>
-
-where the operator $L$ is known as the lag operator and is defined such that $L^n Y_t = Y_{t-n}$. Although appearing complex, the model can be broken down into more easily digestible parts. Firstly, the differencing is achieved by the $(1-L)^d$ term, which acts directly on the observed data $Y_t$. The AR model component is achieved through $\left(1-\phi(L)\right)$, which acts on the stationary series produced through differencing. Expanding the brackets, it can be seen that this produces a linear combination of the previous $p$ differenced values. Lastly the MA component is achieved by the $\left(1+\theta(L)\right)$, which acts on the model errors, expanding the brackets we find this to be a linear combination of the previous $q$ model errors. 
-
-The model can be extended to include seasonal effects and exogenous variables. Seasonal effects often have a significant impact on a time-series. For example, consider a energy generated via solar panels, which is highly correlated to the time of year. Including this seasonal relationship within a model can drastically improve model fit and performance. A seasonal component to an ARIMA model is introduced at a specified seasonal lag, $s$, and seasonal components are added multiplicatively such that interactions between seasonal and non-seasonal components arise within the model. Exogenous variables, which are believed to be correlated to the response variable, are included additively akin to a linear regression. For a time-series $Y_1, Y_2, \dots$ and set of $m$ exogenous variables observed at time $t$, $\boldsymbol{x}_{t}$, the general seasonal ARIMAX model is
+Auto-Regression Integrated Moving Average (ARIMA) models are ubiquitous within time-series modelling and combines two modelling techniques into a single model. An ARIMA model models the observed value at time $t$, as a linear combination of previously observed values and lags. Crucially, the model assumes that errors are independently disrtibuted with a constant variance (volatility). ARIMA models can also include the effects of seasonality, by multiplicatively encorporating a second ARIMA model with a sepcified seasonal lag. The general form of the model is defined as, 
 <div class="math">
 $$
 \begin{aligned}
@@ -61,18 +58,20 @@ $$
     \Phi(L^s) &= 1 - \Phi_1 L^s - \Phi_2 L^{2s} - \dots - \Phi_P L^{Ps}, \\
     \phi(L) &= 1 - \phi_1 L - \Phi_2 L^{s} - \dots - \Phi_p L^{p}, \\
     \Theta(L^s) &= 1 + \Theta_1 L^s + \Theta_2 L^{2s} + \dots + \Theta_Q L^{Qs}, \\
-    \theta(L) &= 1 + \theta_1 L + \theta_2 L^{2} + \dots + \theta_q L^{q}.
+    \theta(L) &= 1 + \theta_1 L + \theta_2 L^{2} + \dots + \theta_q L^{q},
 \end{aligned}
 $$
 </div>
-
-Where $\boldsymbol{b}$ is $m$-dimensional vector of exogenous coefficients. Similarly to the ARIMA model, the may seem complex but each component of the model directly corresponds to a function and set of brackets, and expanding other brackets will yield a linear combination of the expected elements
+where the operator $L$ is known as the lag operator and is defined such that $L^n Y_t = Y_{t-n}$. Here, the effect of exogenous variables are also included. Where $\boldsymbol{x}_t$ refers to an $m$-dimensional vector of observed exogenous variables at time $t$, and $\boldsymbol{b}$ an $m$-dimensional coefficient vector. 
 
 ### Model fitting
 
-Here, we examine three versions of the ARIMA model; seasonal ARIMA, seasonal ARIMAX, and an hour-specific seasonal ARIMAX. For each model the fitting process follows the same steps. Firstly, the model orders are determined. This is a computationally intensive task and requires models with differing orders to be compared via their model fit. Due to computational constraints a subset of the training data was used, the final 100 days of the training set. Once the model orders are determined, by comparison of the Akaike information criteria (AIC), model predictions for the validation dataset were made via a sliding window using two years of data to predict the next 24 observations (one days worth of data). 
 
-The seasonal order of the models is not inferred but fixed. During initial inspection of the data, a strong correlation was seen in the hour-specific energy price. As such, a daily seasonality is imposed for the seasonal ARIMA and ARIMAX models. The hour-specific ARIMAX model will include daily effects within it's non-seasonal component and so a weekly seasonal effect is imposed for this model. Models parameters are inferred via maximum likelihood estimation using the `auto_arima` and `SARIMAX` functions in python. The `SARIMAX` function is used to make out-of-sample predictions (forecasts). 
+Here, two versions of the seasonal ARIMA (sARIMA) model are investigated, both with and without the inclusion of exogenous variables. The first models the log spot-price, $Y_t$, as a single time-series. The second models each hour as separate and independent time-series model, essentionally fitting 24 independent sARIMA models to the hourly spot-price data. Henceforth, this model will be referred to as sARIMAt. The strong correlation in hourly price, as seen, earlier suggests that this may be a more practical approach, than the former. 
+
+For each model the fitting process follows the same steps. Firstly, the model orders are determined. This is a computationally intensive task and requires models with differing orders to be compared via their model fit. Due to computational constraints a subset of the training data was used, the final 100 days of the training set. Once the model orders are determined, by comparison of the Akaike information criteria (AIC), model predictions for the validation dataset were made via a sliding window using two years of data to predict the next 24 observations (one days worth of data). 
+
+The seasonal order of the models is not inferred but fixed. During initial inspection of the data, a strong correlation was seen in the hour-specific energy price. As such, a daily seasonality is imposed for the sARIMA models. The hour-specific ARIMAX model will include daily effects within it's non-seasonal component and so a weekly seasonal effect is imposed for this model. Model parameters are inferred via maximum likelihood estimation using the `auto_arima` and `SARIMAX` functions in python. The `SARIMAX` function is used to make out-of-sample predictions (forecasts). 
 
 #### Seasonal ARIMA and Seasonal ARIMAX
 
@@ -80,6 +79,8 @@ The general form of the seasonal ARIMAX model if given above, and so formal defi
 
 <img src="/static/energy_spot_price_statistical_model_comparison/arima_predictions.png" alt="ARIMA predictions">
 
+|Figure 3: **sARIMA-type Models Out-of-Sample Prediction**. The expected value (blue line) and 95\% confidence interval (light blue shaded region) for the validation data set, using a two-year sliding window to predict the next 24-hour period under the two sARIMA-type models, which fit seasonal ARIMA models to the log spot-price. The observed log data is shown as a black dashed line. |
+|:---:|
 
 #### Hourly independence seasonal ARIMA
 
@@ -98,9 +99,12 @@ $$
 
 <img src="/static/energy_spot_price_statistical_model_comparison/arimat_predictions.png" alt="sARIMAt predictions">
 
+|Figure 4: **sARIMAt-type Models Out-of-Sample Prediction**. The expected value (blue line) and 95\% confidence interval (light blue shaded region) for the validation data set, using a two-year sliding window to predict the next 24-hour period under the two sARIMAt-type models, which fit independent sARIMA models to hour-specific time-series of log spot-price. The observed log data (spot price) is shown as a black dashed line. |
+|:---:|
+
 ## VAR
 
-The seasonal ARIMA presented consider energy prices as a single univariate time-series. However, the process could be viewed in a multivariate context where energy prices over a single day are treated as a random vector. This also reflects the modelling situation of day-ahead energy spot-prices, where a single 24-hour period is forecasted. Multivariate extensions of the ARIMA model exist, however, these are notoriously difficult to fit due, in part, to the increased number of model parameters, which scales quadratically with the number of lags, compared to linearly in the univariate setting. Much like the univariate case, the vector autoregressive (VAR) model assumes the current state depends on a linear combination of past states up to a defined lag, $p$. Let $\boldsymbol{Y}_{t}$ be a $k$-dimensional vector of log spot-prices for the $t$-th day i.e. $k=24$, the model is defined as
+The  sARIMA model presented consider energy prices as a single univariate time-series. However, the process could be viewed in a multivariate context where energy prices over a single day are treated as a random vector. This also reflects the modelling situation of energy spot-prices, where a single 24-hour period is forecasted. Multivariate extensions of the ARIMA model exist, however, these are notoriously difficult to fit due, in part, to the increased number of model parameters, which scales quadratically with the number of lags, compared to linearly in the univariate setting. Much like the univariate case, the vector autoregressive (VAR) model assumes the current state depends on a linear combination of past states up to a defined lag, $p$. Let $\boldsymbol{Y}_{t}$ be a $k$-dimensional vector of log spot-prices for the $t$-th day i.e. $k=24$, the model is defined as
 <div class="math">
 $$
 \begin{aligned}
@@ -112,32 +116,22 @@ $$
 
 Where $\boldsymbol{\epsilon}_{t}$ are independent and identically distributed multivariate normal random variables with zero-vector mean and covariance matrix $\Sigma$ and $A_i$ are $k\times k$ coefficient matrices. Exogenous variables are also introduced additively, for a $k\times m$ observed data matrix, the $k\times m$ coefficient matrix is denoted $B$. Similarly to ARIMA models, the VAR models assumes that volatility is constant. The VAR model is fitted to the logged spot-price data both with and without the inclusion of the exogenous variables.
 
-### Model Fitting
+### Model Fit
 
-[FUNCTIONS AND PREDICTION]
+The VAR models are fitted using the `VAR` function from the python `statsmodels.tsa.api` module. This function also produces the forecasts, which can be seen in Figure 4.
 
 <img src="/static/energy_spot_price_statistical_model_comparison/var_predictions.png" alt="var predictions">
 
+|Figure 5: **VAR-type Models Out-of-Sample Prediction**. The expected value (blue line) and 95\% confidence interval (light blue shaded region) for the validation data set, using a two-year sliding window to predict the next 24-hour period under the two VAR-type models desrcibed. The observed log data (spot price) is shown as a black dashed line. |
+|:---:|
 
-## ARCH
+## GARCH
 
-The ARIMA model (and extensions of) assume that the volatility is constant, this is likely not the case. Spikes in energy prices are known to occur due to a variety of political or practical factors, by their definition the spikes are outside of what would be expected from under normal circumstances and violate the constant volatility assumption. Autoregressive conditional heteroskedasticity (ARCH) models assume that the volatility is stochastic and dependent on a linear combination of the previous model errors upto a specified lag, $p$. The generalised ARCH (GARCH) models extends this to include a dependents on a linear combination of previous model variances, upto a specific lag, $q$. For a response variable $Y_t$, observed at time $t$, time-dependent model volatility is denoted $\sigma_t^2$. The model is defined as follows
-<div class="math">
-$$
-\begin{aligned}
-    Y_t &= \mu + \epsilon_t, \\
-    \epsilon_t &\sim \text{Normal}\big( 0, \sigma_t^2 \big), \\
-    \sigma_t^2 &= \alpha_0 + \sum_{i=1}^q \alpha_i\epsilon_{t-i}^2 + \sum_{i=1}^p\beta_i\sigma_{t-1}^2.
-\end{aligned}
-$$
-</div>
-
-The parameter $\mu$ indicates a consent overall mean from which random deviations are made. Although a useful, the model's assumption of a constant mean may be too strong and we wish to incorporate way to allow this vary in some sensible way.
+The ARIMA- and VAR-type models assume that volatility is constant, this is likely not the case. Spikes in energy prices are known to occur due to a variety of political or practical factors, by their definition the spikes are outside of the expected range under normal conditions and violate the constant volatility assumption. Generalised autoregressive conditional heteroskedasticity (GARCH) models assume that the volatility is stochastic and dependent on a linear combination of the previous model errors and previous volatilities. A standard GARCH model assumes that the expected value of the time-series is constant. However, it can be extended by introducing methods to model the expected value. Several mean-models exist and here we implement the AR mean model and also the extend the model to allow for the exogenous variables. 
 
 ### GARCH-ARX
 
-The GARCH-ARX combines the GARCH model with an autoregression component to model the expected value of $Y_t$, rather than replying on a constant mean parameter. The mean, is therefore, modelled as linear combination of previous observations up to specified lag, $p^\prime$. Exogenous can also be introduced in a similar way manner to the ARIMA models. Continuing the notation from the discussion on ARIMA models, the GARCH-AR model is
-
+Continuing the notation from the discussion on sARIMA-type models, the GARCH-ARX model is
 <div class="math">
 $$
 \begin{aligned}
@@ -148,16 +142,16 @@ $$
 \end{aligned}
 $$
 </div>
-
-Here two GARCH models are considered, both with AR mean models and one which includes exogenous variables.
+The GARCH-AR model can be retrieved by setting removing the addition exogenous varibale component. 
 
 ### Model Fitting
 
-The orders of the GARCH-AR models are chosen by fitting a range of models to the training dataset and choosing the parameter set which minimises the AIC. For the AR component a range of orders are tested which combine standard and seasonal lags, a seasonal lag of 24 is assumed.
-
-[FUNCTIONS AND PREDICTIONS]
+The orders of the GARCH-AR models are chosen by fitting a range of models to the training dataset and choosing the parameter set which minimises the AIC. For the AR component a range of orders are tested which combine standard and seasonal lags, a seasonal lag of 24 is assumed. The forecasted values and confidence intervals for this model can be seen in Figure 5. It can be seen here that the model volatiility is dynamic, unlike the previous models discussed, as the confidence interval are not constant size. This is particularly evident for the GARCH-ARX model, where following a spike in spot price, the confidence in the next day's spot-price descreaces and the confidence intervals widen.
 
 <img src="/static/energy_spot_price_statistical_model_comparison/garch_predictions.png" alt="GARCH predictions">
+
+|Figure 6: **GARCH-type Models Out-of-Sample Prediction**. The expected value (blue line) and 95\% confidence interval (light blue shaded region) for the validation data set, using a two-year sliding window to predict the next 24-hour period under the two VAR-type models desrcibed. The observed log data (spot price) is shown as a black dashed line. |
+|:---:|
 
 # Results
 
@@ -165,37 +159,53 @@ The orders of the GARCH-AR models are chosen by fitting a range of models to the
 
 To choose the most appropriate model for energy spot-prices two aspects are considered; within-sample model fit and predictive power. To compare within-sample model fit we look at the AIC, which combines the likelihood penalised by the number of model parameters, favouring simpler models with fewer parameters. As well as, mean absolute error (MAE) between the fitted values (expected values) and observations as well as the root mean squared error (RMSE) which again compares the expected values to the observed data but penalises large errors more heavily. The resulting comparison statistics for all models are seen in Table 1. 
 
-It is clear from the AIC statistics that the sARIMA- and GARCH-type models are preferred over the sARIMAt and VAR models, showing drastically lower AICs. The difference in their values is likely due to the increase in the number of model parameters, as the MAE and RSME for models are fairly similarly, suggesting a comparable fits to the data. Recall that the VAR models have large number of parameters, requiring a $24\times 24$ coefficient matrix at each lag. Similarly, the time-dependent models (sARIMAt) fit independent sARIMA-type models to the hourly-specific data, approximately increasing the number of paramters by a factor 24 compared to the sARIMA and sARIMAX models. The GARCH-ARX model results in the lowest AIC, suggesting that this model provides the best compromise between model complexity and fit. 
+It is clear from the AIC statistics that the sARIMA- and GARCH-type models are preferred over the sARIMAt and VAR, showing drastically lower AICs. The difference in their values is due to the increase in estimated model parameters, as seen in the maximised log-likelihood, $\hat{\ell}$, and AIC penalisation of complexity. Recall that the VAR models have large number of parameters, requiring a $24\times 24$ coefficient matrix at each lag. Similarly, the sARIMAt fit independent sARIMA-type models to the hourly-specific data, approximately increasing the number of paramters by a factor 24 compared to the sARIMA and sARIMAX models. The GARCH-ARX model results in the lowest AIC, suggesting that this model provides the best compromise between model complexity and fit. 
 
-The MAE and RSME suggest that the sARIMA model provides the best fit to the data and, interestingly, the same measures suggest that the sARIMAX model has one of the worst. The VAR-type models have the highest RMSE statstics but MAE statistics that comparable to other models, suggesting that these models have more extreme errors. The 
+The MAE and RMSE suggest that the sARIMA model provides the best fit to the data and, interestingly, the same measures suggest that the sARIMAX model has one of the worst. The reduction in model fit after adding exogenous variables could be due to a number of causes. One assumption of the model is that the exogneous variables are uncorrelated to previous observations or errors, which may be violated here as weather is likely correlated with previous observations due to it's inherent seasonality. The VAR-type models have the highest RMSE statistics but MAE statistics that comparable to other models, suggesting that these models have more extreme errors.
 
-| Model | sARIMA | sARIMAX | sARIMAt | sARIMAXt |  VAR  |  VARX | GARCH-AR | GARCH-ARX | 
-|:------|:------:|:-------:|:-------:|:--------:|:-----:|:-----:|:--------:|:---------:| 
-| AIC   | -59500 |  -49200 |    1480 |     3830 |  -108 |  -107 |   -66300 |    -68500 |
-| MAE   | 0.0776 |   0.143 |   0.125 |    0.127 | 0.129 | 0.126 |    0.105 |     0.101 |
-| RMSE  |  0.133 |   0.273 |   0.250 |    0.253 | 0.337 | 0.335 |    0.202 |     0.195 |
+The low-AIC and reasonable fit to the data of the GARCH-type models, suggest that the dynamic volatility is a better fit to the data, when compared to constant volatility models. The higher MAE and RMSE for the GARCH-type models, compared to sARIMA model, is likely due to its simpler mean-model, which is less able to model to complex seasonality of spot-prices. 
 
-Table 1: Summary statistics for each model tested within-sample model fit. The Akaike information criteria (AIC), mean absolute error (MAE) of the fitted to observed values, and the root mean square error (RMSE) of the fitted to observed values.
+| Model        | sARIMA | sARIMAX | sARIMAt | sARIMAXt |   VAR   |   VARX  | GARCH-AR | GARCH-ARX | 
+|:-------------|:------:|:-------:|:-------:|:--------:|:-------:|:-------:|:--------:|:---------:|
+| $\hat{\ell}$ |  29800 |   24600 |    -620 |    -1810 |   45700 |   46700 |    33200 |     34300 |
+| AIC          | -59500 |  -49200 |    1480 |     3830 |    -108 |    -107 |   -66300 |    -68500 |
+| MAE          | 0.0776 |   0.143 |   0.125 |    0.127 |   0.129 |   0.126 |    0.105 |     0.101 |
+| RMSE         |  0.133 |   0.273 |   0.250 |    0.253 |   0.337 |   0.335 |    0.202 |     0.195 |
 
-The predictive power of all models tested is summarised in Table 2, where the out-sample MAE and RMSE statistics are given. From these statistics the sARIMA and sARIMAt models provided the greatest predictive power with approximately the same errors. The VAR model's diverge the most from their within-sample to out-of-sample model fit, possibly indicating over-fitting. This could be attributed to the large number of parameters, which is reflected in the high AIC statistics in Table 1.
+Table 1: **Within-sample model fit**. The Akaike information criteria (AIC), mean absolute error (MAE) of the fitted to observed values, and the root mean square error (RMSE) of the fitted to observed values.
+
+The predictive power of models tested is summarised in Table 2, where the out-sample MAE and RMSE statistics are given. From these statistics the sARIMA and sARIMAt models provided the greatest predictive power with approximately the same errors. The VAR models diverge the most from their within-sample to out-of-sample model fit, possibly indicating over-fitting. This is likely caused by the large number of parameters, which is reflected in the high AIC statistics in Table 1. The GARCH-type models appear to have a relatively weak predictive power, compared to sARIMA-type, this is likely due to their relatively simple mean-model.
 
 | Model | sARIMA | sARIMAX | sARIMAt | sARIMAXt |  VAR  |  VARX | GARCH-AR | GARCH-ARX | 
 |:------|:------:|:-------:|:-------:|:--------:|:-----:|:-----:|:--------:|:---------:|
 | MAE   |  0.136 |  0.159  |   0.135 |    0.149 | 0.181 | 0.197 |    0.177 |     0.175 |
 | RMSE  |  0.185 |  0.220  |   0.186 |    0.203 | 0.240 | 0.258 |    0.246 |     0.243 |
 
-Table 2: Summary statistics for each model tested out-of-sample model fit. The Akaike information criteria (AIC), mean absolute error (MAE) of the fitted to observed values, and the root mean square error (RMSE) of the fitted to observed values.
+Table 2: **Out-of-sample model fit**. The Akaike information criteria (AIC), mean absolute error (MAE) of the fitted to observed values, and the root mean square error (RMSE) of the fitted to observed values.
 
 ## Model assumptions
 
-The models used above come with associated assumptions. Mostly, the ARIMA-type and VAR models assume that residuals are independently and identically distributed by a nomarl distribution with a constant variance. This assumption should be inspected to give a fuller picture of model fit. The standardised model residuals of the sARIMA model, which showed the lowest within-sample MAE and RSME, are shown in Figure 4. If the modelling assumptions were held the residuals would show a constant variance, this assumption is clearly violated. The model still captures the trends of the data fairly well, the key issue is that the resulting standard errors are likely wrong, impacting the trustworthy-ness of confidence intervals for parameter values, fitted values and predicted values. The same, non-constant variance issue appears for all sARIMA- and VAR-type models, although the output is omitted for brevity, making their results questionable. 
-
-The GARCH-type models, assume a dynamic variance and it is modelled as such. Inspecting the standardised residuals again, we see results more inline with the assumptions. The residuals show far fewer points with drastically larger than expected values and are more consitent with a standard normal distribution, as would be expected.
+The models used above come with associated assumptions. Notably, the ARIMA- and VAR-type models assume that residuals are independently and identically distributed by a normal distribution with a constant variance. This assumption should be inspected to give a fuller picture of model fit. The standardised model residuals of the sARIMA model, which showed the lowest within-sample MAE and RMSE, are shown in Figure 6, as well as a QQ-plot of residuals. If volatility is constant, the distribution of the standardised resiudals should strongly resemble that of standard normal distribution, one with zero mean and unit variance, and the points on the QQ-plot should fall close to the diagonal line. This is not the case the standardised residuals show fatter tails compared to what would be expected, as seen in the divergence from the red in the extremes. The violation of this assumption indicates that the resulting standard errors are likely wrong, impacting the trustworthy-ness of confidence intervals for parameter values, fitted values and predicted values. The same, non-constant variance issue appears for all sARIMA- and VAR-type models, although the output is omitted for brevity. 
 
 <img src="/static/energy_spot_price_statistical_model_comparison/sarima_std_residuals.png" alt="sARIMA residuals">
+
+|Figure 7: **Standardised Residuals of the sARIMA Model Show non-Normality**. The standardised residuals after fitting the sARIMA model to the training dataset (lightblue histogram). The probability density function of standard normal distribution. |
+|:---:|
+
+The GARCH-type models assume errors are independently normally distributed with a time-warying variance. The distribution of standardised resiudals and QQ-plot can be see in Figure 8. It is clear that residuals are much more agreement with the modelling assumptions compared to the sARIMA model. However, still show a slightly thicker tails than would be expected.  
+
 <img src="/static/energy_spot_price_statistical_model_comparison/garch_std_residuals.png" alt="GARCH residuals">
 
+|Figure 8: **Standardised Residuals of the GARCH-ARX Model Show Normality**. The expected value (blue line) and 95\% confidence interval (light blue shaded region) for the validation data set, using a two-year sliding window to predict the next 24-hour period under the two VAR-type models described. The observed log data (spot price) is shown as  black dashed line. |
+|:---:|
 
 # Conclusion
 
-From the range of statistical models tested the sARIMA with not exogenous variables showed lowest within- and out-of-sample errors, suggesting that this model captured the data the best. However, the data did not conform to one of the ARIMA modelling assumptions, namely, constant variance. Although the model captured the trend in the data well, due to this failure the model's predictive intervals should not be trusted. The issue was seen in the other constant-variance models investigated within this blog. The GARCH-type models, however, did not show the same problem. These models a dyanmic volatility, which is modelled. Although these models did not show as close a fit to the data, assessed by the within- and out-of-sample MAEs and RSMEs, as the sARIMA model, the lower AICs and better diagnostics suggest that this is more appropriate for predicting hourly energy spot prices. 
+From the range of statistical models tested the sARIMA with no exogenous variables showed lowest within- and out-of-sample errors, suggesting that this model captured the data the best. However, the data did not conform to one of the ARIMA modelling assumptions, namely, constant volatility. Although the model captured the trend in the data well, due to this failure the model's predictive and confidence intervals should not be trusted. The issue was seen in the other constant-variance models investigated within here. The dynamics volatility of the GARCH-type models were well-suited to the data and did not show strong violations of the modelling assumptions. However, the forecasts were less accurate than the sARIMA models, indicating that the inclusion of dynamic volatility is important for uncertainty quantification but the simple AR mean-model used in GARCH-type models is not complex enough to capture the seasonal trends of the spot-prices. 
+
+The models may be further improved by the incorporation of other exogenous variables, which may be correlated to spot-price and, importantly, spot-price spikes. Variables such as weather predictions, which would strongly correlated to renewable energy production may be beneficial. 
+
+A key draw-back to the models used are that they all considered spot-prices within a price spike to be a part of the same model as those within a normal range, despite them showing very different characteristics. To continue this analysis it would be interesting to use mixture models or regime-switching models, which are better equipped to handle these distinct states within the data. Another avenue to pursue would develop a more accurate mean-model in conjuction with a dynamic volatility seen in the GARCH-type models. 
+
+
+
