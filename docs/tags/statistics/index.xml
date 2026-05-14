@@ -2,49 +2,49 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Statistics on Home</title>
-    <link>http://localhost:1313/tags/statistics/</link>
+    <link>https://jordanbchilds.github.io/tags/statistics/</link>
     <description>Recent content in Statistics on Home</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Tue, 12 May 2026 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:1313/tags/statistics/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 12 May 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://jordanbchilds.github.io/tags/statistics/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>A Comparison of Statistical Models of Energy Spot Price in the UK</title>
-      <link>http://localhost:1313/posts/energy_spot_price_analysis/</link>
+      <link>https://jordanbchilds.github.io/posts/energy_spot_price_analysis/</link>
       <pubDate>Tue, 12 May 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/energy_spot_price_analysis/</guid>
+      <guid>https://jordanbchilds.github.io/posts/energy_spot_price_analysis/</guid>
       <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;Electricity differs from many financial and commodity assets because large-scale storage remains expensive, requiring supply and demand to be balanced continuously. In the UK day-ahead market, hourly electricity prices are determined through auctions that incorporate expected generation, demand, and transmission constraints. In Great Britain, this balance is overseen by the National Energy System Operator (NESO), which manages the grid through a combination of forward markets and a real-time Balancing Mechanism. A key feature of the UK energy market is the day-ahead auction, which is facilitated by two exchanges: EPEX SPOT and Nord Pool&amp;rsquo;s N2EX. The auctions operate such that all successful buyers and sellers receive the same clearing price, despite the large difference in cost to produce electricity between renewable and non-renewable methods. The price is determined by the most expensive energy producer to be accepted for that period; this is called the marginal price. The spot prices today were, therefore, set in yesterday&amp;rsquo;s auctions. Both producers and suppliers commit to their positions a day ahead.&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Bayesian Hypothesis Testing</title>
-      <link>http://localhost:1313/posts/hypothesis_testing/</link>
+      <link>https://jordanbchilds.github.io/posts/hypothesis_testing/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/hypothesis_testing/</guid>
+      <guid>https://jordanbchilds.github.io/posts/hypothesis_testing/</guid>
       <description>&lt;p&gt;The t-test is one of the most common tests used in statistics. It compares the means of two normally distributed datasets by calculating a test statistic and comparing it to the t-distribution. Variations of the test exist, including constant and differing variance between groups, paired and unpaired, and non-normality in the data. Here, Bayesian hypothesis testing is discussed, giving an indication of how a two-sample t-test would be conducted within a Bayesian context. Extensions to other situations are available, but the focus of this is to illustrate the how hyptothesis testing is done within the Bayesian paraidgm.&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Introduction to Bayesian Statistics</title>
-      <link>http://localhost:1313/posts/bayesian_introduction/</link>
+      <link>https://jordanbchilds.github.io/posts/bayesian_introduction/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/bayesian_introduction/</guid>
+      <guid>https://jordanbchilds.github.io/posts/bayesian_introduction/</guid>
       <description>&lt;p&gt;Unlike frequentist statisticians, Bayesian statisticians believe that there is no &amp;rsquo;true&amp;rsquo; value of the parameters in a statistical model. Instead, Bayesian methods summarise parameter beliefs after observing data (&lt;em&gt;a posteriori&lt;/em&gt;) by a probability distribution, giving more weight to more likely values. Parameter beliefs before observing any data (&lt;em&gt;a priori&lt;/em&gt;) are called prior beliefs, and are similarly summarised by a probability distribution. Prior beliefs can be as vague or informed as required to reflect the beliefs of relevant experts. A lack of prior can be reflected by vague prior beliefs, with a high variance. In contrast, a large amount of prior knowledge from previous work may result in well-informed priors with high precision. Parameter beliefs are updated by combining prior beliefs and new evidence presented from a dataset. Bayesian methodology is fully probabilistic and considers model parameters, hidden states, as well as missing and observed data in the same vein. The coherent treatment of model parameters, data, and hidden states has allowed Bayesian methods to be used in a wide range of inference problems.&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Introduction to Markov Chain Monte Carlo</title>
-      <link>http://localhost:1313/posts/mcmc_introduction/</link>
+      <link>https://jordanbchilds.github.io/posts/mcmc_introduction/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/mcmc_introduction/</guid>
+      <guid>https://jordanbchilds.github.io/posts/mcmc_introduction/</guid>
       <description>&lt;p&gt;In the Bayesian paradigm, it is often the case that a posterior distirbution cannot be found analytically, such as wehn analysis is conjugate. However, this is need not be the end. Markov chain Monte Carlo (MCMC) is a common method used to sample from a posterior distribution when the analysis is not conjugate. The premise of the method is to construct a Markov chain whose stationary distribution is the posterior density. Once the Markov chain has converged to the posterior, any sample generated by the chain will be a realisation from the posterior distribution and posterior beliefs can be inpsected by inspection of the posterior samples.&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Introduction to Markov Chains</title>
-      <link>http://localhost:1313/posts/markov_chains_introduction/</link>
+      <link>https://jordanbchilds.github.io/posts/markov_chains_introduction/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/markov_chains_introduction/</guid>
+      <guid>https://jordanbchilds.github.io/posts/markov_chains_introduction/</guid>
       <description>&lt;p&gt;A Markov chain is a sequence of random variables whose current state depends only on the previous one and is independent of all states before it. This condition is known as the memoryless or Markov property. Their applications span many areas of statistics, including parameter inference and statistical modelling.&lt;/p&gt;
 &lt;p&gt;The Markov property implies that the current state is a random variable whose possible values are described by a probability density dependent on the previous state. Being sequential, Markov chains are usually thought to progress with time, with updates occurring at discrete or continuous intervals. The state space of a Markov chain, the possible values of the random variables, can be either multi- or univariate and be discrete or continuous. Here we introduce both discrete and continuous state-space Markov chains with an example of both. The discussion is limited to discrete-time Markov chains, that iterate at fixed time intervals but continuous-time extensions exist. It is assumed that the reader is familiar with conscepts in statistics such random variables and probability density functions.&lt;/p&gt;</description>
     </item>

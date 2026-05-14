@@ -2,71 +2,71 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/posts/energy_spot_price_analysis/</loc>
+    <loc>https://jordanbchilds.github.io/posts/energy_spot_price_analysis/</loc>
     <lastmod>2026-05-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/data-analysis/</loc>
+    <loc>https://jordanbchilds.github.io/tags/data-analysis/</loc>
     <lastmod>2026-05-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/</loc>
+    <loc>https://jordanbchilds.github.io/</loc>
     <lastmod>2026-05-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/</loc>
+    <loc>https://jordanbchilds.github.io/posts/</loc>
     <lastmod>2026-05-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/python/</loc>
+    <loc>https://jordanbchilds.github.io/tags/python/</loc>
     <lastmod>2026-05-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/statistics/</loc>
+    <loc>https://jordanbchilds.github.io/tags/statistics/</loc>
     <lastmod>2026-05-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/</loc>
+    <loc>https://jordanbchilds.github.io/tags/</loc>
     <lastmod>2026-05-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/ipu_howto/</loc>
+    <loc>https://jordanbchilds.github.io/posts/ipu_howto/</loc>
   </url><url>
-    <loc>http://localhost:1313/posts/discreterandomsampler/</loc>
+    <loc>https://jordanbchilds.github.io/posts/discreterandomsampler/</loc>
   </url><url>
-    <loc>http://localhost:1313/aboutme/</loc>
+    <loc>https://jordanbchilds.github.io/aboutme/</loc>
   </url><url>
-    <loc>http://localhost:1313/posts/mixture_models/</loc>
+    <loc>https://jordanbchilds.github.io/posts/mixture_models/</loc>
   </url><url>
-    <loc>http://localhost:1313/posts/hypothesis_testing/</loc>
+    <loc>https://jordanbchilds.github.io/posts/hypothesis_testing/</loc>
   </url><url>
-    <loc>http://localhost:1313/tags/bayesian-inference/</loc>
+    <loc>https://jordanbchilds.github.io/tags/bayesian-inference/</loc>
   </url><url>
-    <loc>http://localhost:1313/tags/bayesian-methods/</loc>
+    <loc>https://jordanbchilds.github.io/tags/bayesian-methods/</loc>
   </url><url>
-    <loc>http://localhost:1313/tags/c&#43;&#43;/</loc>
+    <loc>https://jordanbchilds.github.io/tags/c&#43;&#43;/</loc>
   </url><url>
-    <loc>http://localhost:1313/categories/</loc>
+    <loc>https://jordanbchilds.github.io/categories/</loc>
   </url><url>
-    <loc>http://localhost:1313/tags/classification/</loc>
+    <loc>https://jordanbchilds.github.io/tags/classification/</loc>
   </url><url>
-    <loc>http://localhost:1313/tags/gillespie-algorithm/</loc>
+    <loc>https://jordanbchilds.github.io/tags/gillespie-algorithm/</loc>
   </url><url>
-    <loc>http://localhost:1313/tags/guide/</loc>
+    <loc>https://jordanbchilds.github.io/tags/guide/</loc>
   </url><url>
-    <loc>http://localhost:1313/posts/ipu_timetrial/</loc>
+    <loc>https://jordanbchilds.github.io/posts/ipu_timetrial/</loc>
   </url><url>
-    <loc>http://localhost:1313/tags/interest/</loc>
+    <loc>https://jordanbchilds.github.io/tags/interest/</loc>
   </url><url>
-    <loc>http://localhost:1313/posts/hierarchical_models/</loc>
+    <loc>https://jordanbchilds.github.io/posts/hierarchical_models/</loc>
   </url><url>
-    <loc>http://localhost:1313/posts/bayesian_introduction/</loc>
+    <loc>https://jordanbchilds.github.io/posts/bayesian_introduction/</loc>
   </url><url>
-    <loc>http://localhost:1313/posts/mcmc_introduction/</loc>
+    <loc>https://jordanbchilds.github.io/posts/mcmc_introduction/</loc>
   </url><url>
-    <loc>http://localhost:1313/posts/markov_chains_introduction/</loc>
+    <loc>https://jordanbchilds.github.io/posts/markov_chains_introduction/</loc>
   </url><url>
-    <loc>http://localhost:1313/tags/ipu/</loc>
+    <loc>https://jordanbchilds.github.io/tags/ipu/</loc>
   </url><url>
-    <loc>http://localhost:1313/tags/markov-chains/</loc>
+    <loc>https://jordanbchilds.github.io/tags/markov-chains/</loc>
   </url><url>
-    <loc>http://localhost:1313/tags/random-sampling/</loc>
+    <loc>https://jordanbchilds.github.io/tags/random-sampling/</loc>
   </url><url>
-    <loc>http://localhost:1313/tags/statistical-modelling/</loc>
+    <loc>https://jordanbchilds.github.io/tags/statistical-modelling/</loc>
   </url><url>
-    <loc>http://localhost:1313/tags/stochastic-modelling/</loc>
+    <loc>https://jordanbchilds.github.io/tags/stochastic-modelling/</loc>
   </url>
 </urlset>
