@@ -4,6 +4,7 @@ theme = "PaperMod"
 title = "Home"
 paginate = 2
 publishDir = "docs"
+staticDir = ['static']
 
 [author]
 name = "Jordan Childs"
