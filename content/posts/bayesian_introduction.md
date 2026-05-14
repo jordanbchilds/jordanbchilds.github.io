@@ -14,7 +14,7 @@ Bayesian methods have gained popularity in all aspects of research. Historically
 Bayes' theorem is the foundation of Bayesian statistics and provides the formula to find posterior beliefs. It follows immediately from the law of conditional probability, see [here](https://en.wikipedia.org/wiki/Conditional_probability).
 
 $$
-    \text{Pr}(A|B) = \frac{ \text{Pr}(B|A)\,\text{Pr}\left(A\right) } {\text{Pr}\left(B\right)}.
+    \text{Pr}(A|B) = \frac{ \text{Pr}(B|A)\text{Pr}\left(A\right) } {\text{Pr}\left(B\right)}.
 $$
 
 The events $A$ and $B$ are interpreted as model parameters and observed data, respectively. Let $\boldsymbol{x} = \left(x_1, x_2, \dots, x_n\right)$ be a set of independent observations and $f_X(x|\theta)$ be a statistical model that is believed to explain the data. The model, $f_X(x|\theta)$, is dependent on a set of parameters, $\theta$, which are unknown and to be inferred. Let $\Theta$ denote the support of the model parameters, $\theta$. For example, in a simple linear model, $\theta=(m, c)^\mathrm{T}$ indicating the slope and intercept of the linear equation, and its support is the 2-dimensional real-plane, $\mathbb{R}^2$. The data-likelihood, $f(\boldsymbol{x}|\theta)$, is the probability of observing $\boldsymbol{x}$ given a set of parameter values, $\theta$, and is the product of the model density evaluated at each observation given $\theta$,
