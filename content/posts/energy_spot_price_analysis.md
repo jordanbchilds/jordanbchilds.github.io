@@ -42,12 +42,12 @@ Upon inspection of the data, there appears to be little overall trend in energy 
 
 The dataset contains some missing values, but the degree of missingness is relatively low, with between 41 and 121 missing values per variable in a dataset of over 50,000 observations. The missing values are therefore not of concern regarding data quality but should be filled to make model fitting easier and more consistent across modelling techniques and Python packages, some of which do not natively handle missing values. To estimate the missing values for each variable a Kalman filter is used to extract the smoothed estimates. The filter is fitted independently for each variable, and the missing values are replaced by their estimates. The `filled` data is used for all model fitting throughout this investigation, but the estimated values are omitted when calculating model comparison statistics, such as mean squared error.
 
-<img src="energy_spot_price_statistical_model_comparison/spot_price_data.png" alt="Raw data">
+<img src="static/energy_spot_price_analysis/spot_price_data.png" alt="Raw data">
 
 |Figure 1: **Spot Price Data**. (Top): The hourly-spot price for the training dataset. (Bottom): The hourly spot-price for the validation dataset, the final month of data. The coloured bands highlight weeked spot-prices, purple showing Saturday and pink Sunday. |
 |:---:|
 
-<img src="energy_spot_price_statistical_model_comparison/energy_price_by_day.png" alt="By day price">
+<img src="static/energy_spot_price_analysis/energy_price_by_day.png" alt="By day price">
 
 |Figure 2: **Average Spot Price is Correlated Between Days**. The mean spot price at each hour, separated by day of the week, calculated from the whole dataset. Each colour corresponds to a different day of the week. |
 |:---:|
@@ -88,7 +88,7 @@ The seasonal order of the models is not inferred but fixed. During initial inspe
 
 The general form of the seasonal ARIMAX model is given above, and so a formal definition is not necessary here. The mathematical definition of the seasonal ARIMA is found by removing the exogenous variables from the ARIMAX definition, and, again, a formal definition is omitted.
 
-<img src="energy_spot_price_statistical_model_comparison/arima_predictions.png" alt="ARIMA predictions">
+<img src="static/energy_spot_price_analysis/arima_predictions.png" alt="ARIMA predictions">
 
 |Figure 3: **sARIMA-type Models Out-of-Sample Prediction**. The expected value (blue line) and 95\% confidence interval (light blue shaded region) for the validation data set, using a two-year sliding window to predict the next 24-hour period under the two sARIMA-type models, which fit seasonal ARIMA models to the log spot-price. The observed log data is shown as a black dashed line. |
 |:---:|
@@ -108,7 +108,7 @@ $$
 $$
 </div>
 
-<img src="energy_spot_price_statistical_model_comparison/arimat_predictions.png" alt="sARIMAt predictions">
+<img src="static/energy_spot_price_analysis/arimat_predictions.png" alt="sARIMAt predictions">
 
 |Figure 4: **sARIMAt-type Models Out-of-Sample Prediction**. The expected value (blue line) and 95\% confidence interval (light blue shaded region) for the validation data set, using a two-year sliding window to predict the next 24-hour period under the two sARIMAt-type models, which fit independent sARIMA models to hour-specific time-series of log spot-price. The observed log data (spot price) is shown as a black dashed line. |
 |:---:|
@@ -131,7 +131,7 @@ Where $\boldsymbol{\epsilon}_{t}$ are independent and identically distributed mu
 
 The VAR models are fitted using the `VAR` function from the Python `statsmodels.tsa.api` module. This function also produces the forecasts, which can be seen in Figure 4.
 
-<img src="energy_spot_price_statistical_model_comparison/var_predictions.png" alt="var predictions">
+<img src="static/energy_spot_price_analysis/var_predictions.png" alt="var predictions">
 
 |Figure 5: **VAR-type Models Out-of-Sample Prediction**. The expected value (blue line) and 95\% confidence interval (light blue shaded region) for the validation data set, using a two-year sliding window to predict the next 24-hour period under the two VAR-type models described. The observed log data (spot price) is shown as a black dashed line. |
 |:---:|
@@ -159,7 +159,7 @@ The GARCH-AR model can be retrieved by removing the additional exogenous variabl
 
 The orders of the GARCH-AR models are chosen by fitting a range of models to the training dataset and choosing the parameter set which minimises the AIC. For the AR component, a range of orders are tested, which combine standard and seasonal lags, a seasonal lag of 24 is assumed. The forecasted values and confidence intervals for this model are shown in Figure 6. It can be seen here that the model volatility is dynamic, unlike the previous models discussed, as the confidence intervals are not uniform in size. This is particularly evident for the GARCH-ARX model, where following a spike in spot price, the confidence in the next day's spot-price descreaces and the confidence intervals widen.
 
-<img src="energy_spot_price_statistical_model_comparison/garch_predictions.png" alt="GARCH predictions">
+<img src="static/energy_spot_price_analysis/garch_predictions.png" alt="GARCH predictions">
 
 |Figure 6: **GARCH-type Models Out-of-Sample Prediction**. The expected value (blue line) and 95\% confidence interval (light blue shaded region) for the validation data set, using a two-year sliding window to predict the next 24-hour period under the two VAR-type models described. The observed log data (spot price) is shown as a black dashed line. |
 |:---:|
@@ -198,14 +198,14 @@ Table 2: **Out-of-sample model fit**. The Akaike information criteria (AIC), mea
 
 The models used above come with associated assumptions. Notably, the ARIMA- and VAR-type models assume that residuals are independently and identically distributed by a normal distribution with a constant variance. This assumption should be inspected to give a fuller picture of model fit. The standardised model residuals of the sARIMA model, which showed the lowest within-sample MAE and RMSE, are shown in Figure 6, as well as a QQ-plot of residuals. If volatility is constant, the distribution of the standardised residuals should strongly resemble that of the standard normal distribution, one with zero mean and unit variance, and the points on the QQ-plot should fall close to the diagonal line. This is not the case, the standardised residuals show fatter tails compared to what would be expected, as seen in the divergence from the diagonal line in the extremes. The violation of this assumption indicates that the resulting standard errors are likely wrong, impacting the trustworthiness of confidence intervals for parameter values, fitted values and predicted values. The same, non-constant variance issue appears for all sARIMA- and VAR-type models, although the output is omitted for brevity. 
 
-<img src="energy_spot_price_statistical_model_comparison/sarima_std_residuals.png" alt="sARIMA residuals">
+<img src="static/energy_spot_price_analysis/sarima_std_residuals.png" alt="sARIMA residuals">
 
 |Figure 7: **Standardised Residuals of the sARIMA Model Show Non-Normality**. The standardised residuals after fitting the sARIMA model to the training dataset (lightblue histogram). The probability density function of the standard normal distribution. |
 |:---:|
 
 The GARCH-type models assume errors are independently normally distributed with a time-varying variance. The distribution of standardised residuals and QQ-plot can be seen in Figure 8. Residuals are much more in agreement with the modelling assumptions compared to the sARIMA model. However, still show slightly thicker tails than would be expected.  
 
-<img src="energy_spot_price_statistical_model_comparison/garcharx_std_residuals.png" alt="GARCH residuals">
+<img src="static/energy_spot_price_analysis/garcharx_std_residuals.png" alt="GARCH residuals">
 
 |Figure 8: **Standardised Residuals of the GARCH-ARX Model Show Normality**. The expected value (blue line) and 95\% confidence interval (light blue shaded region) for the validation data set, using a two-year sliding window to predict the next 24-hour period under the two VAR-type models described. The observed log data (spot price) is shown as a black dashed line. |
 |:---:|
