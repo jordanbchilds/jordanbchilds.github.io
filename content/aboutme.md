@@ -5,7 +5,7 @@ title: "About Me"
 <div class="about-layout">
 
   <div class="about-sidebar">
-    <img src="/images/profile.jpg" alt="Profile photo">
+    <img src="/images/profile.JPG" alt="Profile photo">
     
   </div>
 
