@@ -81,7 +81,7 @@ Although mean-reversion captures the overall trend of the data, it is not capabl
 <div class="math">
 $$
 \begin{align}
-\text{d}X_t &= -\theta X_t\text{d}t + \sigma \text{d}W_t + J_t\text{d}N_t, \
+\text{d}X_t &= -\theta X_t\text{d}t + \sigma \text{d}W_t + J_t\text{d}N_t, \\
 J_t &\sim \text{Normal}(\mu_J, \sigma_J^2).
 \end{align}
 $$
@@ -90,9 +90,9 @@ We assume that the time-step, $\Delta t = 1$hr, is small enough that at most one
 <div class="math">
 $$
 \begin{align}
-S_{t+1} | S_t=s_t &\sim (1 - p)\text{N}\left(\mu_X, \sigma_X^2\right) + p\text{N}\left(\mu_X + \mu_J, \sigma_X^2 + \sigma_J^2\right), \
-\mu_X &= \Lambda_{t+1} + e^{-\theta}\left(s_t - \Lambda_t \right), \
-\sigma_X^2 &= \frac{\sigma^2}{2\theta}\left(1 - e^{-2\theta}\right), \
+S_{t+1} | S_t=s_t &\sim (1 - p)\text{N}\left(\mu_X, \sigma_X^2\right) + p\text{N}\left(\mu_X + \mu_J, \sigma_X^2 + \sigma_J^2\right), \\
+\mu_X &= \Lambda_{t+1} + e^{-\theta}\left(s_t - \Lambda_t \right), \\
+\sigma_X^2 &= \frac{\sigma^2}{2\theta}\left(1 - e^{-2\theta}\right), \\
 p &= \lambda.
 \end{align}
 $$
@@ -121,8 +121,8 @@ Another modelling approach is to assume that the energy price is governed differ
 <div class="math">
 $$
 \begin{align}
-\text{d}X_t^b &= -\theta_b X_t^b \text{d}t + \sigma_b \text{d}W_t^b + J_t\text{d}N_t, \
-\text{d}X_t^s &= -\theta_s X_t^s \text{d}t + \sigma_s \text{d}W_t^s.
+    \text{d}X_t^b &= -\theta_b X_t^b \text{d}t + \sigma_b \text{d}W_t^b + J_t\text{d}N_t, \\
+    \text{d}X_t^s &= -\theta_s X_t^s \text{d}t + \sigma_s \text{d}W_t^s.
 \end{align}
 $$
 </div>
@@ -151,9 +151,9 @@ The final model considered in this blog is a model which includes dynamic, time-
 <div class="math">
 $$
 \begin{align}
-\text{d}X_t &= -\theta X_t\text{d}t + \sigma_t \text{d}W_t^X + J_t\text{d}N_t, \
-\text{d}V_t &= \theta_v (\mu_v - V_t) \text{d}t + \sigma_v \text{d}W_t^V, \
-J_t &\sim \text{N}(\mu_J, \sigma_J^2).
+    \text{d}X_t &= -\theta X_t\text{d}t + \sigma_t \text{d}W_t^X + J_t\text{d}N_t, \\
+    \text{d}V_t &= \theta_v (\mu_v - V_t) \text{d}t + \sigma_v \text{d}W_t^V, \\
+    J_t &\sim \text{N}(\mu_J, \sigma_J^2).
 \end{align}
 $$
 </div>
