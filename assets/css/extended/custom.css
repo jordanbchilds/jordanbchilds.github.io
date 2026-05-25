@@ -1,0 +1,37 @@
+.about-layout {
+    display: flex;
+    gap: 48px;
+    align-items: flex-start;
+}
+
+.about-sidebar {
+    width: 240px;
+    position: sticky;
+    top: 100px;
+    flex-shrink: 0;
+}
+
+.about-sidebar img {
+    width: 100%;
+    border-radius: 12px;
+}
+
+.social-links {
+    margin-top: 20px;
+    line-height: 1.8;
+}
+
+.about-content {
+    max-width: 800px;
+}
+
+@media (max-width: 900px) {
+    .about-layout {
+        flex-direction: column;
+    }
+
+    .about-sidebar {
+        position: static;
+        width: 180px;
+    }
+}
