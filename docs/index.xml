@@ -93,9 +93,14 @@ processor, also known as the GC200.&lt;/p&gt;</description>
       <link>https://jordanbchilds.github.io/aboutme/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://jordanbchilds.github.io/aboutme/</guid>
-      <description>&lt;p&gt;I recently completed a PhD in Statistics at Newcastle University, following an integrated Master&amp;rsquo;s degree in Mathematics and Statistics and a Postgraduate Diploma in Cloud Computing for Big Data.&lt;/p&gt;
-&lt;p&gt;My research focused on Bayesian data analysis, stochastic modelling, and computational statistics. In my PhD I developed statistical and simulation-based models to study the progression of mitochondrial disease, combining Bayesian inference with stochastic models of mtDNA population dynamics.&lt;/p&gt;
-&lt;p&gt;This work involved building agent-based simulations, fitting complex probabilistic models to both real-world and synthetic datasets, and investigating the use of advanced computing hardware to accelerate Bayesian inference.&lt;/p&gt;</description>
+      <description>&lt;div class=&#34;about-layout&#34;&gt;
+  &lt;div class=&#34;about-sidebar&#34;&gt;
+    &lt;img src=&#34;https://jordanbchilds.github.io/images/profile.jpg&#34; alt=&#34;Profile photo&#34;&gt;
+  &lt;/div&gt;
+  &lt;div class=&#34;about-content&#34;&gt;
+&lt;h1 id=&#34;about-me&#34;&gt;About Me&lt;/h1&gt;
+&lt;p&gt;I recently completed a PhD in Statistics at Newcastle University, following an integrated Master&amp;rsquo;s degree in Mathematics and Statistics and a Postgraduate Diploma in Cloud Computing for Big Data.&lt;/p&gt;
+&lt;p&gt;My research focused on Bayesian data analysis, stochastic modelling, and computational statistics. In my PhD I developed statistical and simulation-based models to study the progression of mitochondrial disease, combining Bayesian inference with stochastic models of mtDNA population dynamics.&lt;/p&gt;</description>
     </item>
     
     <item>
