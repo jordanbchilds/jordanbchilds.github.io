@@ -63,7 +63,7 @@ The posterior chains are checked for convergence to the same posterior distribut
 
 The resulting posterior predictive plots can be seen in Figure 1. The model appears to capture the shape of the training data fairly well. An example posterior one-step-ahead predictive density is also shown. We see that it fails to capture the fat tails synonymous with energy spot price. The validation dataset lies mostly within the predictive density, although it seems to have a higher overall mean level than the model predicted. This may be due to a general rise in spot price which the model hasn’t accounted for, seen in increasing spot price in the final few months of the training data. Lastly, a sample path drawn from the stochastic process a posteriori does not reflect the spikes seen in the data and appears to have an overall higher volatility than the spot price in its usual state. This is likely due to inadequacies of the model being unable to replicate spike behaviour.
 
-<img src="./Stochastic Modelling/plots/ou_posteriors.png" alt="OU posteriors">
+<img src="/stochastic_models_of_spot_price/ou_posteriors.png" alt="OU posteriors">
 
 Column 1
 Figure 1: Mean-Reverting Process’s Posterior Predictives. (Top left): Training data (black line) and 99% posterior predictive interval (light blue shaded region). (Top right): Posterior one-step-ahead predictive density of the final observed dataset (light blue histogram) and the one-step-ahead posterior expected value (pink histogram) plotted against the observed final value (dashed black line). (Bottom left): Posterior predictive forecast and validation data. The 99% posterior predictive interval is shown by the blue shaded region and middle 50% predictive region is shaded dark blue. (Bottom right): The validation dataset and a sample path of the process a posteriori.
@@ -98,7 +98,7 @@ The inference was executed for four independent chains, all of length 1,500, whe
 
 The posterior predictives show wider 99% predictive intervals when compared to the previous models. Significantly, the example one-step-ahead predictive density shows fat tails, as a result of the jump process. Similarly to before, the posterior expectation of the validation data lies below the observations; however, the fat tails in its prediction mean the observed data fit more comfortably within the 99% predictive interval. The sample path, however, still does not resemble spikes in energy price. This is likely due to the model’s inflexibility; it assumes the same mean-reversion is used when the spot price is in its usual state and after a spike has occurred. However, the data shows rapid return to the usual spot price; a single reversion rate would not be able to capture both dynamics.
 
-<img src="./Stochastic Modelling/plots/oujp_posteriors.png" alt="OUJP posteriors">
+<img src="/stochastic_models_of_spot_price/oujp_posteriors.png" alt="OUJP posteriors">
 
 | Figure 2: Mean-Reverting and Jump Process’s Posterior Predictives. (Top left): Training data (black line) and 99% posterior predictive interval (light blue shaded region). (Top right): Posterior one-step-ahead predictive density of the final oberserved dataset (light blue histogram) and the one-step-ahead posterior expected value (pink histogram) plotted against the observed final value (dashed black line). (Bottom left): Posterior predictive forecast and validation data. The 99% posterior predictive interval is shown by the blue shaded region and middle 50% predictive region is shaded dark blue. (Bottom right): The validation dataset and a sample path of the process a posteriori. |
 |:--:|
@@ -128,7 +128,7 @@ The complexity of the model reflected the complexity of posterior probability sp
 
 The example one-step-ahead predictive density shows some indication of fat tails, caused by spikes, but they are less prominent than in the previous model, see Figure 3. The posterior sample path shows some spikes, although their magnitude is lower than what is observed in the data. The posterior predictive intervals reflect those of the previous model.
 
-<img src="./Stochastic Modelling/plots/mrs_posteriors.png" alt="MRS posteriors">
+<img src="/stochastic_models_of_spot_price/mrs_posteriors.png" alt="MRS posteriors">
 
 | Figure 3: Markov Regime Switching Model’s Posterior Predictives. (Top left): Training data (black line) and 99% posterior predictive interval (light blue shaded region). (Top right): Posterior one-step-ahead predictive density of the final oberserved dataset (light blue histogram) and the one-step-ahead posterior expected value (pink histogram) plotted against the observed final value (dashed black line). (Bottom left): Posterior predictive forecast and validation data. The 99% posterior predictive interval is shown by the blue shaded region and middle 50% predictive region is shaded dark blue. (Bottom right): The validation dataset and a sample path of the process a posteriori. |
 |:--:|
@@ -158,7 +158,7 @@ The model complexity results in a higher computational burden, and four chains w
 
 The posterior predictives of this model resemble those seen in others; however, the example one-step-ahead predictive density clearly shows fat tails reflecting the spot-price phenomenon. The posterior sample path is also the only path to clearly show a distinct spike in spot price akin to those in the data. The posterior expected values for the validation dataset are still below the observed data, reinforcing that this is an issue with the mean function data capturing the increase in spot price.
 
-<img src="./Stochastic Modelling/plots/sv_posteriors.png" alt="Mean Function">
+<img src="/stochastic_models_of_spot_price/sv_posteriors.png" alt="Mean Function">
 
 | Figure 4: Stochastic Volatility Model’s Posterior Predictives. (Top left): Training data (black line) and 99% posterior predictive interval (light blue shaded region). (Top right): Posterior one-step-ahead predictive density of the final oberserved dataset (light blue histogram) and the one-step-ahead posterior expected value (pink histogram) plotted against the observed final value (dashed black line). (Bottom left): Posterior predictive forecast and validation data. The 99% posterior predictive interval is shown by the blue shaded region and middle 50% predictive region is shaded dark blue. (Bottom right): The validation dataset and a sample path of the process a posteriori. |
 |:--:|
@@ -170,7 +170,7 @@ The posterior predictives of this model resemble those seen in others; however, 
 
 Here, only a single mean function was considered, which may not be the most appropriate. Although a common form of mean function used within spot-price modelling, it may not be the best fit for this particular dataset. The function captures the trend of the data; however, upon inspection, the deseasonalised spot price diverges from zero, particularly in the first and last months of the training dataset see Figure 5. This explains the higher-than-observed spot price in the validation dataset across the models.
 
-<img src="./Stochastic Modelling/plots/mean_function.png" alt="SV posteriors">
+<img src="/stochastic_models_of_spot_price/mean_function.png" alt="SV posteriors">
 
 | Figure 5: Posterior Mean Function and Deseasonalised Data. (Top): Posterior expectated determiniistic mean function (blue) and the training dataset (black). (Bottom): The deseasonalised data, after subtracting the expeected value of the mean function at each point (black) and a horizontal red dashed line at zero. |
 |:--:|
