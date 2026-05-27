@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>Introduction to Bayesian Hierarchical Models | Home</title>
 <meta name="keywords" content="Statistical Modelling, Bayesian Methods">
 <meta name="description" content="Hierarchical models are synonymous with Bayesian methods, which is better equiped to be able to infer the parameters of large and complex models when compared to frequentist methods. They are popular as they allow simple building blocks to be combined to form a large and complex model. The ability of hierarchical models to reflect complex systems means they have been applied to a variety of modelling situations, within all aspects of science.">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/hierarchical_models/">
+<link rel="canonical" href="https://jordanbchilds.github.io/posts/hierarchical_models/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.96f9b43d3e7e96d43e451abbef1c43590b4aa75534018ec6ce1ad084decb8e15.css" integrity="sha256-lvm0PT5&#43;ltQ&#43;RRq77xxDWQtKp1U0AY7GzhrQhN7LjhU=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://jordanbchilds.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://jordanbchilds.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://jordanbchilds.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://jordanbchilds.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://jordanbchilds.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/hierarchical_models/">
+<link rel="alternate" hreflang="en" href="https://jordanbchilds.github.io/posts/hierarchical_models/">
 <noscript>
     <style>
         #theme-toggle,
@@ -57,7 +57,67 @@
         }
 
     </style>
-</noscript>
+</noscript><meta property="og:title" content="Introduction to Bayesian Hierarchical Models" />
+<meta property="og:description" content="Hierarchical models are synonymous with Bayesian methods, which is better equiped to be able to infer the parameters of large and complex models when compared to frequentist methods. They are popular as they allow simple building blocks to be combined to form a large and complex model. The ability of hierarchical models to reflect complex systems means they have been applied to a variety of modelling situations, within all aspects of science." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://jordanbchilds.github.io/posts/hierarchical_models/" /><meta property="og:image" content="https://jordanbchilds.github.io/images/profile.JPG"/><meta property="article:section" content="posts" />
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://jordanbchilds.github.io/images/profile.JPG"/>
+
+<meta name="twitter:title" content="Introduction to Bayesian Hierarchical Models"/>
+<meta name="twitter:description" content="Hierarchical models are synonymous with Bayesian methods, which is better equiped to be able to infer the parameters of large and complex models when compared to frequentist methods. They are popular as they allow simple building blocks to be combined to form a large and complex model. The ability of hierarchical models to reflect complex systems means they have been applied to a variety of modelling situations, within all aspects of science."/>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://jordanbchilds.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Introduction to Bayesian Hierarchical Models",
+      "item": "https://jordanbchilds.github.io/posts/hierarchical_models/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Introduction to Bayesian Hierarchical Models",
+  "name": "Introduction to Bayesian Hierarchical Models",
+  "description": "Hierarchical models are synonymous with Bayesian methods, which is better equiped to be able to infer the parameters of large and complex models when compared to frequentist methods. They are popular as they allow simple building blocks to be combined to form a large and complex model. The ability of hierarchical models to reflect complex systems means they have been applied to a variety of modelling situations, within all aspects of science.\n",
+  "keywords": [
+    "Statistical Modelling", "Bayesian Methods"
+  ],
+  "articleBody": "Hierarchical models are synonymous with Bayesian methods, which is better equiped to be able to infer the parameters of large and complex models when compared to frequentist methods. They are popular as they allow simple building blocks to be combined to form a large and complex model. The ability of hierarchical models to reflect complex systems means they have been applied to a variety of modelling situations, within all aspects of science.\nIn this blog the concept of hierarchical models are introduced, along with an example to demonstrate where one might be applicable, and the inference of their parameters is discussed within the Bayesian paradigm. As such, it is assumed the reader is familiar with Bayesian methods. If not, the blogs here introduces Bayesian methods and here continues the discussion on parameter inference.\nBayesian hierarchical model A Bayesian hierarchical model imposes dependencies between unknown parameters. In practice, prior parameters are considered unknown and to be inferred, reflecting uncertainty in the prior specification itself. To this end, hyper-priors, defined by hyper-parameters, are chosen to summarise beliefs on the prior parameters. The dependent structure enables the construction of complex models from simple components.\nHierarchical models are often used when the dataset can be split into non-overlapping groups, which may impact the response variable. The hierarchy allows each group to be modelled with a different parameter while learning the population-level parameters in the hyper-parameters. The top level of the hierarchy describes beliefs about the population-level parameters, which concern the whole dataset. After that, each level will describe a smaller subset of the data.\nOne benefit of using a Bayesian hierarchical model is that information is shared between groups through the learning of top-level parameters, referred to as borrowing strength between groups. Whole-population parameters beliefs are passed on to sub-population parameters, minimising over-fitting risks for groups with few data points.\nMixture models, see here and hierarchical models are often combined, as they both concern data sub-populations. When this is the case, inference can proceed as usual, but care must be taken when calculating full conditional distirbutions (FCDs) due to the model’s more complex structure.\nBayesian hierarchical model example Suppose we wish to model the proportion of students achieving a pass in five GCSEs (or more) within schools across the UK. It is reasonable to assume that the pass rate will vary between schools. As such, aggregating the UK-wide data would not be informative of the whole picture. Alternatively, each school could be modelled independently, but this would ignore the information within the dataset from other schools. The hierarchical model addresses both issues, allowing each school to have a unique pass rate while borrowing strength across schools.\nThe data Suppose the dataset contains information for $N$ uniquely identified schools across the UK. Let $n_i$ be the number of students in the $i$-th school, and $Y_i$ be the number of students achieving a pass grade in five (or more) GCSEs in that school. Table 1 shows a snippet of what such a dataset may look like.\nSchool $n$ $Y$ 1 120 95 2 99 65 3 108 71 Table 1: Example subset of data concerning GCSE results of UK schools.\nThe model Assume \\(Y_i\\) follows a binomial distribution, with probability of success \\(\\theta_i\\), and the number of children in each school is known, then\n\\[ Y_i \\mid n_i, \\theta_i \\sim \\text{Bin}\\left(n_i, \\theta_i\\right). \\]\nThe parameters \\(\\theta_1, \\theta_2, \\dots, \\theta_N\\) are unknown and to be inferred. The pass rates are proportions, so it is reasonable to model them using a Beta distribution,\n\\[ \\theta_i \\mid \\alpha, \\beta \\sim \\text{Beta}\\left(\\alpha, \\beta \\right) \\]\nThe hierarchy is implemented by considering the prior parameters \\(\\alpha\\) and \\(\\beta\\) unknown and, therefore, to be inferred. Both are continuous and positive; independent gamma distributions are one choice for the hyper-priors.\n\\[ \\begin{aligned} \\alpha \u0026\\sim \\text{Ga}\\left(a_1, b_1 \\right) \\\\ \\beta \u0026\\sim \\text{Ga}\\left(a_2, b_2 \\right) \\end{aligned} \\]\nThe hyper-parameters \\(\\left\\lbrace a_1, b_1, a_2, b_2 \\right\\rbrace\\) are known and chosen by us to summarise prior beliefs. By inferring \\(\\alpha\\) and \\(\\beta\\), the distribution of a nationwide success rate can be inferred from the whole dataset. Which, in turn, affects the distribution of school-level success rates. The relationship can be seen by calculating the parameter FCDs up to proportionality.\nParameter inference First, consider the FCDs of the prior parameter \\(\\alpha\\),\n\\[ \\begin{aligned} p(\\alpha \\mid \\beta, \\boldsymbol{\\theta}, \\boldsymbol{y}) \u0026\\propto p\\left(\\alpha, \\beta, \\boldsymbol{\\theta}, \\boldsymbol{y}\\right), \\\\ \u0026\\propto p(\\boldsymbol{y} \\mid \\boldsymbol{\\theta}) p (\\boldsymbol{\\theta} \\mid \\alpha, \\beta) p(\\alpha) p(\\beta), \\\\ \u0026\\propto p(\\boldsymbol{\\theta} \\mid \\alpha, \\beta) p(\\alpha), \\\\ \u0026\\propto \\prod_{i=1}^n \\left\\lbrace {\\theta_i}^{\\alpha-1} \\left( 1 - \\theta_i\\right)^{\\beta-1}\\right\\rbrace \\times \\alpha^{a_1 -1} e^{-b_1 \\alpha}, \\\\ \u0026\\propto \\alpha^{a_1 -1} e^{-b_1 \\alpha} \\prod_{i=1}^n{\\theta_i}^{\\alpha-1}. \\end{aligned} \\]\nUnfortunately, this is not the form of a known probability distribution, and therefor the analysis is not semi-conjugate. Despite this, inference can still proceed by implementating MCMC methods, see here. Nevertheless, it can be seen that given \\(a_1, b_1\\) and \\(\\boldsymbol{\\theta}\\), \\(p(\\alpha \\mid \\beta, \\boldsymbol{\\theta}, \\boldsymbol{y})\\) is independent of \\(\\beta\\) and \\(\\boldsymbol{y}\\). Similarly, calculating the FCD of \\(\\beta\\) shows that given \\(a_2, b_2\\) and \\(\\boldsymbol{\\theta}\\), it is independent of the observations \\(\\boldsymbol{y}\\) and \\(\\alpha\\).\n\\[ p(\\beta \\mid \\alpha, \\boldsymbol{\\theta}, \\boldsymbol{y}) \\propto \\alpha^{a_\\beta -1} e^{-b_\\beta \\beta} \\prod_{i=1}^n\\left( 1 - \\theta_i\\right)^{\\beta-1} \\]\nThe final parameters to consider are the individual school success rates\n\\[ \\begin{aligned} p(\\theta_i \\mid \\alpha, \\beta, \\boldsymbol{\\theta}_{-i}, \\boldsymbol{y}) \u0026\\propto p\\left(\\alpha, \\beta, \\boldsymbol{\\theta}, \\boldsymbol{y}\\right), \\\\ \u0026\\propto p(\\boldsymbol{y} \\mid \\boldsymbol{\\theta}) p (\\boldsymbol{\\theta} \\mid \\alpha, \\beta), \\\\ \u0026\\propto \\prod_{i=1}^n \\left\\lbrace {\\theta_i}^{y_i} \\left( 1 - \\theta_i\\right)^{n_i - y_i}\\right\\rbrace \\times \\prod_{i=1}^n\\left\\lbrace {\\theta_i}^{\\alpha-1} \\left(1 - \\theta_i\\right)^{\\beta -1}\\right\\rbrace, \\\\ \u0026\\propto {\\theta_i}^{y_i + \\alpha - 1} \\left(1 - \\theta_i\\right)^{n_i - y_i + \\beta - 1}. \\end{aligned} \\]\nThis is the form of a Beta distribution with parameters \\(y_i+\\alpha\\) and \\(n_i - y_i + \\beta\\), and, therefore,\n\\[ \\theta_i \\mid \\alpha, \\beta, y_i \\sim \\text{Beta} \\left(y_i+\\alpha, n_i - y_i + \\beta \\right). \\]\nThe FCD of the individual school success rates depends on the observed data of only that school, \\(y_i\\), and the population-level parameters, \\(\\alpha\\) and \\(\\beta\\).\nBy learning high-level parameters, $\\alpha$ and $\\beta$, information about the global population is passed to lower-level parameters, $\\theta_i$, which are specific to a sub-population. Therefore, information is transferred to sub-population-specific parameters from the whole dataset, borrowing strength across groups. When there is little data in sub-populations, sharing information across groups is particularly useful; alternatively, treating each sub-population independently may lead to over-fitting in either a Bayesian or frequentist setting.\nHierarchical models can become more complex when additional layers to the hierarchy are added. For example, suppose the schools are grouped into geographical regions. Another layer could be added which learns region-specific success rates.\nFinal remarks Hierarchical models are broad class of statistical model which are able to better match the realities of the data which they are modelling. The Bayesian paradigm, and it’s consitent treatment unkowns is well equiped to handle the structured nature and hierarchical models, where likelihood functions may be intractable.\nIn this blog a small modelling example is given which hopefully gives an indication of the types of models that could used but also an understanding of why you may use a Bayesian hierarchical at all.\n",
+  "wordCount" : "1176",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://jordanbchilds.github.io/posts/hierarchical_models/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Home",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://jordanbchilds.github.io/favicon.ico"
+    }
+  }
+}
+</script>
 </head>
 
 <body class="" id="top">
@@ -75,7 +135,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Home (Alt + H)">Home</a>
+            <a href="https://jordanbchilds.github.io/" accesskey="h" title="Home (Alt + H)">Home</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -103,12 +163,12 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/aboutme/" title="About Me">
+                <a href="https://jordanbchilds.github.io/aboutme/" title="About Me">
                     <span>About Me</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/posts/" title="Blogs">
+                <a href="https://jordanbchilds.github.io/posts/" title="Blogs">
                     <span>Blogs</span>
                 </a>
             </li>
@@ -147,7 +207,7 @@
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a></div>
+    <div class="breadcrumbs"><a href="https://jordanbchilds.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://jordanbchilds.github.io/posts/">Posts</a></div>
     <h1 class="post-title">
       Introduction to Bayesian Hierarchical Models
     </h1>
@@ -255,16 +315,16 @@
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/statistical-modelling/">Statistical Modelling</a></li>
-      <li><a href="http://localhost:1313/tags/bayesian-methods/">Bayesian Methods</a></li>
+      <li><a href="https://jordanbchilds.github.io/tags/statistical-modelling/">Statistical Modelling</a></li>
+      <li><a href="https://jordanbchilds.github.io/tags/bayesian-methods/">Bayesian Methods</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/ipu_timetrial/">
+  <a class="prev" href="https://jordanbchilds.github.io/posts/ipu_timetrial/">
     <span class="title">« Prev</span>
     <br>
     <span>Hardware Accelerated Stochastic Simulation Using an Intelligence Processing Unit</span>
   </a>
-  <a class="next" href="http://localhost:1313/posts/bayesian_introduction/">
+  <a class="next" href="https://jordanbchilds.github.io/posts/bayesian_introduction/">
     <span class="title">Next »</span>
     <br>
     <span>Introduction to Bayesian Statistics</span>
@@ -276,7 +336,7 @@
     </main>
     
 <footer class="footer">
-    <span>&copy; 2026 <a href="http://localhost:1313/">Home</a></span>
+    <span>&copy; 2026 <a href="https://jordanbchilds.github.io/">Home</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
