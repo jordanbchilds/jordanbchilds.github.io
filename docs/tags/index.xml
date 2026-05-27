@@ -2,128 +2,133 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Tags on Home</title>
-    <link>https://jordanbchilds.github.io/tags/</link>
+    <link>http://localhost:1313/tags/</link>
     <description>Recent content in Tags on Home</description>
+    <image>
+      <title>Home</title>
+      <url>http://localhost:1313/images/profile.JPG</url>
+      <link>http://localhost:1313/images/profile.JPG</link>
+    </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Tue, 12 May 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://jordanbchilds.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 12 May 2026 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Bayesian Inference</title>
-      <link>https://jordanbchilds.github.io/tags/bayesian-inference/</link>
+      <link>http://localhost:1313/tags/bayesian-inference/</link>
       <pubDate>Tue, 12 May 2026 00:00:00 +0000</pubDate>
-      <guid>https://jordanbchilds.github.io/tags/bayesian-inference/</guid>
+      <guid>http://localhost:1313/tags/bayesian-inference/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Data Analysis</title>
-      <link>https://jordanbchilds.github.io/tags/data-analysis/</link>
+      <link>http://localhost:1313/tags/data-analysis/</link>
       <pubDate>Tue, 12 May 2026 00:00:00 +0000</pubDate>
-      <guid>https://jordanbchilds.github.io/tags/data-analysis/</guid>
+      <guid>http://localhost:1313/tags/data-analysis/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Python</title>
-      <link>https://jordanbchilds.github.io/tags/python/</link>
+      <link>http://localhost:1313/tags/python/</link>
       <pubDate>Tue, 12 May 2026 00:00:00 +0000</pubDate>
-      <guid>https://jordanbchilds.github.io/tags/python/</guid>
+      <guid>http://localhost:1313/tags/python/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Statistics</title>
-      <link>https://jordanbchilds.github.io/tags/statistics/</link>
+      <link>http://localhost:1313/tags/statistics/</link>
       <pubDate>Tue, 12 May 2026 00:00:00 +0000</pubDate>
-      <guid>https://jordanbchilds.github.io/tags/statistics/</guid>
+      <guid>http://localhost:1313/tags/statistics/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Bayesian Methods</title>
-      <link>https://jordanbchilds.github.io/tags/bayesian-methods/</link>
+      <link>http://localhost:1313/tags/bayesian-methods/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://jordanbchilds.github.io/tags/bayesian-methods/</guid>
+      <guid>http://localhost:1313/tags/bayesian-methods/</guid>
       <description></description>
     </item>
     
     <item>
       <title>C&#43;&#43;</title>
-      <link>https://jordanbchilds.github.io/tags/c&#43;&#43;/</link>
+      <link>http://localhost:1313/tags/c&#43;&#43;/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://jordanbchilds.github.io/tags/c&#43;&#43;/</guid>
+      <guid>http://localhost:1313/tags/c&#43;&#43;/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Classification</title>
-      <link>https://jordanbchilds.github.io/tags/classification/</link>
+      <link>http://localhost:1313/tags/classification/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://jordanbchilds.github.io/tags/classification/</guid>
+      <guid>http://localhost:1313/tags/classification/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Gillespie Algorithm</title>
-      <link>https://jordanbchilds.github.io/tags/gillespie-algorithm/</link>
+      <link>http://localhost:1313/tags/gillespie-algorithm/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://jordanbchilds.github.io/tags/gillespie-algorithm/</guid>
+      <guid>http://localhost:1313/tags/gillespie-algorithm/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Guide</title>
-      <link>https://jordanbchilds.github.io/tags/guide/</link>
+      <link>http://localhost:1313/tags/guide/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://jordanbchilds.github.io/tags/guide/</guid>
+      <guid>http://localhost:1313/tags/guide/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Interest</title>
-      <link>https://jordanbchilds.github.io/tags/interest/</link>
+      <link>http://localhost:1313/tags/interest/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://jordanbchilds.github.io/tags/interest/</guid>
+      <guid>http://localhost:1313/tags/interest/</guid>
       <description></description>
     </item>
     
     <item>
       <title>IPU</title>
-      <link>https://jordanbchilds.github.io/tags/ipu/</link>
+      <link>http://localhost:1313/tags/ipu/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://jordanbchilds.github.io/tags/ipu/</guid>
+      <guid>http://localhost:1313/tags/ipu/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Markov Chains</title>
-      <link>https://jordanbchilds.github.io/tags/markov-chains/</link>
+      <link>http://localhost:1313/tags/markov-chains/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://jordanbchilds.github.io/tags/markov-chains/</guid>
+      <guid>http://localhost:1313/tags/markov-chains/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Random Sampling</title>
-      <link>https://jordanbchilds.github.io/tags/random-sampling/</link>
+      <link>http://localhost:1313/tags/random-sampling/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://jordanbchilds.github.io/tags/random-sampling/</guid>
+      <guid>http://localhost:1313/tags/random-sampling/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Statistical Modelling</title>
-      <link>https://jordanbchilds.github.io/tags/statistical-modelling/</link>
+      <link>http://localhost:1313/tags/statistical-modelling/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://jordanbchilds.github.io/tags/statistical-modelling/</guid>
+      <guid>http://localhost:1313/tags/statistical-modelling/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Stochastic Modelling</title>
-      <link>https://jordanbchilds.github.io/tags/stochastic-modelling/</link>
+      <link>http://localhost:1313/tags/stochastic-modelling/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://jordanbchilds.github.io/tags/stochastic-modelling/</guid>
+      <guid>http://localhost:1313/tags/stochastic-modelling/</guid>
       <description></description>
     </item>
     

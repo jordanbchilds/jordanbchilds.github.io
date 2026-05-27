@@ -5,20 +5,55 @@ title = "Home"
 paginate = 2
 publishDir = "docs"
 staticDir = ['static']
+customCSS = ["css/custom.css"]
 
 [author]
 name = "Jordan Childs"
 email = "jordanbchilds@gmail.com"
 
 [params]
-env = "production"
-description = ""
-author = "Jordan Childs"
+
 defaultTheme = "auto"
-math = true
+ShowReadingTime = true
+ShowShareButtons = false
+ShowPostNavLinks = true
+ShowBreadCrumbs = true
 
-customCSS = ["css/custom.css"]
+images = ["images/profile.JPG"]
 
+[params.homeInfoParams]
+Title = "Jordan Childs"
+
+Content = """
+Statistics PhD graduate with interests in quantitative analysis,
+stochastic modelling, Bayesian inference, and energy markets.
+
+This site contains projects and writing related to:
+- Stochastic models
+- Monte Carlo simulation
+- Bayesian methods
+- Time-series analysis
+"""
+
+[[params.socialIcons]]
+name = "github"
+url = "https://github.com/jordanbchilds"
+
+[[params.socialIcons]]
+name = "linkedin"
+url = "https://www.linkedin.com/in/jordan-childs-186613181/?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3Bui3lY0EiQKipvQ8bKOUj1Q%3D%3D"
+
+[[menu.main]]
+identifier = "aboutme"
+name = "About Me"
+url = "/aboutme/"
+weight = 10
+
+[[menu.main]]
+identifier = "posts"
+name = "Blogs"
+url = "/posts/"
+weight = 20
 
 ShowReadingTime = true
 displayFullLangName = true
@@ -27,45 +62,6 @@ ShowCodeCopyButtons = true
 
 [markup]
 goldmark.renderer.unsafe = true
-
-[params.homeInfoParams]
-Title = ""
-Content = """"""
-[[params.socialIcons]]
-name = "GitHub"
-url = "https://github.com/jordanbchilds/"
-
-[[params.socialIcons]]
-name = "e-mail"
-url = "mailto:jordanbchilds@gmail.com"
-
-[[params.socialIcons]]
-name = "LinkedIn"
-url = "https://www.linkedin.com/in/jordan-childs-186613181/"
-
-[social]
-github = "https://github.com/jordanbchilds/"
-email = "mailto:jordanbchilds@gmail.com"
-facebook_admin = ""
-
-[[menu.main]]
-name = "Blogs"
-identifier = "blog" # this page will refer to a markdown file named "blog" in the content folder
-pre = "<br />"
-url = "/posts"
-weight = 10
-[[menu.main]]
-name = "About Me"
-identifier = "aboutme" # this page will refer to a markdown file named "aboutme" in the content folder
-pre = "<br />"
-url = "/aboutme"
-weight = 20
-[[menu.main]]
-name = "Tags"
-identifier = "tags" # this page will refer to a markdown file named "aboutme" in the content folder
-pre = "<br />"
-url = "/tags"
-weight = 30
 
 [sitemap]
 ChangeFreq = ""

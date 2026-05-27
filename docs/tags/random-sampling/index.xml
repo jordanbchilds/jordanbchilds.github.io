@@ -2,15 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Random Sampling on Home</title>
-    <link>https://jordanbchilds.github.io/tags/random-sampling/</link>
+    <link>http://localhost:1313/tags/random-sampling/</link>
     <description>Recent content in Random Sampling on Home</description>
+    <image>
+      <title>Home</title>
+      <url>http://localhost:1313/images/profile.JPG</url>
+      <link>http://localhost:1313/images/profile.JPG</link>
+    </image>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-gb</language><atom:link href="https://jordanbchilds.github.io/tags/random-sampling/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-gb</language><atom:link href="http://localhost:1313/tags/random-sampling/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>A simple discrete random sampler in C&#43;&#43;</title>
-      <link>https://jordanbchilds.github.io/posts/discreterandomsampler/</link>
+      <link>http://localhost:1313/posts/discreterandomsampler/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://jordanbchilds.github.io/posts/discreterandomsampler/</guid>
+      <guid>http://localhost:1313/posts/discreterandomsampler/</guid>
       <description>&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;vector&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;stdexcept&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
