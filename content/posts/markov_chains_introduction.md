@@ -81,4 +81,4 @@ As presented here, the normal random walk is univariate; however, this need not 
 
 # Final remarks
 
-ADD SOME FINAL REMARKS ABOUT SOMETHING
+Markov chains provide a useful framework for modelling random systems that evolve sequentially, especially when the next state can be described using only the current one. Whether the state space is discrete or continuous, the key idea is the same: specify how the system moves locally, then study the behaviour that emerges over time. This perspective makes Markov chains useful both as models in their own right and as computational tools, including in simulation and Bayesian inference. Further topics such as irreducibility, recurrence, convergence, and Markov chain Monte Carlo build on the same foundation introduced here.
