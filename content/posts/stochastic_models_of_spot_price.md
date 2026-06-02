@@ -82,7 +82,7 @@ Although mean-reversion captures the overall trend of the data, it is not capabl
 $$
 \begin{align}
 \text{d}X_t &= -\theta X_t\text{d}t + \sigma \text{d}W_t + J_t\text{d}N_t, \\
-J_t &\sim \text{Normal}(\mu_J, \sigma_J^2).
+J_t &\sim \text{N}(\mu_J, \sigma_J^2).
 \end{align}
 $$
 </div>
