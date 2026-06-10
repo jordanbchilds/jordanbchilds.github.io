@@ -47,8 +47,6 @@ A stationary distribution represents the time-limiting behaviour of the system a
 The $i$-th row of the transition matrix is the PMF of the current state if the system was previously in the $i$-th state. For example, the $3^\mathrm{rd}$ row, $\left(4/5, 0, 0, 1/5, 0 \right)
 $ gives probabilities 4/5 and 1/5 of being in the $1^\mathrm{st}$ and $4^\mathrm{th}$ states, respectively, and all other states having a zero probability. This is reflected in Figure 2 where the only directed edges leaving $S_3$ are to $S_1$ and $S_4$, with the appropriate weights.
 
-ADD SOMETHING ABOUT FURTHER DETAILS, USES, OTHER INTERESTING TOPICS RELATED TO DISCRETE STATE-SPACE MARKOV CHAINS
-
 # Continuous state-space Markov chain
 
 Discrete state-space Markov have a wide number of applications and are useful to gain an intuition into Markov chain behaviour. However, a number of applications require continuous state-space. For example Markov chains are a key component in Bayesian inference, where a posterior distribution is sampled from by a Markov chain. As many model parameters are continuous, they require a continuous state-space Markov chains. Continuous state-space Markov chains are also required in mathematical models where the modelling output is not appropriately approximated by discrete values, such as stochastic models of stock price or molecular concentrations during a chemical reaction.

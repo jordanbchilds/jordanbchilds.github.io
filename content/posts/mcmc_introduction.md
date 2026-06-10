@@ -109,7 +109,7 @@ A special case of the symmetric distribution is a random walk, which adds indepe
 
 It remains to choose a covariance matrix, $\Sigma$, the choice of which is important for the efficiency of the inference scheme. Similarly to before, a quick exploration of parameter space is preferred. To achieve this, a covariance matrix is needed that shows similar correlations to the posterior distribution and marginal variances which are not too big nor too small. Small marginal variances lead to slow exploration of the parameter space with many proposed values being accepted. Large marginal variances will lead to too few proposed values being accepted and slow exploration. 
 
-In practice, ADD LINK \textcite{roberts_optimal_2001} proposed that the covariance matrix should depend on the posterior covariance and the number of parameters being inferred, suggesting that 
+A common rule of thumb is that the covariance matrix should depend on the posterior covariance and the number of parameters being inferred, such that 
 $$
     \text{Var} (\boldsymbol{\varepsilon}_j) = \frac{2.38^2}{m}\widehat{\text{Var}} (\boldsymbol{\theta}|\boldsymbol{x}).
 $$
@@ -131,7 +131,7 @@ Once a suitable inference scheme is constructed, a key question remains to be an
 
 An initial convergence check is usually done by eye. A converged chain should sample from a steady distribution. Conversely, a chain that does not maintain some equilibrium shows signs of non-convergence and may still be in its burn-in period. Whether or not the chain is moving centred upon some steady state should be visible in a trace plot, a time series line plot of the chain's value at each iteration. Also informal, although more convincing, is the inspection of multiple chains, initialised at a range of values. All chains should reach the same stationary distribution, and overlayed trace plots are an easy method to highlight when this is or is not the case. When the chains do not overlap, this could indicate a lack of convergence. Multiple chains have the additional benefit that the posterior draws can be combined, provided checks have been made that they come from the same distribution, essentially parallelising inference.
 
-Several formal convergence diagnostics have been proposed. The most widely used method is a likely to be a statistic which compares the within and between chain variation of multiple chains. The statistic, $\hat{\text{R}}$, tends to 1.0 as the number of iterations increases. Many other convergence diagnostics have been suggested, however, they will not be discussed in detail here, see \textcite{mengersen_mcmc_1999} for a review. 
+Several formal convergence diagnostics have been proposed. The most widely used method is a likely to be a statistic which compares the within and between chain variation of multiple chains. The statistic, $\hat{\text{R}}$, tends to 1.0 as the number of iterations increases. Many other convergence diagnostics have been suggested, however, they will not be discussed in detail here. 
 
 ## Autocorrelation
 
@@ -149,4 +149,4 @@ Both STAN and JAGS are likely faster than hard-coded inference schemes, both usi
 
 # Final remarks
 
-This introduciton into MCMC is fairly brief and omits a lot of the detailed argmuents and background which are would be a part of any university's 'Introduction to Bayesian Methods' course. If such mathematical and technical detail is needed many texts books (or other online resources) are available. For example, ADD SOME LINKS
+This introduction into MCMC is fairly brief and omits a lot of the detailed arguments and background which would be a part of any university's 'Introduction to Bayesian Methods' course. If such mathematical and technical detail is needed many texts books (or other online resources) are available. For example, the book Markov Chain Monte Carlo Stochastic Simulation for Bayesian Inference by Gamerman and Lopes provides a comprehensive introduction to MCMC methods, a PDF of which can be found [here](https://api.pageplace.de/preview/DT0400.9781482296426_A38132202/preview-9781482296426_A38132202.pdf).
