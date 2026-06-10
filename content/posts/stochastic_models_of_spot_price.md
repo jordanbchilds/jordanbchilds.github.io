@@ -151,8 +151,8 @@ The final model considered in this blog is a model which includes dynamic, time-
 <div class="math">
 $$
 \begin{align}
-    \text{d}X_t &= -\theta X_t\text{d}t + \sigma_t \text{d}W_t^X + J_t\text{d}N_t, \\
-    \text{d}V_t &= \theta_v (\mu_v - V_t) \text{d}t + \sigma_v \text{d}W_t^V, \\
+    \text{d}X_t &= -\theta X_t\text{d}t + \sigma_t \text{d}W_t^X, \\
+    \text{d}V_t &= \theta_v (\mu_v - V_t) \text{d}t + \sigma_v \text{d}W_t^V + J_t\text{d}N_t, \\
     J_t &\sim \text{N}(\mu_J, \sigma_J^2).
 \end{align}
 $$
