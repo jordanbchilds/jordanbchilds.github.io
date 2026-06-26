@@ -3,7 +3,7 @@ title: "A Comparison of Stochastic Models of Energy Spot Price in the UK"
 date: 2026-05-12
 
 mathjax: true
-tags: ["Statistics", "Data Analysis", "Python", "Bayesian Inference"]
+tags: ["Statistics", "Data Analysis", "Python", "Bayesian Inference", "Stochastic Models"]
 ---
 
 # Introduction

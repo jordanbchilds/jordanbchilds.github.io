@@ -2,31 +2,37 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://jordanbchilds.github.io/tags/bayesian-inference/</loc>
+    <lastmod>2026-06-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jordanbchilds.github.io/tags/data-analysis/</loc>
+    <lastmod>2026-06-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jordanbchilds.github.io/</loc>
+    <lastmod>2026-06-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jordanbchilds.github.io/posts/smc2_spot_price/</loc>
+    <lastmod>2026-06-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jordanbchilds.github.io/posts/</loc>
+    <lastmod>2026-06-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jordanbchilds.github.io/tags/python/</loc>
+    <lastmod>2026-06-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jordanbchilds.github.io/tags/statistics/</loc>
+    <lastmod>2026-06-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jordanbchilds.github.io/tags/stochastic-models/</loc>
+    <lastmod>2026-06-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jordanbchilds.github.io/tags/</loc>
+    <lastmod>2026-06-12T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://jordanbchilds.github.io/posts/energy_spot_price_analysis/</loc>
     <lastmod>2026-05-12T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://jordanbchilds.github.io/posts/stochastic_models_of_spot_price/</loc>
-    <lastmod>2026-05-12T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://jordanbchilds.github.io/tags/bayesian-inference/</loc>
-    <lastmod>2026-05-12T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://jordanbchilds.github.io/tags/data-analysis/</loc>
-    <lastmod>2026-05-12T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://jordanbchilds.github.io/</loc>
-    <lastmod>2026-05-12T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://jordanbchilds.github.io/posts/</loc>
-    <lastmod>2026-05-12T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://jordanbchilds.github.io/tags/python/</loc>
-    <lastmod>2026-05-12T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://jordanbchilds.github.io/tags/statistics/</loc>
-    <lastmod>2026-05-12T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://jordanbchilds.github.io/tags/</loc>
     <lastmod>2026-05-12T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://jordanbchilds.github.io/posts/ipu_howto/</loc>

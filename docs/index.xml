@@ -11,7 +11,16 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Tue, 12 May 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://jordanbchilds.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 12 Jun 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://jordanbchilds.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Online Bayesian Inference of a Stochastic Volatility Model</title>
+      <link>https://jordanbchilds.github.io/posts/smc2_spot_price/</link>
+      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
+      <guid>https://jordanbchilds.github.io/posts/smc2_spot_price/</guid>
+      <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;Electricity differs from many financial and commodity assets because large-scale storage remains expensive, requiring continuous balancing of supply and demand. In the UK day-ahead market, hourly electricity prices are determined through auctions that incorporate expected generation and demand, as well as transmission constraints. In Great Britain, this balance is overseen by the National Energy System Operator (NESO), which manages the grid through a combination of forward markets and a real-time Balancing Mechanism. A key feature of the UK energy market is the day-ahead auction, which is facilitated by two exchanges: EPEX SPOT and Nord Pool’s N2EX.&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>A Comparison of Statistical Models of Energy Spot Price in the UK</title>
       <link>https://jordanbchilds.github.io/posts/energy_spot_price_analysis/</link>
